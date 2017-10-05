@@ -18,8 +18,6 @@ Codebase for the self driving wheelchair
 ##### Required software
 - Visual studio (latest version)
 - Windows 10 (latest version)
-- UTP cable
-
 
 # How to connect the Raspberry Pi to the Pozyx shield
 1. Connect the UTP cable to the Raspberry Pi (see number .. on image..)
