@@ -102,19 +102,12 @@ namespace App1
 
         private void DecodeByte(string ByteInputted)
         {
-            var byteArray = new byte[] { 35 };
-            string result = Encoding.UTF8.GetString(byteArray);
-            var text = Encoding.ASCII.GetString(byteArray);
-            var bits = new BitArray(byteArray[0]);
-            Debug.WriteLine("Begin Byte");
-
-            for (int i = 0; i < bits.Length; i++)
-            {
-                Debug.WriteLine(i + 1 + ": " + bits[i]);
-            }
-            Debug.WriteLine("End Byte");
-
-
+            byte resultt = 0x23;
+            byte versionPart = 0x1f;
+            byte typePart = 0xE0;
+            byte version = (byte)(resultt & versionPart);
+            byte typeShifted = (byte)(resultt & typePart);
+            byte type = (byte)(typeShifted >> 5);
         }
 
         private void OutputByte_SelectionChanged(object sender, RoutedEventArgs e)
