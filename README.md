@@ -26,10 +26,10 @@ Codebase for the self driving wheelchair
 2. Connect the HDMI cable from the display to the Raspberry Pi (see number .. on image..)
 3. Connect the Micro USB cable to the Raspberry Pi, this will function as the power supply for the Raspberry Pi (see number .. on image ..)  
 4. Connect the Raspberry Pi and Pozyx shield pins with the jumper cables (x4)
-	a. Connect the male end of one jumper cable to the pozyx SCL pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-    b. Connect the male end of one jumper cable to the pozyx SDA pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-    c. Connect the male end of one jumper cable to the pozyx 5v pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-    d. Connect the male end of one jumper cable to the pozyx GND pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
+	a. Connect the male end of one jumper cable to the pozyx SCL pin (see number .. on image ..)     connect the female end to the 		   Raspberry Pi (see number .. on image ..)
+   	b. Connect the male end of one jumper cable to the pozyx SDA pin (see number .. on image ..)     connect the female end to the 	   	    Raspberry Pi (see number .. on image ..)
+    	c. Connect the male end of one jumper cable to the pozyx 5v pin (see number .. on image ..)     connect the female end to the 		   Raspberry Pi (see number .. on image ..)
+    	d. Connect the male end of one jumper cable to the pozyx GND pin (see number .. on image ..)     connect the female end to the 		   Raspberry Pi (see number .. on image ..)
 5. Make sure everything is plugged in and powered, to test this turn on the display, you should now see a page with information about the Raspberry Pi and an IPv4 address, this IP is later used in 'How to connect with the Prozyx Shield' (see image ..)
 
 # How to clone and open the application
