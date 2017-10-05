@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\Users\Marco\Documents\Visual Studio 2017\Projects\App1\App1\bin\ARM\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-10-04T15:04:59.062</Modified>
+      <Modified>2017-10-05T08:22:05.608</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Marco\Documents\Visual Studio 2017\Projects\App1\App1\bin\ARM\Debug\App1.exe">
       <PackagePath>entrypoint\App1.exe</PackagePath>
-      <Modified>2017-10-04T15:04:58.827</Modified>
+      <Modified>2017-10-05T08:22:01.968</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marco\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -531,7 +531,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marco\Documents\Visual Studio 2017\Projects\App1\App1\bin\ARM\Debug\App1.xr.xml">
       <PackagePath>App1.xr.xml</PackagePath>
-      <Modified>2017-10-04T13:59:51.221</Modified>
+      <Modified>2017-10-05T08:22:01.811</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.15063.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -540,11 +540,11 @@
     <AppxPackagedFile Include="C:\Users\Marco\Documents\Visual Studio 2017\Projects\App1\App1\bin\ARM\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-10-04T13:59:52.425</Modified>
+      <Modified>2017-10-05T08:22:04.905</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marco\Documents\Visual Studio 2017\Projects\App1\App1\bin\ARM\Debug\Core\App1.exe">
       <PackagePath>App1.exe</PackagePath>
-      <Modified>2017-10-04T15:04:59.054</Modified>
+      <Modified>2017-10-05T08:22:05.597</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
