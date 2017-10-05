@@ -50,31 +50,8 @@ namespace App1
 
         }
 
-        private void GetData(byte code, int bits)
+        private void GetData()
         //private void Timer_Tick(object sender, object e)
-        {
-            // Read data from I2C.
-            var command = new byte[1];
-            var data = new byte[bits];
-
-            command[0] = code;
-
-            _PozyxShield.WriteRead(command, data);
-
-            // Calculate and report the humidity.
-            var result = data;
-
-            string str = String.Empty;
-            for(int i=0; i<data.Length; i++)
-            {
-                str = str + "/ " + data[i].ToString() + " ";
-            }
-
-            TextBlock1.Text = "Result: " + str;
-
-        }
-
-        private void Button1_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -83,10 +60,31 @@ namespace App1
                 byte code = Convert.ToByte(TextBox1.Text, 16);
                 int bits = Int32.Parse(TextBox2.Text);
 
-                GetData(code, bits);
+                // Read data from I2C.
+                var command = new byte[1];
+                var data = new byte[bits];
+
+                command[0] = code;
+
+                _PozyxShield.WriteRead(command, data);
+
+                string str = String.Empty;
+                for (int i = 0; i < data.Length; i++)
+                {
+                    str = str + "/ " + data[i].ToString() + " ";
+                }
+
+                TextBlock1.Text = "Result: " + str;
+                TextBlock2.Text = "String: " + System.Text.Encoding.UTF8.GetString(data);
             }
             catch (Exception ex) { };
 
+}
+
+        private void Button1_Click(object sender, RoutedEventArgs e)
+        {
+            GetData();
         }
+
     }
 }

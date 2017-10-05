@@ -9,9 +9,10 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Button x:Name="Button1" Content="Start" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="Button1_Click" FontSize="72"/>
-        <TextBlock x:Name="TextBlock1" HorizontalAlignment="Center" Margin="10,123,0,0" TextWrapping="Wrap" Text="Fill in and click start" VerticalAlignment="Center" FontSize="72"/>
+        <TextBlock x:Name="TextBlock1" HorizontalAlignment="Center" Margin="0,0,0,100" TextWrapping="Wrap" Text="Fill in and click start" VerticalAlignment="Center" FontSize="72"/>
         <TextBox x:Name="TextBox1" HorizontalAlignment="Left" Margin="206,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="72" Width="451" PlaceholderText="Code"/>
         <TextBox x:Name="TextBox2" HorizontalAlignment="Left" Margin="685,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="72" Width="362" PlaceholderText="Bits"/>
+        <TextBlock x:Name="TextBlock2" HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="72"/>
 
     </Grid>
 </Page>
