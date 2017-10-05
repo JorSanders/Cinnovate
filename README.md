@@ -3,16 +3,16 @@ Codebase for the self driving wheelchair
 
 
 # Benodigdheden
-Raspberry Pi v3 x1
-Pozyx Shield x1
-UTP kabel x1
-Micro USB kabel x1 (stroomtoevoer Raspberry Pi)
-Toetsenbord x1
-Muis x1
-Beelscherm x1
-HDMI kabel x1
-Jumper kabels male to female x4
-Laptop x1
+- Raspberry Pi v3 x1
+- Pozyx Shield x1
+- UTP kabel x1
+- Micro USB kabel x1 (stroomtoevoer Raspberry Pi)
+- Toetsenbord x1
+- Muis x1
+- Beelscherm x1
+- HDMI kabel x1
+- Jumper kabels male to female x4
+- Laptop x1
 
 
 # Hoe sluit in de Raspberry pi aan op de Pozyx
