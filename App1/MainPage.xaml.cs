@@ -16,6 +16,9 @@ using App1.Pozyx;
 using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Diagnostics;
+using System.Text;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -75,7 +78,7 @@ namespace App1
                 }
 
                 TextBlock1.Text = "Result: " + str;
-                TextBlock2.Text = "String: " + System.Text.Encoding.UTF8.GetString(data);
+                //TextBlock2.Text = "String: " + System.Text.Encoding.UTF8.GetString(data);
             }
             catch (Exception ex) { };
 
@@ -93,34 +96,31 @@ namespace App1
 
         private void ButtonByte_Click(object sender, RoutedEventArgs e)
         {
-            DecodeByte();
+
+            DecodeByte(ByteInput.Text);
         }
 
-        private void DecodeByte()
+        private void DecodeByte(string ByteInputted)
         {
-            try
-            {
-                ByteOutput.Text = "Check your debugger!";
+            var byteArray = new byte[] { 35 };
+            string result = Encoding.UTF8.GetString(byteArray);
+            var text = Encoding.ASCII.GetString(byteArray);
+            var bits = new BitArray(byteArray[0]);
+            Debug.WriteLine("Begin Byte");
 
-            }catch(Exception e)
+            for (int i = 0; i < bits.Length; i++)
             {
-                ByteOutput.Text = "Ran into an exception";
+                Debug.WriteLine(i + 1 + ": " + bits[i]);
             }
+            Debug.WriteLine("End Byte");
+
+
         }
 
-        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
+        private void OutputByte_SelectionChanged(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

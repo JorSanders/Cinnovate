@@ -12,9 +12,9 @@
         <TextBlock x:Name="TextBlock1" HorizontalAlignment="Center" Margin="34,221,421,323" TextWrapping="Wrap" Text="Fill in and click start" VerticalAlignment="Center" FontSize="72"/>
         <TextBox x:Name="TextBox1" HorizontalAlignment="Left" Margin="206,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="72" Width="451" PlaceholderText="Code"/>
         <TextBox x:Name="TextBox2" HorizontalAlignment="Left" Margin="685,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="72" Width="362" PlaceholderText="Bits"/>
-        <TextBlock x:Name="ByteOutput" HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="72"/>
+        <TextBlock x:Name="TextBlock2" HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="72"/>
         <Button x:Name="ButtonByte" Content="Read byte" HorizontalAlignment="Left" Margin="34,166,0,0" VerticalAlignment="Top" Height="50" Width="143" Click="ButtonByte_Click"/>
-        <TextBlock x:Name="OutputByte" HorizontalAlignment="Left" Margin="685,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" Width="451" SelectionChanged="TextBlock_SelectionChanged" >
+        <TextBlock x:Name="ByteOutput" HorizontalAlignment="Left" Margin="685,166,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" Width="451" SelectionChanged="OutputByte_SelectionChanged">
             <Run Text="Output Byte"/>
             <LineBreak/>
             <Run/>
