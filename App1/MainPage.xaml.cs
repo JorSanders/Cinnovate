@@ -79,12 +79,48 @@ namespace App1
             }
             catch (Exception ex) { };
 
-}
+        }
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             GetData();
         }
 
+        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonByte_Click(object sender, RoutedEventArgs e)
+        {
+            DecodeByte();
+        }
+
+        private void DecodeByte()
+        {
+            try
+            {
+                ByteOutput.Text = "Check your debugger!";
+
+            }catch(Exception e)
+            {
+                ByteOutput.Text = "Ran into an exception";
+            }
+        }
+
+        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBlock_SelectionChanged(System.Object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
