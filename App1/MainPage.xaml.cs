@@ -102,12 +102,14 @@ namespace App1
 
         private void DecodeByte(string ByteInputted)
         {
-            byte resultt = 0x23;
+            byte result = 0x23;
             byte versionPart = 0x1f;
             byte typePart = 0xE0;
-            byte version = (byte)(resultt & versionPart);
-            byte typeShifted = (byte)(resultt & typePart);
-            byte type = (byte)(typeShifted >> 5);
+            UInt16 version = (byte)(result & versionPart);
+            byte typeShifted = (byte)(result & typePart);
+            UInt16 type = (byte)(typeShifted >> 5);
+
+            int tmp = 0;
         }
 
         private void OutputByte_SelectionChanged(object sender, RoutedEventArgs e)
