@@ -108,8 +108,6 @@ namespace App1
             UInt16 version = (byte)(result & versionPart);
             byte typeShifted = (byte)(result & typePart);
             UInt16 type = (byte)(typeShifted >> 5);
-
-            int tmp = 0;
         }
 
         private void OutputByte_SelectionChanged(object sender, RoutedEventArgs e)
