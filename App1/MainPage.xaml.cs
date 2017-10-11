@@ -47,14 +47,16 @@ namespace App1
         private void Request_Click(object sender, RoutedEventArgs e)
         {
             // Get the user inputted values
-            string byteArrayString = InputBytes.Text;
-            string[] bytes = byteArrayString.Split(new[] { ";" }, StringSplitOptions.None);
-            byte[] request;
-            foreach (string byteString in bytes)
+            string InputBytes = InputBytes.Text;
+            string[] byteStrings = InputBytes.Split(new[] { ";" }, StringSplitOptions.None);
+            byte[] request = new byte[byteStrings.Length];
+            for (int i = 0; i < byteStrings.Length; i++)
             {
-                reques = 
+                request[i] = Convert.ToByte(byteStrings[i]);
             }
             int returnBytes = Int32.Parse(NumberOfReturnBytes.Text);
+
+
         }
 
     }
