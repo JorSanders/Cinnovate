@@ -35,25 +35,20 @@ namespace App1.Models
         }
 
         /*
-         * Send a byte via to an i2c device
+         * Send a byte i2c device
          */ 
-        private byte[] Request(byte sendByte, int lenght)
+        private byte[] Request(byte[] request, int length)
         {
-            // Read data from I2C.
-            byte[] result = new byte[lenght];
-            byte[] sendByteArray = { sendByte };
-
             try
             {
-                _PozyxShield.WriteRead(sendByteArray, result);
+                var data = new byte[length];
+                _PozyxShield.WriteRead(request, data);
+                return data;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                System.Diagnostics.Debug.Write(e.Message);
-                byte[] empty = { };
-                return empty;
+                return new byte[0];
             }
-            return result;
         }
 
         /*
@@ -61,21 +56,20 @@ namespace App1.Models
          */
         public string GetFirmwareVersion()
         {
-            byte requestByte = 0x1;
-            byte[] answerBytes = Request(requestByte, 1);
-            if (answerBytes.Length <= 0)
+            byte[] request = { 0x1 };
+            byte[] answerBytes = Request(request, 1);
+
+            if (answerBytes.Length > 0)
             {
-                return "Failed to get firmware";
+                UInt16 minorVersion = (byte)(answerBytes[0] & 0x1f);
+                UInt16 majorVersion = (byte)(answerBytes[0] >> 4);
+
+                return majorVersion + "." + minorVersion;
             }
-            byte answerByte = answerBytes[0];
-
-            // 00001111 Because we need the first 4 binairy characters from the byte
-            byte minorPart = 0x1f;
-            UInt16 minorVersion = (byte)(answerByte & minorPart);
-            // shift the byte 4 times. Because we only need the first 4 binairy characters
-            UInt16 majorVersion = (byte)(answerByte >> 4);
-
-            return majorVersion + "." + minorVersion;
+            else
+            {
+                return "ERR: Failed to get firmware";
+            }
         }
 
     }
