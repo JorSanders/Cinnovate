@@ -57,14 +57,32 @@ namespace App1.Models
         public string GetFirmwareVersion()
         {
             byte[] request = { 0x1 };
-            byte[] answerBytes = Request(request, 1);
+            byte[] data = Request(request, 1);
 
-            if (answerBytes.Length > 0)
+            if (data.Length > 0)
             {
-                UInt16 minorVersion = (byte)(answerBytes[0] & 0x1f);
-                UInt16 majorVersion = (byte)(answerBytes[0] >> 4);
+                UInt16 minorVersion = (byte)(data[0] & 0x1f);
+                UInt16 majorVersion = (byte)(data[0] >> 4);
 
                 return majorVersion + "." + minorVersion;
+            }
+            else
+            {
+                return "ERR: Failed to get firmware";
+            }
+        }
+
+        /*
+         * Returns the number of devices stored internally
+         */
+        public string getDeviceListSize()
+        {
+            byte[] request = { 0x81 };
+            byte[] data = Request(request, 1);
+
+            if (data.Length > 0)
+            {
+                return data[0].ToString();
             }
             else
             {
