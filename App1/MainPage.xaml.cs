@@ -44,5 +44,18 @@ namespace App1
             Output.Text = firmwareVersion;
         }
 
+        private void Request_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the user inputted values
+            string byteArrayString = InputBytes.Text;
+            string[] bytes = byteArrayString.Split(new[] { ";" }, StringSplitOptions.None);
+            byte[] request;
+            foreach (string byteString in bytes)
+            {
+                reques = 
+            }
+            int returnBytes = Int32.Parse(NumberOfReturnBytes.Text);
+        }
+
     }
 }

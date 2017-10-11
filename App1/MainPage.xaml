@@ -9,12 +9,15 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="-52,0,-666,0">
         <TextBlock x:Name="TextBlock2" HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="72"/>
-        <Button Content="Show version&#xD;&#xA;" HorizontalAlignment="Left" Margin="72,50,0,0" VerticalAlignment="Top" Height="66" Width="251" Click="Version_Click" FontSize="36"/>
+        <Button Content="Show version&#xD;&#xA;" HorizontalAlignment="Left" Margin="72,235,0,0" VerticalAlignment="Top" Height="66" Width="251" Click="Version_Click" FontSize="36"/>
         <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="72,306,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="271" Width="911" SelectionChanged="TextBlock_SelectionChanged_1" FontSize="72">
             <Run Text="Output"/>
             <LineBreak/>
             <Run/>
         </TextBlock>
+        <TextBox x:Name="InputBytes" HorizontalAlignment="Left" Margin="72,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="54" Width="327" PlaceholderText="0x00" IsEnabled="False" FontSize="36" KeyDown="InputBytes_KeyDown"/>
+        <TextBox x:Name="NumberOfReturnBytes" HorizontalAlignment="Left" Margin="454,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="54" Width="327" PlaceholderText="1" IsEnabled="False" FontSize="36"/>
+        <Button x:Name="Request" Content="Show version&#xA;" HorizontalAlignment="Left" Margin="817,65,0,0" VerticalAlignment="Top" Height="55" Width="166" Click="Version_Click" FontSize="36"/>
 
     </Grid>
 </Page>
