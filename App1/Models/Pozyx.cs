@@ -34,32 +34,38 @@ namespace App1.Models
             _PozyxShield = await I2cDevice.FromIdAsync(devices[0].Id, Pozyx_settings);
         }
 
-        private byte[] request(byte sendByte, int lenght)
+        /*
+         * Send a byte via to an i2c device
+         */ 
+        private byte[] Request(byte sendByte, int lenght)
         {
             // Read data from I2C.
-            byte[] command = new byte[1];
             byte[] result = new byte[lenght];
-
             byte[] sendByteArray = { sendByte };
 
             try
             {
                 _PozyxShield.WriteRead(sendByteArray, result);
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
+                System.Diagnostics.Debug.Write(e.Message);
                 byte[] empty = { };
                 return empty;
             }
             return result;
         }
 
+        /*
+         * Returns the firmware version
+         */
         public string GetFirmwareVersion()
         {
             byte requestByte = 0x1;
-            byte[] answerBytes = request(requestByte, 1);
+            byte[] answerBytes = Request(requestByte, 1);
             if (answerBytes.Length <= 0)
             {
-                return "Version not found";
+                return "Failed to get firmware";
             }
             byte answerByte = answerBytes[0];
 
