@@ -44,9 +44,5 @@ namespace App1
             Output.Text = firmwareVersion;
         }
 
-        private void TextBlock_SelectionChanged_1(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
