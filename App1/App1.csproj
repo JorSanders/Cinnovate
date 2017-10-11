@@ -98,17 +98,13 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pozyx\PozyxDevice.cs" />
-    <Compile Include="Pozyx\PozyxPositionEventArgs.cs" />
-    <Compile Include="Pozyx\PozyxSerial.cs" />
-    <Compile Include="Pozyx\PozyxShield.cs" />
+    <Compile Include="Models\Pozyx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="App1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />

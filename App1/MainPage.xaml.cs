@@ -12,13 +12,13 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using App1.Pozyx;
 using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
+using App1.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -115,5 +115,16 @@ namespace App1
 
         }
 
+        private void TextBlock_SelectionChanged_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Version_Click(object sender, RoutedEventArgs e)
+        {
+            Pozyx pozyx = new Pozyx();
+            string firmwareVersion = pozyx.GetFirmwareVersion();
+            Output.Text = firmwareVersion;
+        }
     }
 }

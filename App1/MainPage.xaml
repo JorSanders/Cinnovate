@@ -20,6 +20,12 @@
             <Run/>
         </TextBlock>
         <TextBox x:Name="ByteInput" HorizontalAlignment="Left" Margin="206,147,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="72" Width="451" PlaceholderText="Input Byte"/>
+        <Button Content="Show version&#xD;&#xA;" HorizontalAlignment="Left" Margin="235,516,0,0" VerticalAlignment="Top" Height="149" Width="218" Click="Version_Click"/>
+        <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="685,516,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="149" Width="451" SelectionChanged="TextBlock_SelectionChanged_1">
+            <Run Text="Output"/>
+            <LineBreak/>
+            <Run/>
+        </TextBlock>
 
     </Grid>
 </Page>

@@ -11,10 +11,14 @@ namespace App1.Models
 {
     class Pozyx
     {
-
         private const int POZYX_I2C_ADDRESS = 0x4B;
         private I2cDevice _PozyxShield;
         private DispatcherTimer _Timer;
+
+        public Pozyx()
+        {
+            Connect();
+        }
 
         /*
          * initiate the i2c connection to the pozyx device
@@ -30,19 +34,6 @@ namespace App1.Models
             _PozyxShield = await I2cDevice.FromIdAsync(devices[0].Id, Pozyx_settings);
         }
 
-        private int[] DecodeByte(byte ByteInputted)
-        {
-            byte versionPart = 0x1f;
-            byte typePart = 0xE0;
-            UInt16 version = (byte)(ByteInputted & versionPart);
-            byte typeShifted = (byte)(ByteInputted & typePart);
-            UInt16 type = (byte)(typeShifted >> 5);
-
-            int[] result = { version, type };
-
-            return result;
-        }
-
         private byte[] request(byte sendByte, int lenght)
         {
             // Read data from I2C.
@@ -51,9 +42,34 @@ namespace App1.Models
 
             byte[] sendByteArray = { sendByte };
 
-            _PozyxShield.WriteRead(sendByteArray, result);
-
+            try
+            {
+                _PozyxShield.WriteRead(sendByteArray, result);
+            }catch(Exception e)
+            {
+                byte[] empty = { };
+                return empty;
+            }
             return result;
+        }
+
+        public string GetFirmwareVersion()
+        {
+            byte requestByte = 0x1;
+            byte[] answerBytes = request(requestByte, 1);
+            if (answerBytes.Length <= 0)
+            {
+                return "Version not found";
+            }
+            byte answerByte = answerBytes[0];
+
+            // 00001111 Because we need the first 4 binairy characters from the byte
+            byte minorPart = 0x1f;
+            UInt16 minorVersion = (byte)(answerByte & minorPart);
+            // shift the byte 4 times. Because we only need the first 4 binairy characters
+            UInt16 majorVersion = (byte)(answerByte >> 4);
+
+            return majorVersion + "." + minorVersion;
         }
 
     }
