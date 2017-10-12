@@ -110,5 +110,12 @@ namespace App1
             }
             
         }
+
+        private void AchorsPos_Click(object sender, RoutedEventArgs e)
+        {
+            //0x47 0x60
+            byte[] anchorId = { 0x47, 0x60 };
+            _Pozyx.GetAnchorPosition(anchorId);
+        }
     }
 }

@@ -167,6 +167,19 @@ namespace App1.Models
         public void GetAnchorPosition(byte[] anchorId)
         {
             byte[] request = { 0xB6, anchorId[0], anchorId[1] };
+            byte[] data = Request(request, 13);
+
+            if (data.Length <= 0 || data[0] != 1)
+            {
+
+            }
+
+
+            byte[] xBytes = { data[1], data[2], data[3], data[4] };
+
+            int x = BitConverter.ToInt32(xBytes, 0);
+
+
         }
     }
 }
