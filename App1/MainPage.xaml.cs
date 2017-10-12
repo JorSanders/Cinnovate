@@ -80,6 +80,8 @@ namespace App1
 
         private void Achors_Click(object sender, RoutedEventArgs e)
         {
+            Output.Text = "";
+
             if (!_Pozyx.DiscoverDevices())
             {
                 Output.Text = "Discover failed \n";
@@ -98,8 +100,6 @@ namespace App1
                 Debug.Write("Positioning failed \n");
             }
             byte[][] anchorIds = _Pozyx.GetAnchorIds();
-
-            Output.Text = "";
 
             foreach (byte[] anchorId in anchorIds)
             {

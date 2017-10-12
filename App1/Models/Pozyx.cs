@@ -48,6 +48,7 @@ namespace App1.Models
             }
             catch (Exception ex)
             {
+                Debug.Write(ex.Message);
                 return new byte[0];
             }
         }
