@@ -46,18 +46,31 @@ namespace App1
 
         private void Request_Click(object sender, RoutedEventArgs e)
         {
-            // Get the user inputted values
-            string InputBytes = InputBytes.Text;
-            string[] byteStrings = InputBytes.Split(new[] { ";" }, StringSplitOptions.None);
-            byte[] request = new byte[byteStrings.Length];
-            for (int i = 0; i < byteStrings.Length; i++)
+            try
             {
-                request[i] = Convert.ToByte(byteStrings[i]);
+                // Get the user inputted values
+                string inputByte = InputBytes.Text;
+                string[] byteStrings = inputByte.Split(new[] { ";" }, StringSplitOptions.None);
+                byte[] request = new byte[byteStrings.Length];
+                for (int i = 0; i < byteStrings.Length; i++)
+                {
+                    request[i] = Convert.ToByte(byteStrings[i], 16);
+                }
+                int returnBytes = Int32.Parse(NumberOfReturnBytes.Text);
+
+                byte[] result = _Pozyx.Request(request, returnBytes);
+
+                Output.Text = "";
+                foreach (byte returnByte in result)
+                {
+                    Output.Text += returnByte + "\n";
+                }
+
             }
-            int returnBytes = Int32.Parse(NumberOfReturnBytes.Text);
-
-
+            catch (Exception ex)
+            {
+                Output.Text = ex.Message;
+            }
         }
-
     }
 }

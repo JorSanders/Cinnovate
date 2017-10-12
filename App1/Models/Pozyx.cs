@@ -37,7 +37,7 @@ namespace App1.Models
         /*
          * Send a byte i2c device
          */ 
-        private byte[] Request(byte[] request, int length)
+        public byte[] Request(byte[] request, int length)
         {
             try
             {
