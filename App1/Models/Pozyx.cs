@@ -86,7 +86,7 @@ namespace App1.Models
          * 
          * @return bool
          */
-        public bool DiscoverDevices(int deviceType = 0, int devices = 4, int waitTime = 10)
+        public bool DiscoverDevices(int deviceType = 0, int devices = 10, int waitTime = 10)
         {
             byte[] request = { 0xC1, (byte)deviceType, (byte)devices, (byte)waitTime };
             byte[] data = Request(request, 1);
@@ -162,6 +162,11 @@ namespace App1.Models
             }
 
             return result;
+        }
+
+        public void GetAnchorPosition(byte[] anchorId)
+        {
+            byte[] request = { 0xB6, anchorId[0], anchorId[1] };
         }
     }
 }

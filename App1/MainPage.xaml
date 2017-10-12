@@ -7,14 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="-52,0,-666,0">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="-52,0,-693,-152">
         <Grid.RowDefinitions>
             <RowDefinition Height="153*"/>
             <RowDefinition Height="167*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextBlock2" HorizontalAlignment="Center" Margin="539,16,539,222" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="72" Grid.Row="1"/>
         <Button Content="Firmware&#xA;" HorizontalAlignment="Left" Margin="72,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Version_Click" FontSize="36"/>
-        <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="72,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="273" Width="911" FontSize="20" Grid.Row="1">
+        <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="72,0.333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="403" Width="911" FontSize="20" Grid.Row="1">
             <Run Text="Output"/>
             <LineBreak/>
             <Run/>

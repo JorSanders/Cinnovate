@@ -56,11 +56,13 @@ namespace App1
 
                 //wipe output text
                 Output.Text = "";
+
+                Debug.Write(InputBytes.Text + "\n");
+                Debug.Write(nReturnBytes + "\n");
                 foreach (byte returnByte in result)
                 {
                     Output.Text += returnByte + "\n";
-                    Debug.Write(InputBytes.Text + "\n");
-                    Debug.Write(nReturnBytes + "\n");
+
                     Debug.Write(returnByte + "\n");
                 }
 
@@ -84,19 +86,19 @@ namespace App1
 
             if (!_Pozyx.DiscoverDevices())
             {
-                Output.Text = "Discover failed \n";
+                Output.Text += "Discover failed \n";
                 Debug.Write("Discover failed \n");
             }
 
             if (_Pozyx.GetDeviceListSize() <= 0)
             {
-                Output.Text = "Device List empty \n";
+                Output.Text += "Device List empty \n";
                 Debug.Write("Device List empty \n");
             }
 
             if (!_Pozyx.StartPositioning())
             {
-                Output.Text = "Positioning failed \n";
+                Output.Text += "Positioning failed \n";
                 Debug.Write("Positioning failed \n");
             }
             byte[][] anchorIds = _Pozyx.GetAnchorIds();
