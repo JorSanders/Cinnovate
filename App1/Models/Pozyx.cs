@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace App1.Models
 
         /*
          * Send a byte i2c device
-         */ 
+         */
         public byte[] Request(byte[] request, int length)
         {
             try
@@ -73,22 +74,77 @@ namespace App1.Models
         }
 
         /*
+         * Discover all the devices
+         * 
+         * @param Devicetype
+         *          0 achors only
+         *          1 tags only
+         *          2 all devices
+         * @param number of devices
+         * @param waitTime time in seconds
+         * 
+         * @return bool
+         */
+        public bool DiscoverDevices(int deviceType = 0, int devices = 4, int waitTime = 10)
+        {
+            byte[] request = { 0xC1, (byte)deviceType, (byte)devices, (byte)waitTime };
+            byte[] data = Request(request, 1);
+
+            if (data.Length > 0 && data[0] == 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /*
          * Returns the number of devices stored internally
          */
-        public string getDeviceListSize()
+        public int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Request(request, 1);
 
             if (data.Length > 0)
             {
-                return data[0].ToString();
+                return data[0];
             }
-            else
-            {
-                return "ERR: Failed to get firmware";
-            }
+
+            return 0;
         }
 
+        /*
+         * Starts the positioning proces
+         */
+        public bool StartPositioning()
+        {
+            byte[] request = { 0xB6 };
+            byte[] data = Request(request, 1);
+
+            if (data.Length > 0 && data[0] == 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /*
+         * returns up to 20 anchor ids
+         */
+        public byte[][] GetAnchorIds()
+        {
+            byte[] request = { 0xB8 };
+            byte[] data = Request(request, 33);
+
+            if (data.Length <= 0 || data[0] != 1)
+            {
+                Debug.Write("dfsaaf");
+            }
+
+            int[] empty = { };
+            return empty;
+        }
     }
 }
