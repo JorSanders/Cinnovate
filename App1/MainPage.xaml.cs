@@ -97,8 +97,16 @@ namespace App1
                 Output.Text = "Positioning failed \n";
                 Debug.Write("Positioning failed \n");
             }
+            byte[][] anchorIds = _Pozyx.GetAnchorIds();
 
-            int[] anchorIds = _Pozyx.GetAnchorIds();
+            Output.Text = "";
+
+            foreach (byte[] anchorId in anchorIds)
+            {
+                Output.Text += anchorId[0] + " - " + anchorId[1] + " \n";
+                Debug.Write(anchorId[0] + " - " + anchorId[1] + " \n");
+            }
+            
         }
     }
 }
