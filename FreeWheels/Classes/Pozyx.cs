@@ -8,7 +8,7 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 using Windows.UI.Xaml;
 
-namespace FreeWheels.Models
+namespace FreeWheels.Classes
 {
     class Pozyx
     {
@@ -164,23 +164,26 @@ namespace FreeWheels.Models
             return result;
         }
 
-        public void GetAnchorPosition(byte[] anchorId)
+        public Position GetAnchorPosition(byte[] anchorId)
         {
             byte[] request = { 0xC6, anchorId[0], anchorId[1] };
             byte[] data = Request(request, 13);
 
             if (data.Length <= 0 || data[0] != 1)
             {
-
+                return new Position();
             }
 
             byte[] xBytes = { data[1], data[2], data[3], data[4] };
             byte[] yBytes = { data[5], data[6], data[7], data[8] };
             byte[] zBytes = { data[9], data[10], data[11], data[12] };
 
-            int x = BitConverter.ToInt32(xBytes, 0);
-            int y = BitConverter.ToInt32(yBytes, 0);
-            int z = BitConverter.ToInt32(zBytes, 0);
+            Position position = new Position();
+            position.X = BitConverter.ToInt32(xBytes, 0);
+            position.Y = BitConverter.ToInt32(yBytes, 0);
+            position.Z = BitConverter.ToInt32(zBytes, 0);
+
+            return position;
         }
     }
 }

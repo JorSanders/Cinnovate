@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
-using FreeWheels.Models;
+using FreeWheels.Classes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -113,9 +113,41 @@ namespace FreeWheels
 
         private void AchorsPos_Click(object sender, RoutedEventArgs e)
         {
-            //0x47 0x60
-            byte[] anchorId = { 0x47, 0x60 };
-            _Pozyx.GetAnchorPosition(anchorId);
+            Output.Text = "";
+
+            if (!_Pozyx.DiscoverDevices())
+            {
+                Output.Text += "Discover failed \n";
+                Debug.Write("Discover failed \n");
+            }
+
+            if (_Pozyx.GetDeviceListSize() <= 0)
+            {
+                Output.Text += "Device List empty \n";
+                Debug.Write("Device List empty \n");
+            }
+
+            if (!_Pozyx.StartPositioning())
+            {
+                Output.Text += "Positioning failed \n";
+                Debug.Write("Positioning failed \n");
+            }
+
+            byte[][] anchorIds = _Pozyx.GetAnchorIds();
+            Device[] anchors = new Device[anchorIds.Length];
+
+            for (int i = 0; i < anchors.Length; i++)
+            {
+                anchors[i] = new Device();
+                anchors[i].Id = anchorIds[i];
+                anchors[i].Position = _Pozyx.GetAnchorPosition(anchors[i].Id);
+
+                Output.Text += anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n";
+                Debug.Write(anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n");
+                Output.Text += "x: " + anchors[i].Position.X + "\t y: " + anchors[i].Position.Y + "\t z: " + anchors[i].Position.Z + "\n";
+                Debug.Write("x: " + anchors[i].Position.X + "\t y: " + anchors[i].Position.Y + "\t z: " + anchors[i].Position.Z + "\n");
+            }
+
         }
     }
 }
