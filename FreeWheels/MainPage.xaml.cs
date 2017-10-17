@@ -76,62 +76,59 @@ namespace FreeWheels
 
         private void Version_Click(object sender, RoutedEventArgs e)
         {
-            string firmwareVersion = _Pozyx.GetFirmwareVersion();
-            Output.Text = firmwareVersion;
+
+            Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
+
         }
 
-        private void Achors_Click(object sender, RoutedEventArgs e)
+        private void Discover_Click (object sender, RoutedEventArgs e)
         {
-            Output.Text = "";
 
             if (!_Pozyx.DiscoverDevices())
             {
-                Output.Text += "Discover failed \n";
-                Debug.Write("Discover failed \n");
+                Output.Text = "Discover: FAILED \n";
             }
-
-            if (_Pozyx.GetDeviceListSize() <= 0)
+            else
             {
-                Output.Text += "Device List empty \n";
-                Debug.Write("Device List empty \n");
-            }
-
-            if (!_Pozyx.StartPositioning())
-            {
-                Output.Text += "Positioning failed \n";
-                Debug.Write("Positioning failed \n");
-            }
-            byte[][] anchorIds = _Pozyx.GetAnchorIds();
-
-            foreach (byte[] anchorId in anchorIds)
-            {
-                Output.Text += anchorId[0] + " - " + anchorId[1] + " \n";
-                Debug.Write(anchorId[0] + " - " + anchorId[1] + " \n");
+                Output.Text = "Discover: SUCCES";
             }
             
         }
 
-        private void AchorsPos_Click(object sender, RoutedEventArgs e)
+        private async void DevList_Click(object sender, RoutedEventArgs e)
         {
-            Output.Text = "";
 
-            if (!_Pozyx.DiscoverDevices())
+            Output.Text = "Number of devices: " + _Pozyx.GetDeviceListSize();
+
+        }
+
+        private async void Calibrate_Click (object sender, RoutedEventArgs e)
+        {
+            if (!_Pozyx.CalibrateDevices())
             {
-                Output.Text += "Discover failed \n";
-                Debug.Write("Discover failed \n");
+                Output.Text = "Calibrate Anchors: FAILED \n";
             }
-
-            if (_Pozyx.GetDeviceListSize() <= 0)
+            else
             {
-                Output.Text += "Device List empty \n";
-                Debug.Write("Device List empty \n");
+                Output.Text = "Calibrate Anchors: SUCCESS \n";
             }
+        }
 
+        private async void StartPos_Click(object sender, RoutedEventArgs e)
+        {
             if (!_Pozyx.StartPositioning())
             {
-                Output.Text += "Positioning failed \n";
-                Debug.Write("Positioning failed \n");
+                Output.Text = "Start Positioning: FAILED \n";
             }
+            else
+            {
+                Output.Text = "Start Positioning: SUCCESS \n";
+            }
+        }
+
+        private async void AnchorsPos_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
 
             byte[][] anchorIds = _Pozyx.GetAnchorIds();
             Device[] anchors = new Device[anchorIds.Length];

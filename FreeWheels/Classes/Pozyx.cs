@@ -188,7 +188,8 @@ namespace FreeWheels.Classes
 
         public bool CalibrateDevices()
         {
-            byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};
+            //byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};
+            byte[] request = { 0xC2 };
             byte[] data = Request(request, 1);
 
             if (data.Length > 0 && data[0] == 1)
