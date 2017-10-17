@@ -182,5 +182,31 @@ namespace FreeWheels.Models
             int y = BitConverter.ToInt32(yBytes, 0);
             int z = BitConverter.ToInt32(zBytes, 0);
         }
+
+        public bool CalibrateDevices()
+        {
+            byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};
+            byte[] data = Request(request, 1);
+
+            if (data.Length > 0 && data[0] == 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool SetPosInterval(int interval)
+        {
+            byte[] request = { 0x18, 0x01, 0xf4 };
+            byte[] data = Request(request, 2);
+
+            if (data.Length > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }
