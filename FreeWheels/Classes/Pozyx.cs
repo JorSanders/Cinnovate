@@ -185,5 +185,38 @@ namespace FreeWheels.Classes
 
             return position;
         }
+
+        public List<string> SelfTestSucces()
+        {
+            byte[] request = { 0x3 };
+            byte[] data = Request(request, 1);
+
+            List<string> errors = new List<string>();
+
+            //TODO check if data length > 0
+
+            byte result = data[0];
+
+            byte tmp = 0x7;
+             
+            string[] errorcodes = new string [6];
+            errorcodes[0] = "ACC";
+            errorcodes[1] = "MAGN";
+            errorcodes[2] = "GYRO";
+            errorcodes[3] = "IMU";
+            errorcodes[4] = "PRESS";
+            errorcodes[5] = "UWB";
+
+
+            for (int i = 0; i < 6; i++)
+            {
+                byte shifted = (byte)(result >> (byte)i);
+                if ((int)(result & tmp) != 1)
+
+                errors.Add(errorcodes[i]);
+            }
+            
+            return errors;
+        }
     }
 }
