@@ -192,12 +192,15 @@ namespace FreeWheels.Classes
             byte[] data = Request(request, 1);
 
             List<string> errors = new List<string>();
-
-            //TODO check if data length > 0
+            
+            if (data.Length <= 0)
+            {
+                errors.Add("Nothing Returned");
+            }
 
             byte result = data[0];
 
-            byte tmp = 0x7;
+            byte onlyLast = 0x1;
 
             string[] errorcodes = new string[6];
             errorcodes[0] = "ACC";
@@ -208,12 +211,12 @@ namespace FreeWheels.Classes
             errorcodes[5] = "UWB";
 
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < errorcodes.Length; i++)
             {
                 byte shifted = (byte)(result >> (byte)i);
-                if ((int)(result & tmp) != 1)
+                if ((int)(shifted & onlyLast) != 1)
 
-                    errors.Add(errorcodes[i]);
+                errors.Add(errorcodes[i]);
             }
 
             return errors;
