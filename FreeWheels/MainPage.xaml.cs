@@ -18,11 +18,11 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
-using App1.Models;
+using FreeWheels.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace App1
+namespace FreeWheels
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

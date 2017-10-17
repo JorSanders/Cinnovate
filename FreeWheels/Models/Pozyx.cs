@@ -8,7 +8,7 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 using Windows.UI.Xaml;
 
-namespace App1.Models
+namespace FreeWheels.Models
 {
     class Pozyx
     {
@@ -174,18 +174,13 @@ namespace App1.Models
 
             }
 
-
             byte[] xBytes = { data[1], data[2], data[3], data[4] };
             byte[] yBytes = { data[5], data[6], data[7], data[8] };
             byte[] zBytes = { data[9], data[10], data[11], data[12] };
 
-
             int x = BitConverter.ToInt32(xBytes, 0);
             int y = BitConverter.ToInt32(yBytes, 0);
             int z = BitConverter.ToInt32(zBytes, 0);
-
-
-
         }
     }
 }
