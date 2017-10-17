@@ -186,7 +186,7 @@ namespace FreeWheels.Classes
             return position;
         }
 
-        public List<string> SelfTestSucces()
+        public List<string> SelfTest()
         {
             byte[] request = { 0x3 };
             byte[] data = Request(request, 1);
@@ -198,8 +198,8 @@ namespace FreeWheels.Classes
             byte result = data[0];
 
             byte tmp = 0x7;
-             
-            string[] errorcodes = new string [6];
+
+            string[] errorcodes = new string[6];
             errorcodes[0] = "ACC";
             errorcodes[1] = "MAGN";
             errorcodes[2] = "GYRO";
@@ -213,10 +213,37 @@ namespace FreeWheels.Classes
                 byte shifted = (byte)(result >> (byte)i);
                 if ((int)(result & tmp) != 1)
 
-                errors.Add(errorcodes[i]);
+                    errors.Add(errorcodes[i]);
             }
-            
+
             return errors;
+        }
+
+        public bool CalibrateDevices()
+        {
+            //byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};
+            byte[] request = { 0xC2 };
+            byte[] data = Request(request, 1);
+
+            if (data.Length > 0 && data[0] == 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool SetPosInterval(int interval)
+        {
+            byte[] request = { 0x18, 0x01, 0xf4 };
+            byte[] data = Request(request, 2);
+
+            if (data.Length > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
