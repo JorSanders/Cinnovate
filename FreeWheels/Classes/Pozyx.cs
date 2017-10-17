@@ -196,6 +196,7 @@ namespace FreeWheels.Classes
             if (data.Length <= 0)
             {
                 errors.Add("Nothing Returned");
+                return errors;
             }
 
             byte result = data[0];

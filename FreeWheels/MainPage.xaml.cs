@@ -156,10 +156,12 @@ namespace FreeWheels
             if (selfTestResult.Count <= 0)
             {
                 Output.Text = "selfTest Passed";
+                Debug.Write("selfTest Passed");
             }
             foreach (string r in selfTestResult)
             {
                 Output.Text += r + " \n";
+                Debug.Write(r + " \n");
             }
         }
     }
