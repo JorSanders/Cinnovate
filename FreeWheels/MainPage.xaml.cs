@@ -29,13 +29,13 @@ namespace FreeWheels
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private Pozyx _Pozyx;
+        //private Pozyx _Pozyx;
 
         public MainPage()
         {
             this.InitializeComponent();
             //this.Start();
-            _Pozyx = new Pozyx();
+            //_Pozyx = new Pozyx();
         }
 
         private void Request_Click(object sender, RoutedEventArgs e)
@@ -52,7 +52,7 @@ namespace FreeWheels
                 int nReturnBytes = Int32.Parse(NumberOfReturnBytes.Text);
 
                 //make the request
-                byte[] result = _Pozyx.Request(request, nReturnBytes);
+                byte[] result = Pozyx.Request(request, nReturnBytes);
 
                 //wipe output text
                 Output.Text = "";
@@ -77,14 +77,21 @@ namespace FreeWheels
         private void Version_Click(object sender, RoutedEventArgs e)
         {
 
-            Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
+            var test = new byte[4];
+            test[0] = 0x00;
+            test[1] = 181;
+            test[2] = 165;
+            test[3] = 165;
+
+            Output.Text = "" + BitConverter.ToInt32(test, 0);
+            //Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
 
         }
 
         private void Discover_Click (object sender, RoutedEventArgs e)
         {
 
-            if (!_Pozyx.DiscoverDevices())
+            if (!Pozyx.DiscoverDevices())
             {
                 Output.Text = "Discover: FAILED \n";
             }
@@ -98,13 +105,13 @@ namespace FreeWheels
         private async void DevList_Click(object sender, RoutedEventArgs e)
         {
 
-            Output.Text = "Number of devices: " + _Pozyx.GetDeviceListSize();
+            Output.Text = "Number of devices: " + Pozyx.GetDeviceListSize();
 
         }
 
         private async void Calibrate_Click (object sender, RoutedEventArgs e)
         {
-            if (!_Pozyx.CalibrateDevices())
+            if (!Pozyx.CalibrateDevices())
             {
                 Output.Text = "Calibrate Anchors: FAILED \n";
             }
@@ -116,7 +123,7 @@ namespace FreeWheels
 
         private async void StartPos_Click(object sender, RoutedEventArgs e)
         {
-            if (!_Pozyx.StartPositioning())
+            if (!Pozyx.StartPositioning())
             {
                 Output.Text = "Start Positioning: FAILED \n";
             }
@@ -130,14 +137,13 @@ namespace FreeWheels
         {
             Output.Text = "";
 
-            byte[][] anchorIds = _Pozyx.GetAnchorIds();
+            byte[][] anchorIds = Pozyx.GetAnchorIds();
             Device[] anchors = new Device[anchorIds.Length];
 
             for (int i = 0; i < anchors.Length; i++)
             {
-                anchors[i] = new Device();
-                anchors[i].Id = anchorIds[i];
-                anchors[i].Position = _Pozyx.GetAnchorPosition(anchors[i].Id);
+                anchors[i] = new Device(anchorIds[i]);
+                anchors[i].Position = Pozyx.GetAnchorPosition(anchors[i].Id);
 
                 Output.Text += anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n";
                 Debug.Write(anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n");

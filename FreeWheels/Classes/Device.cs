@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes
 {
-    class Device
+    public class Device
     {
-        public byte[] Id;
-        public Position Position;
+        public byte[] Id { get; set; }
+        public Position Position { get; set; }
+        public int rangeInfo { get; set; }
+
+        public Device(byte[] id)
+        {
+            this.Id = id;
+        }
+
+        //Pozyx.getRangeInfo(Id);
+
     }
 }
