@@ -202,5 +202,22 @@ namespace FreeWheels
             Output.Text += errorCodeResult + " \n";
             Debug.Write(errorCodeResult + " \n");
         }
+
+        private void Status_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            List<string> status = PozyxApi.IntStatus();
+
+            if (status.Count == 0)
+            {
+                Output.Text = "No Status Update";
+            }
+            foreach (string r in status)
+            {
+                Output.Text += r + " \n";
+            }
+        }
+
     }
 }
