@@ -97,7 +97,7 @@
     </Compile>
     <Compile Include="Classes\Position.cs" />
     <Compile Include="Classes\Device.cs" />
-    <Compile Include="Classes\PozxErrorCode.cs" />
+    <Compile Include="Data\ErrorCode.cs" />
     <Compile Include="Interfaces\IPozyx.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

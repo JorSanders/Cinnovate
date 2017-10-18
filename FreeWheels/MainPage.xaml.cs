@@ -157,7 +157,7 @@ namespace FreeWheels
         {
             Output.Text = "";
 
-            List<string> selfTestResult = _Pozyx.SelfTest();
+            List<string> selfTestResult = Pozyx.SelfTest();
 
             if (selfTestResult.Count <= 0)
             {
@@ -169,6 +169,17 @@ namespace FreeWheels
                 Output.Text += r + " \n";
                 Debug.Write(r + " \n");
             }
+        }
+
+        private void ErrorCode_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            string errorCodeResult = Pozyx.GetErrorCode();
+
+
+            Output.Text += errorCodeResult + " \n";
+            Debug.Write(errorCodeResult + " \n");
         }
     }
 }
