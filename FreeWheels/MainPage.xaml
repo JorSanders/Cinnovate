@@ -27,8 +27,10 @@
         <Button Content="DevList" HorizontalAlignment="Left" Margin="242,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="DevList_Click" FontSize="36"/>
         <Button Content="Calibrate" HorizontalAlignment="Left" Margin="242,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Calibrate_Click" FontSize="36"/>
         <Button Content="StartPos" HorizontalAlignment="Left" Margin="242,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="StartPos_Click" FontSize="36"/>
-        <Button Content="SelfTest" HorizontalAlignment="Left" Margin="409,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="SelfTest_Click" FontSize="36"/>
+        <Button Content="SelfTest" HorizontalAlignment="Left" Margin="412,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="SelfTest_Click" FontSize="36"/>
         <Button Content="Interval" HorizontalAlignment="Left" Margin="412,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Interval_Click" FontSize="36"/>
         <Button Content="Anchors" HorizontalAlignment="Left" Margin="412,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Anchors_Click" FontSize="36"/>
+        <Button Content="ErrorCode" HorizontalAlignment="Left" Margin="582,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="ErrorCode_Click" FontSize="32" />
+        <Button Content="Status" HorizontalAlignment="Left" Margin="582,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Status_Click" FontSize="36"/>
     </Grid>
 </Page>

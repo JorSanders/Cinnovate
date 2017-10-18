@@ -192,5 +192,33 @@ namespace FreeWheels
             Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
             Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
         }
+
+        private void ErrorCode_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            string errorCodeResult = PozyxApi.GetErrorCode();
+
+
+            Output.Text += errorCodeResult + " \n";
+            Debug.Write(errorCodeResult + " \n");
+        }
+
+        private void Status_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            List<string> status = PozyxApi.IntStatus();
+
+            if (status.Count == 0)
+            {
+                Output.Text = "No Status Update";
+            }
+            foreach (string r in status)
+            {
+                Output.Text += r + " \n";
+            }
+        }
+
     }
 }

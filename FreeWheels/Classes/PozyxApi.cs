@@ -1,4 +1,5 @@
 ﻿using FreeWheels.Classes;
+using FreeWheels.Enums;
 using FreeWheels.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,33 @@ namespace FreeWheels.Classes
             {
                 return "ERR: Failed to get firmware";
             }
+        }
+
+        public static List<string> IntStatus()
+        {
+            byte[] request = { 0x5 };
+            byte[] data = Request(request, 1);
+
+            List<string> status = new List<string>();
+
+            byte onlyLast = 0x1;
+
+            string[] statuscodes = new string[5];
+            statuscodes[0] = "ERR: An has error occured";
+            statuscodes[1] = "POS: A new position estimate is available";
+            statuscodes[2] = "IMU: A new IMU measurement is available";
+            statuscodes[3] = "RX_DATA: The pozyx device has received some data over its wireless uwb link";
+            statuscodes[4] = "FUNC: A register function call has finished (excluding positioning)";
+
+            for (int i = 0; i < statuscodes.Length; i++)
+            {
+                byte shifted = (byte)(data[0] >> (byte)i);
+                if ((int)(shifted & onlyLast) == 1)
+
+                    status.Add(statuscodes[i]);
+            }
+
+            return status;
         }
 
         /*
@@ -305,6 +333,42 @@ namespace FreeWheels.Classes
             }
 
             return new RangeInfo();
+
+        }
+        public static string GetErrorCode()
+        {
+            byte[] request = { 0x4 };
+            byte[] data = Request(request, 1);
+
+
+            if (data.Length <= 0)
+            {
+                string errors = "Leeg resultaat";
+                return errors;
+            }
+            if (data.Length > 1)
+            {
+                string errors = "Meer dan één error gevonden";
+                return errors;
+            }
+
+            //Stores the result in a variable
+            int result = data[0];
+
+            //convert int result to hex
+            string hexResult = result.ToString("X2");
+
+            //Gets the variable name that is assigned to the result of the error
+            string stringValue = Enum.GetName(typeof(PozyxErrorCode), result);
+
+            if (result == 0)
+            {
+                return stringValue;
+            }
+            else
+            {
+                return "Error: " + stringValue + "\nHex code: 0x" + hexResult + "\n";
+            }
 
         }
 
