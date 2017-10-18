@@ -78,18 +78,7 @@ namespace FreeWheels
 
         private void Version_Click(object sender, RoutedEventArgs e)
         {
-            string[] data = new string[5];
-            var asdfas = data[0];
-
-            var test = new byte[4];
-            test[0] = 0x00;
-            test[1] = 181;
-            test[2] = 165;
-            test[3] = 165;
-
-            Output.Text = "" + BitConverter.ToInt32(test, 0);
-            //Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
-
+            Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
         }
 
         private void Discover_Click (object sender, RoutedEventArgs e)
