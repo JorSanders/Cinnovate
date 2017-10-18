@@ -32,5 +32,6 @@
         <Button Content="Anchors" HorizontalAlignment="Left" Margin="412,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Anchors_Click" FontSize="36"/>
         <Button Content="ErrorCode" HorizontalAlignment="Left" Margin="582,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="ErrorCode_Click" FontSize="32" />
         <Button Content="Status" HorizontalAlignment="Left" Margin="582,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Status_Click" FontSize="36"/>
+        <Button Content="Position" HorizontalAlignment="Left" Margin="582,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Pos_Click" FontSize="36"/>
     </Grid>
 </Page>
