@@ -134,29 +134,29 @@ namespace FreeWheels.Classes
         /*
          * returns up to 20 anchor ids
          */
-        public byte[][] GetAnchorIds()
+        public List<byte[]> GetAnchorIds()
         {
             byte[] request = { 0xB8 };
             byte[] data = Request(request, 33);
 
+            List<byte[]> result = new List<byte[]>();
 
             if (data.Length <= 0 || data[0] != 1)
             {
-                byte[][] empty = { };
-                return empty;
+                return result;
             }
 
-            byte[][] result = new byte[data.Length / 2][];
+            //byte[][] result = new byte[data.Length / 2][];
 
             for (int i = 1; i + 1 < data.Length; i += 2)
             {
-                /*
+                
                 if (data[i] == 0 && data[i + 1] == 0)
                 {
                     return result;
                 }
-                */
-                result[(i + 1) / 2 - 1] = new byte[2];
+                
+                //result[(i + 1) / 2 - 1] = new byte[2];
                 result[(i + 1) / 2 - 1][0] = data[i];
                 result[(i + 1) / 2 - 1][1] = data[i + 1];
             }
