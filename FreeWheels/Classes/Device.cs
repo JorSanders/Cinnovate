@@ -13,6 +13,18 @@ namespace FreeWheels.Classes
         public Position Position { get; set; }
         public RangeInfo RangeInfo { get; set; }
 
+        public int test
+        {
+            get
+            {
+                int a = 2;
+                int b = 3;
+                return a +b;
+            }
+
+            set { }
+        }
+
         public Device(byte[] id)
         {
             this.Id = id;
