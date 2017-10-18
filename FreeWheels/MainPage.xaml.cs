@@ -78,7 +78,7 @@ namespace FreeWheels
 
         private void Version_Click(object sender, RoutedEventArgs e)
         {
-            Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
+            Output.Text = "Firmware:" + PozyxApi.GetFirmwareVersion();
         }
 
         private void Discover_Click (object sender, RoutedEventArgs e)
