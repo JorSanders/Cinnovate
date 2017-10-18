@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FreeWheels.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,18 +7,15 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes
 {
-    public class Device
+    public class Tag : Device
     {
         public byte[] Id { get; set; }
         public Position Position { get; set; }
-        public int rangeInfo { get; set; }
+        public int RangeInfo { get; set; }
 
-        public Device(byte[] id)
+        public Position getPosition()
         {
-            this.Id = id;
+            return new Position();
         }
-
-        //Pozyx.getRangeInfo(Id);
-
     }
 }

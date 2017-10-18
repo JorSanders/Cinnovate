@@ -10,7 +10,9 @@ namespace FreeWheels.Classes
     class Pozyx
     {
 
-        public List<Device> Anchors;
+        public List<Anchor> Anchors;
+        public Tag MyPozyx;
+
         public Pozyx()
         {
             Init();
@@ -35,17 +37,19 @@ namespace FreeWheels.Classes
 
             List<byte[]> anchorIds = PozyxApi.GetAnchorIds();
 
-            Anchors = new List<Device>();
+            Anchors = new List<Anchor>();
 
             foreach (byte[] anchorId in anchorIds)
             {
-                Anchors.Add(new Device(anchorId));
+                Anchors.Add(new Anchor(anchorId));
             }
 
-            foreach (Device anchor in Anchors)
+            foreach (Anchor anchor in Anchors)
             {
                 anchor.Position = PozyxApi.GetAnchorPosition(anchor.Id);
             }
+
+            MyPozyx.getPosition();
 
             return true;
         }
