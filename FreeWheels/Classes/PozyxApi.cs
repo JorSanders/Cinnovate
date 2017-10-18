@@ -343,12 +343,12 @@ namespace FreeWheels.Classes
 
             if (data.Length <= 0)
             {
-                string errors = "Leeg resultaat";
+                string errors = "Empty result";
                 return errors;
             }
             if (data.Length > 1)
             {
-                string errors = "Meer dan één error gevonden";
+                string errors = "More than one error was found";
                 return errors;
             }
 
