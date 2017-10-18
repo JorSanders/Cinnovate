@@ -35,7 +35,7 @@ namespace FreeWheels
         public MainPage()
         {
             this.InitializeComponent();
-            PozyxApi.Connect();
+            //PozyxApi.Connect();
             _Pozyx = new Pozyx();
         }
 
@@ -165,14 +165,16 @@ namespace FreeWheels
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
+            Output.Text = "";
+            _Pozyx.Init();
             List<Device> anchors = _Pozyx.Anchors;
 
-            for (int i = 0; i < anchors.Count; i++)
+            foreach(Device anchor in _Pozyx.Anchors)
             {
-                Output.Text += anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n";
-                Debug.Write(anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n");
-                Output.Text += "x: " + anchors[i].Position.X + "\t y: " + anchors[i].Position.Y + "\t z: " + anchors[i].Position.Z + "\n";
-                Debug.Write("x: " + anchors[i].Position.X + "\t y: " + anchors[i].Position.Y + "\t z: " + anchors[i].Position.Z + "\n");
+                Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
+                Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
+                Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
+                Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
             }
         }
     }

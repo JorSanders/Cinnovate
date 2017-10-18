@@ -17,6 +17,10 @@ namespace FreeWheels.Api
         private const int POZYX_I2C_ADDRESS = 0x4B;
         private static I2cDevice _PozyxShield;
 
+        static PozyxApi()
+        {
+            Connect();
+        }
         /*
          * initiate the i2c connection to the pozyx device
          */

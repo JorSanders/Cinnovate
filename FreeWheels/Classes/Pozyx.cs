@@ -10,22 +10,32 @@ namespace FreeWheels.Classes
     class Pozyx
     {
 
-        public List<Device> Anchors = new List<Device>();
+        public List<Device> Anchors;
         public Pozyx()
         {
-            PozyxApi.Connect();
             Init();
         }
 
         public bool Init()
         {
-            PozyxApi.DiscoverDevices();
+            if (!PozyxApi.DiscoverDevices())
+            {
+                return false;
+            }
 
-            PozyxApi.StartPositioning();
+            if (!PozyxApi.StartPositioning())
+            {
+                return false;
+            }
 
-            PozyxApi.CalibrateDevices();
+            if (!PozyxApi.CalibrateDevices())
+            {
+                return false;
+            }
 
             List<byte[]> anchorIds = PozyxApi.GetAnchorIds();
+
+            Anchors = new List<Device>();
 
             foreach (byte[] anchorId in anchorIds)
             {
@@ -36,7 +46,7 @@ namespace FreeWheels.Classes
             {
                 anchor.Position = PozyxApi.GetAnchorPosition(anchor.Id);
             }
-         
+
             return true;
         }
     }
