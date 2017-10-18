@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FreeWheels.Api;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,9 @@ namespace FreeWheels.Classes
 
         public void Ranging()
         {
-            if (Pozyx.DoRanging(this.Id))
+            if (PozyxApi.DoRanging(this.Id))
             {
-                this.RangeInfo = Pozyx.GetRangeInfo(Id);
+                this.RangeInfo = PozyxApi.GetRangeInfo(Id);
             }
         }
 

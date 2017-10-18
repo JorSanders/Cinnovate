@@ -165,7 +165,7 @@ namespace FreeWheels
 
         private void Interval_Click(object sender, RoutedEventArgs e)
         {
-            if (Pozyx.SetPosInterval(500))
+            if (PozyxApi.SetPosInterval(500))
             {
                 Output.Text = "Set Interval: SUCCESS";
             }
