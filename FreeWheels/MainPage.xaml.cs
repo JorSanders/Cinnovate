@@ -188,8 +188,20 @@ namespace FreeWheels
                 Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
             }
 
-            Output.Text += "x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n";
-            Debug.Write("x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n");
+            Position myPosition = _Pozyx.MyPozyx.Position;
+            Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
+            Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
+        }
+
+        private void ErrorCode_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            string errorCodeResult = PozyxApi.GetErrorCode();
+
+
+            Output.Text += errorCodeResult + " \n";
+            Debug.Write(errorCodeResult + " \n");
         }
 
         private void Status_Click(object sender, RoutedEventArgs e)
@@ -207,5 +219,6 @@ namespace FreeWheels
                 Output.Text += r + " \n";
             }
         }
+
     }
 }

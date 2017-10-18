@@ -1,4 +1,5 @@
 ﻿using FreeWheels.Classes;
+using FreeWheels.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
