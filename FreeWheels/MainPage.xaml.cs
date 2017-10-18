@@ -191,5 +191,16 @@ namespace FreeWheels
             Output.Text += "x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n";
             Debug.Write("x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n");
         }
+
+        private void ErrorCode_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            string errorCodeResult = PozyxApi.GetErrorCode();
+
+
+            Output.Text += errorCodeResult + " \n";
+            Debug.Write(errorCodeResult + " \n");
+        }
     }
 }
