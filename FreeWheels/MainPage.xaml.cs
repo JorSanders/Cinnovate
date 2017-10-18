@@ -220,5 +220,11 @@ namespace FreeWheels
             }
         }
 
+        private void Pos_Click(object sender, RoutedEventArgs e)
+        {
+            Position myPosition = _Pozyx.MyPozyx.Position;
+            Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
+            Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
+        }
     }
 }
