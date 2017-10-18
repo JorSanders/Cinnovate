@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes
 {
-    public class Position
+    public enum PozyxErrorCode
     {
-        public int X;
-        public int Y;
-        public int Z;
+        Success = 0x0,
+
+
     }
 }

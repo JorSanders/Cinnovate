@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FreeWheels.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,13 +11,12 @@ using Windows.UI.Xaml;
 
 namespace FreeWheels.Classes
 {
-    class Pozyx
+    public static class Pozyx //: IPozyx
     {
         private const int POZYX_I2C_ADDRESS = 0x4B;
-        private I2cDevice _PozyxShield;
-        private DispatcherTimer _Timer;
+        private static I2cDevice _PozyxShield;
 
-        public Pozyx()
+        static Pozyx()
         {
             Connect();
         }
@@ -24,7 +24,7 @@ namespace FreeWheels.Classes
         /*
          * initiate the i2c connection to the pozyx device
          */
-        private async Task Connect()
+        private static async Task Connect()
         {
             string i2cDeviceSelector = I2cDevice.GetDeviceSelector();
 
@@ -38,7 +38,7 @@ namespace FreeWheels.Classes
         /*
          * Send a byte i2c device
          */
-        public byte[] Request(byte[] request, int length)
+        public static byte[] Request(byte[] request, int length)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace FreeWheels.Classes
         /*
          * Returns the firmware version
          */
-        public string GetFirmwareVersion()
+        public static string GetFirmwareVersion()
         {
             byte[] request = { 0x1 };
             byte[] data = Request(request, 1);
@@ -86,7 +86,7 @@ namespace FreeWheels.Classes
          * 
          * @return bool
          */
-        public bool DiscoverDevices(int deviceType = 0, int devices = 10, int waitTime = 10)
+        public static bool DiscoverDevices(int deviceType = 0, int devices = 10, int waitTime = 10)
         {
             byte[] request = { 0xC1, (byte)deviceType, (byte)devices, (byte)waitTime };
             byte[] data = Request(request, 1);
@@ -102,7 +102,7 @@ namespace FreeWheels.Classes
         /*
          * Returns the number of devices stored internally
          */
-        public int GetDeviceListSize()
+        public static int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Request(request, 1);
@@ -118,7 +118,7 @@ namespace FreeWheels.Classes
         /*
          * Starts the positioning proces
          */
-        public bool StartPositioning()
+        public static bool StartPositioning()
         {
             byte[] request = { 0xB6 };
             byte[] data = Request(request, 1);
@@ -134,7 +134,11 @@ namespace FreeWheels.Classes
         /*
          * returns up to 20 anchor ids
          */
+<<<<<<< HEAD
         public List<byte[]> GetAnchorIds()
+=======
+        public static byte[][] GetAnchorIds()
+>>>>>>> 3424fffd6292c6609b19a15146e725ae945213a4
         {
             byte[] request = { 0xB8 };
             byte[] data = Request(request, 33);
@@ -164,7 +168,7 @@ namespace FreeWheels.Classes
             return result;
         }
 
-        public Position GetAnchorPosition(byte[] anchorId)
+        public static Position GetAnchorPosition(byte[] anchorId)
         {
             byte[] request = { 0xC6, anchorId[0], anchorId[1] };
             byte[] data = Request(request, 13);
@@ -186,7 +190,7 @@ namespace FreeWheels.Classes
             return position;
         }
 
-        public List<string> SelfTest()
+        public static List<string> SelfTest()
         {
             byte[] request = { 0x3 };
             byte[] data = Request(request, 1);
@@ -223,7 +227,8 @@ namespace FreeWheels.Classes
             return errors;
         }
 
-        public bool CalibrateDevices()
+
+        public static bool CalibrateDevices()
         {
             //byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};
             byte[] request = { 0xC2 };
@@ -237,7 +242,7 @@ namespace FreeWheels.Classes
             return false;
         }
 
-        public bool SetPosInterval(int interval)
+        public static bool SetPosInterval(int interval)
         {
             byte[] request = { 0x18, 0x01, 0xf4 };
             byte[] data = Request(request, 2);
@@ -249,5 +254,29 @@ namespace FreeWheels.Classes
 
             return false;
         }
+
+        /*
+         * Do the ranging for a given Device
+         * 
+         * @param deviceId
+         * 
+         * @return bool
+         */
+        public static bool StartRanging(byte[] deviceId)
+        {
+            byte[] request = new byte[3];
+            request[0] = 0xB5;
+            request[1] = deviceId[0];
+            request[2] = deviceId[1];
+
+            byte[] data = Request(request, 1);
+
+            if (data[0] == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }
