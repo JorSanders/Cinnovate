@@ -187,6 +187,9 @@ namespace FreeWheels
                 Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
                 Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
             }
+
+            Output.Text += "x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n";
+            Debug.Write("x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n");
         }
 
         private void Status_Click(object sender, RoutedEventArgs e)

@@ -177,13 +177,13 @@ namespace FreeWheels.Classes
 
             for (int i = 1; i + 1 < data.Length; i += 2)
             {
-                
+
                 if (data[i] == 0 && data[i + 1] == 0)
                 {
                     return result;
                 }
 
-                byte[] id = new byte[] {data[i], data[i+1] };
+                byte[] id = new byte[] { data[i], data[i + 1] };
                 result.Add(id);
             }
 
@@ -220,7 +220,7 @@ namespace FreeWheels.Classes
             byte[] data = Request(request, 1);
 
             List<string> errors = new List<string>();
-            
+
             if (data.Length <= 0)
             {
                 errors.Add("Nothing Returned");
@@ -245,7 +245,7 @@ namespace FreeWheels.Classes
                 byte shifted = (byte)(result >> (byte)i);
                 if ((int)(shifted & onlyLast) != 1)
 
-                errors.Add(errorcodes[i]);
+                    errors.Add(errorcodes[i]);
             }
 
             return errors;
@@ -333,6 +333,30 @@ namespace FreeWheels.Classes
 
             return new RangeInfo();
 
+        }
+
+        public static int PosX()
+        {
+            byte[] request = { 0x30 };
+            byte[] data = Request(request, 4);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int PosY()
+        {
+            byte[] request = { 0x34 };
+            byte[] data = Request(request, 4);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int PosZ()
+        {
+            byte[] request = { 0x38 };
+            byte[] data = Request(request, 4);
+
+            return BitConverter.ToInt32(data, 0);
         }
 
     }

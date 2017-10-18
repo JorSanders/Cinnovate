@@ -11,5 +11,12 @@ namespace FreeWheels.Classes
         public int X;
         public int Y;
         public int Z;
+
+        public Position(int x = 0, int y = 0, int z = 0)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
     }
 }
