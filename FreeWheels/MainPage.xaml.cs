@@ -30,14 +30,13 @@ namespace FreeWheels
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        //private Pozyx _Pozyx;
+        private Pozyx _Pozyx;
 
         public MainPage()
         {
             this.InitializeComponent();
             PozyxApi.Connect();
-            //this.Start();
-            //_Pozyx = new Pozyx();
+            _Pozyx = new Pozyx();
         }
 
         private void Request_Click(object sender, RoutedEventArgs e)
@@ -81,7 +80,7 @@ namespace FreeWheels
             Output.Text = "Firmware:" + PozyxApi.GetFirmwareVersion();
         }
 
-        private void Discover_Click (object sender, RoutedEventArgs e)
+        private void Discover_Click(object sender, RoutedEventArgs e)
         {
 
             if (!PozyxApi.DiscoverDevices())
@@ -92,7 +91,7 @@ namespace FreeWheels
             {
                 Output.Text = "Discover: SUCCES";
             }
-            
+
         }
 
         private async void DevList_Click(object sender, RoutedEventArgs e)
@@ -102,7 +101,7 @@ namespace FreeWheels
 
         }
 
-        private async void Calibrate_Click (object sender, RoutedEventArgs e)
+        private async void Calibrate_Click(object sender, RoutedEventArgs e)
         {
             if (!PozyxApi.CalibrateDevices())
             {
@@ -161,6 +160,19 @@ namespace FreeWheels
             {
                 Output.Text += r + " \n";
                 Debug.Write(r + " \n");
+            }
+        }
+
+        private void Anchors_Click(object sender, RoutedEventArgs e)
+        {
+            List<Device> anchors = _Pozyx.Anchors;
+
+            for (int i = 0; i < anchors.Count; i++)
+            {
+                Output.Text += anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n";
+                Debug.Write(anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n");
+                Output.Text += "x: " + anchors[i].Position.X + "\t y: " + anchors[i].Position.Y + "\t z: " + anchors[i].Position.Z + "\n";
+                Debug.Write("x: " + anchors[i].Position.X + "\t y: " + anchors[i].Position.Y + "\t z: " + anchors[i].Position.Z + "\n");
             }
         }
     }
