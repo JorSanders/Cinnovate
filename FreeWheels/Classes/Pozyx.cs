@@ -186,6 +186,44 @@ namespace FreeWheels.Classes
             return position;
         }
 
+        public static List<string> SelfTest()
+        {
+            byte[] request = { 0x3 };
+            byte[] data = Request(request, 1);
+
+            List<string> errors = new List<string>();
+            
+            if (data.Length <= 0)
+            {
+                errors.Add("Nothing Returned");
+                return errors;
+            }
+
+            byte result = data[0];
+
+            byte onlyLast = 0x1;
+
+            string[] errorcodes = new string[6];
+            errorcodes[0] = "ACC";
+            errorcodes[1] = "MAGN";
+            errorcodes[2] = "GYRO";
+            errorcodes[3] = "IMU";
+            errorcodes[4] = "PRESS";
+            errorcodes[5] = "UWB";
+
+
+            for (int i = 0; i < errorcodes.Length; i++)
+            {
+                byte shifted = (byte)(result >> (byte)i);
+                if ((int)(shifted & onlyLast) != 1)
+
+                errors.Add(errorcodes[i]);
+            }
+
+            return errors;
+        }
+
+
         public static bool CalibrateDevices()
         {
             //byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};

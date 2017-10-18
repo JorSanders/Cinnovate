@@ -152,5 +152,23 @@ namespace FreeWheels
             }
 
         }
+
+        private void SelfTest_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            List<string> selfTestResult = _Pozyx.SelfTest();
+
+            if (selfTestResult.Count <= 0)
+            {
+                Output.Text = "selfTest Passed";
+                Debug.Write("selfTest Passed");
+            }
+            foreach (string r in selfTestResult)
+            {
+                Output.Text += r + " \n";
+                Debug.Write(r + " \n");
+            }
+        }
     }
 }

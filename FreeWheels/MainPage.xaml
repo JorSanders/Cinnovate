@@ -27,5 +27,6 @@
         <Button Content="DevList" HorizontalAlignment="Left" Margin="242,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="DevList_Click" FontSize="36"/>
         <Button Content="Calibrate" HorizontalAlignment="Left" Margin="242,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Calibrate_Click" FontSize="36"/>
         <Button Content="StartPos" HorizontalAlignment="Left" Margin="242,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="StartPos_Click" FontSize="36"/>
+        <Button Content="SelfTest" HorizontalAlignment="Left" Margin="412,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="SelfTest_Click" FontSize="36"/>
     </Grid>
 </Page>
