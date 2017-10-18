@@ -48,7 +48,7 @@ namespace FreeWheels.Classes
                 anchor.Position = PozyxApi.GetAnchorPosition(anchor.Id);
             }
 
-            Position tmp = MyPozyx.Position;
+            MyPozyx = new Tag();    
 
             return true;
         }

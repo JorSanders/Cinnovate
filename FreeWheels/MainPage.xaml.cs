@@ -178,15 +178,18 @@ namespace FreeWheels
         {
             Output.Text = "";
             _Pozyx.Init();
-            List<Device> anchors = _Pozyx.Anchors;
+            List<Anchor> anchors = _Pozyx.Anchors;
 
-            foreach(Device anchor in _Pozyx.Anchors)
+            foreach(Anchor anchor in _Pozyx.Anchors)
             {
                 Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
                 Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
                 Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
                 Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
             }
+
+            Output.Text += "x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n";
+            Debug.Write("x: " + _Pozyx.MyPozyx.Position.X + "\t y: " + _Pozyx.MyPozyx.Position.Y + "\t z: " + _Pozyx.MyPozyx.Position.Z + "\n\n");
         }
     }
 }

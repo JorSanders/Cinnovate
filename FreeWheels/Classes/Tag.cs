@@ -9,10 +9,11 @@ namespace FreeWheels.Classes
 {
     public class Tag
     {
-        public Position Position {
+        public Position Position
+        {
             get
             {
-                return new Position();
+                return new Position(PozyxApi.PosX(), PozyxApi.PosY(), PozyxApi.PosZ());
             }
         }
 
