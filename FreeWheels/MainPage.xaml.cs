@@ -19,6 +19,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using FreeWheels.Classes;
+using FreeWheels.Api;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -29,13 +30,13 @@ namespace FreeWheels
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        //private Pozyx _Pozyx;
+        private Pozyx _Pozyx;
 
         public MainPage()
         {
             this.InitializeComponent();
-            //this.Start();
-            //_Pozyx = new Pozyx();
+            //PozyxApi.Connect();
+            _Pozyx = new Pozyx();
         }
 
         private void Request_Click(object sender, RoutedEventArgs e)
@@ -52,7 +53,7 @@ namespace FreeWheels
                 int nReturnBytes = Int32.Parse(NumberOfReturnBytes.Text);
 
                 //make the request
-                byte[] result = Pozyx.Request(request, nReturnBytes);
+                byte[] result = PozyxApi.Request(request, nReturnBytes);
 
                 //wipe output text
                 Output.Text = "";
@@ -76,22 +77,13 @@ namespace FreeWheels
 
         private void Version_Click(object sender, RoutedEventArgs e)
         {
-
-            var test = new byte[4];
-            test[0] = 0x00;
-            test[1] = 181;
-            test[2] = 165;
-            test[3] = 165;
-
-            Output.Text = "" + BitConverter.ToInt32(test, 0);
-            //Output.Text = "Firmware:" + _Pozyx.GetFirmwareVersion();
-
+            Output.Text = "Firmware:" + PozyxApi.GetFirmwareVersion();
         }
 
-        private void Discover_Click (object sender, RoutedEventArgs e)
+        private void Discover_Click(object sender, RoutedEventArgs e)
         {
 
-            if (!Pozyx.DiscoverDevices())
+            if (!PozyxApi.DiscoverDevices())
             {
                 Output.Text = "Discover: FAILED \n";
             }
@@ -99,19 +91,19 @@ namespace FreeWheels
             {
                 Output.Text = "Discover: SUCCES";
             }
-            
+
         }
 
         private async void DevList_Click(object sender, RoutedEventArgs e)
         {
 
-            Output.Text = "Number of devices: " + Pozyx.GetDeviceListSize();
+            Output.Text = "Number of devices: " + PozyxApi.GetDeviceListSize();
 
         }
 
-        private async void Calibrate_Click (object sender, RoutedEventArgs e)
+        private async void Calibrate_Click(object sender, RoutedEventArgs e)
         {
-            if (!Pozyx.CalibrateDevices())
+            if (!PozyxApi.CalibrateDevices())
             {
                 Output.Text = "Calibrate Devices: FAILED \n";
             }
@@ -123,7 +115,7 @@ namespace FreeWheels
 
         private async void StartPos_Click(object sender, RoutedEventArgs e)
         {
-            if (!Pozyx.StartPositioning())
+            if (!PozyxApi.StartPositioning())
             {
                 Output.Text = "Start Positioning: FAILED \n";
             }
@@ -137,13 +129,13 @@ namespace FreeWheels
         {
             Output.Text = "";
 
-            byte[][] anchorIds = Pozyx.GetAnchorIds();
-            Device[] anchors = new Device[anchorIds.Length];
+            List<byte[]> anchorIds = PozyxApi.GetAnchorIds();
+            Device[] anchors = new Device[anchorIds.Count];
 
             for (int i = 0; i < anchors.Length; i++)
             {
                 anchors[i] = new Device(anchorIds[i]);
-                anchors[i].Position = Pozyx.GetAnchorPosition(anchors[i].Id);
+                anchors[i].Position = PozyxApi.GetAnchorPosition(anchors[i].Id);
 
                 Output.Text += anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n";
                 Debug.Write(anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n");
@@ -157,7 +149,7 @@ namespace FreeWheels
         {
             Output.Text = "";
 
-            List<string> selfTestResult = Pozyx.SelfTest();
+            List<string> selfTestResult = PozyxApi.SelfTest();
 
             if (selfTestResult.Count <= 0)
             {
@@ -180,6 +172,21 @@ namespace FreeWheels
             else
             {
                 Output.Text = "Set Interval: FAILED";
+            }
+        }
+
+        private void Anchors_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+            _Pozyx.Init();
+            List<Device> anchors = _Pozyx.Anchors;
+
+            foreach(Device anchor in _Pozyx.Anchors)
+            {
+                Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
+                Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
+                Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
+                Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
             }
         }
     }
