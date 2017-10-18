@@ -10,7 +10,7 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 using Windows.UI.Xaml;
 
-namespace FreeWheels.Api
+namespace FreeWheels.Classes
 {
     public static class PozyxApi //: IPozyx
     {
@@ -273,6 +273,39 @@ namespace FreeWheels.Api
                 return true;
             }
             return false;
+        }
+
+        /*
+         * Do the ranging for a given Device
+         * 
+         * @param deviceId
+         * 
+         * @return bool
+         */
+        public static bool DoRanging(byte[] deviceId)
+        {
+            byte[] request = { 0xB5, deviceId[0], deviceId[1] };
+            byte[] data = Request(request, 1);
+
+            return (data[0] == 1);
+        }
+
+        public static RangeInfo GetRangeInfo(byte[] deviceId)
+        {
+            byte[] request = { 0xC7, deviceId[0], deviceId[1] };
+            byte[] data = Request(request, 11);
+
+            if (data[0] == 1)
+            {
+                int timestamp = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
+                int lastmeasurement = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
+                int signalstrength = BitConverter.ToInt32(new byte[] { data[9], data[10] }, 0);
+
+                return new RangeInfo(timestamp, lastmeasurement, signalstrength);
+            }
+
+            return new RangeInfo();
+
         }
 
     }

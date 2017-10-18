@@ -19,7 +19,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using FreeWheels.Classes;
-using FreeWheels.Api;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -105,11 +104,11 @@ namespace FreeWheels
         {
             if (!PozyxApi.CalibrateDevices())
             {
-                Output.Text = "Calibrate Anchors: FAILED \n";
+                Output.Text = "Calibrate Devices: FAILED \n";
             }
             else
             {
-                Output.Text = "Calibrate Anchors: SUCCESS \n";
+                Output.Text = "Calibrate Devices: SUCCESS \n";
             }
         }
 
@@ -130,11 +129,11 @@ namespace FreeWheels
             Output.Text = "";
 
             List<byte[]> anchorIds = PozyxApi.GetAnchorIds();
-            Device[] anchors = new Device[anchorIds.Count];
+            Anchor[] anchors = new Anchor[anchorIds.Count];
 
             for (int i = 0; i < anchors.Length; i++)
             {
-                anchors[i] = new Device(anchorIds[i]);
+                anchors[i] = new Anchor(anchorIds[i]);
                 anchors[i].Position = PozyxApi.GetAnchorPosition(anchors[i].Id);
 
                 Output.Text += anchors[i].Id[0] + " - " + anchors[i].Id[1] + " \n";
@@ -160,6 +159,18 @@ namespace FreeWheels
             {
                 Output.Text += r + " \n";
                 Debug.Write(r + " \n");
+            }
+        }
+
+        private void Interval_Click(object sender, RoutedEventArgs e)
+        {
+            if (PozyxApi.SetPosInterval(500))
+            {
+                Output.Text = "Set Interval: SUCCESS";
+            }
+            else
+            {
+                Output.Text = "Set Interval: FAILED";
             }
         }
 

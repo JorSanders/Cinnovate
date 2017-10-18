@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes
 {
-    public class Tag : Device
+    public class Tag
     {
-        public byte[] Id { get; set; }
-        public Position Position { get; set; }
-        public int RangeInfo { get; set; }
-
-        public Position getPosition()
-        {
-            return new Position();
+        public Position Position {
+            get
+            {
+                return new Position();
+            }
         }
+
     }
 }

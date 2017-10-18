@@ -13,21 +13,22 @@
             <RowDefinition Height="167*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextBlock2" HorizontalAlignment="Center" Margin="539,16,539,222" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="72" Grid.Row="1"/>
-        <Button Content="Firmware&#xA;" HorizontalAlignment="Left" Margin="72,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Version_Click" FontSize="36"/>
         <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="72,0.333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="403" Width="911" FontSize="20" Grid.Row="1">
             <Run Text="Output"/>
             <LineBreak/>
             <Run/>
         </TextBlock>
-        <TextBox x:Name="InputBytes" HorizontalAlignment="Left" Margin="72,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="54" Width="327" PlaceholderText="0x00" FontSize="36"/>
-        <TextBox x:Name="NumberOfReturnBytes" HorizontalAlignment="Left" Margin="454,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="54" Width="327" PlaceholderText="1" FontSize="36"/>
-        <Button x:Name="Request" Content="Go&#xA;" HorizontalAlignment="Left" Margin="817,65,0,0" VerticalAlignment="Top" Height="55" Width="166" Click="Request_Click" FontSize="36"/>
+        <TextBox x:Name="InputBytes" HorizontalAlignment="Left" Margin="72,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="54" Width="743" PlaceholderText="0x00" FontSize="36"/>
+        <TextBox x:Name="NumberOfReturnBytes" HorizontalAlignment="Left" Margin="820,66,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Height="54" Width="104" PlaceholderText="1" FontSize="36"/>
+        <Button Content="Firmware&#xA;" HorizontalAlignment="Left" Margin="72,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Version_Click" FontSize="36"/>
+        <Button x:Name="Request" Content="Go&#xA;" HorizontalAlignment="Left" Margin="929,65,0,0" VerticalAlignment="Top" Height="55" Width="166" Click="Request_Click" FontSize="36"/>
         <Button Content="Discover" HorizontalAlignment="Left" Margin="72,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Discover_Click" FontSize="36"/>
         <Button Content="A-Pos" HorizontalAlignment="Left" Margin="72,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="AnchorsPos_Click" FontSize="36"/>
         <Button Content="DevList" HorizontalAlignment="Left" Margin="242,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="DevList_Click" FontSize="36"/>
         <Button Content="Calibrate" HorizontalAlignment="Left" Margin="242,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Calibrate_Click" FontSize="36"/>
         <Button Content="StartPos" HorizontalAlignment="Left" Margin="242,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="StartPos_Click" FontSize="36"/>
-        <Button Content="SelfTest" HorizontalAlignment="Left" Margin="412,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="SelfTest_Click" FontSize="36"/>
-        <Button Content="Anchors" HorizontalAlignment="Left" Margin="412,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Anchors_Click" FontSize="36"/>
+        <Button Content="SelfTest" HorizontalAlignment="Left" Margin="409,151,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="SelfTest_Click" FontSize="36"/>
+        <Button Content="Interval" HorizontalAlignment="Left" Margin="412,222,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Interval_Click" FontSize="36"/>
+        <Button Content="Anchors" HorizontalAlignment="Left" Margin="412,293,0,0" VerticalAlignment="Top" Height="66" Width="165" Click="Anchors_Click" FontSize="36"/>
     </Grid>
 </Page>
