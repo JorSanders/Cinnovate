@@ -95,15 +95,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\Anchor.cs" />
     <Compile Include="Classes\Position.cs" />
-    <Compile Include="Classes\Device.cs" />
     <Compile Include="Classes\PozxErrorCode.cs" />
     <Compile Include="Classes\Pozyx.cs" />
+    <Compile Include="Classes\PozyxApi.cs" />
+    <Compile Include="Classes\Tag.cs" />
     <Compile Include="Interfaces\IPozyx.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Api\PozyxApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

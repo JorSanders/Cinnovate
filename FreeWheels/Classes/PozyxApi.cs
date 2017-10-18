@@ -74,6 +74,33 @@ namespace FreeWheels.Classes
             }
         }
 
+        public static List<string> IntStatus()
+        {
+            byte[] request = { 0x5 };
+            byte[] data = Request(request, 1);
+
+            List<string> status = new List<string>();
+
+            byte onlyLast = 0x1;
+
+            string[] statuscodes = new string[5];
+            statuscodes[0] = "ERR: An has error occured";
+            statuscodes[1] = "POS: A new position estimate is available";
+            statuscodes[2] = "IMU: A new IMU measurement is available";
+            statuscodes[3] = "RX_DATA: The pozyx device has received some data over its wireless uwb link";
+            statuscodes[4] = "FUNC: A register function call has finished (excluding positioning)";
+
+            for (int i = 0; i < statuscodes.Length; i++)
+            {
+                byte shifted = (byte)(data[0] >> (byte)i);
+                if ((int)(shifted & onlyLast) == 1)
+
+                    status.Add(statuscodes[i]);
+            }
+
+            return status;
+        }
+
         /*
          * Discover all the devices
          * 
