@@ -113,11 +113,11 @@ namespace FreeWheels
         {
             if (!Pozyx.CalibrateDevices())
             {
-                Output.Text = "Calibrate Anchors: FAILED \n";
+                Output.Text = "Calibrate Devices: FAILED \n";
             }
             else
             {
-                Output.Text = "Calibrate Anchors: SUCCESS \n";
+                Output.Text = "Calibrate Devices: SUCCESS \n";
             }
         }
 
@@ -157,7 +157,7 @@ namespace FreeWheels
         {
             Output.Text = "";
 
-            List<string> selfTestResult = _Pozyx.SelfTest();
+            List<string> selfTestResult = Pozyx.SelfTest();
 
             if (selfTestResult.Count <= 0)
             {
@@ -168,6 +168,18 @@ namespace FreeWheels
             {
                 Output.Text += r + " \n";
                 Debug.Write(r + " \n");
+            }
+        }
+
+        private void Interval_Click(object sender, RoutedEventArgs e)
+        {
+            if (Pozyx.SetPosInterval(500))
+            {
+                Output.Text = "Set Interval: SUCCESS";
+            }
+            else
+            {
+                Output.Text = "Set Interval: FAILED";
             }
         }
     }

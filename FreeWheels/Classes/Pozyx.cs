@@ -240,7 +240,7 @@ namespace FreeWheels.Classes
 
         public static bool SetPosInterval(int interval)
         {
-            byte[] request = { 0x18, 0x01, 0xf4 };
+            byte[] request = { 0x18, 0xf4, 0x01 };
             byte[] data = Request(request, 2);
 
             if (data.Length > 0)
@@ -258,20 +258,30 @@ namespace FreeWheels.Classes
          * 
          * @return bool
          */
-        public static bool StartRanging(byte[] deviceId)
+        public static bool DoRanging(byte[] deviceId)
         {
-            byte[] request = new byte[3];
-            request[0] = 0xB5;
-            request[1] = deviceId[0];
-            request[2] = deviceId[1];
-
+            byte[] request = { 0xB5, deviceId[0], deviceId[1]};
             byte[] data = Request(request, 1);
 
-            if (data[0] == 1)
+            return (data[0] == 1);
+        }
+
+        public static RangeInfo GetRangeInfo(byte[] deviceId)
+        {
+            byte[] request = { 0xC7, deviceId[0], deviceId[1] };
+            byte[] data = Request(request, 11);
+
+            if(data[0] == 1)
             {
-                return true;
+                int timestamp       = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
+                int lastmeasurement = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
+                int signalstrength  = BitConverter.ToInt32(new byte[] { data[9], data[10] }, 0);
+
+                return new RangeInfo(timestamp, lastmeasurement, signalstrength);
             }
-            return false;
+
+            return new RangeInfo();
+            
         }
 
     }

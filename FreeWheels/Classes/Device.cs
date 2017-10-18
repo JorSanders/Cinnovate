@@ -10,14 +10,36 @@ namespace FreeWheels.Classes
     {
         public byte[] Id { get; set; }
         public Position Position { get; set; }
-        public int rangeInfo { get; set; }
+        public RangeInfo RangeInfo { get; set; }
 
         public Device(byte[] id)
         {
             this.Id = id;
         }
 
-        //Pozyx.getRangeInfo(Id);
+        public void Ranging()
+        {
+            if (Pozyx.DoRanging(this.Id))
+            {
+                this.RangeInfo = Pozyx.GetRangeInfo(Id);
+            }
+        }
 
+    }
+
+    public class RangeInfo
+    {
+        int Timestamp { get; set; }
+        int LastMeasurement { get; set; }
+        int SignalStrength { get; set; }
+
+        public RangeInfo() { }
+
+        public RangeInfo(int timestamp, int lastmeasurement, int signalstrength)
+        {
+            this.Timestamp = timestamp;
+            this.LastMeasurement = lastmeasurement;
+            this.SignalStrength = signalstrength;
+        }
     }
 }
