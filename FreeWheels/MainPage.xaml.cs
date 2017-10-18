@@ -148,11 +148,7 @@ namespace FreeWheels
         {
             Output.Text = "";
 
-<<<<<<< HEAD
-            List<string> selfTestResult = Pozyx.SelfTest();
-=======
             List<string> selfTestResult = PozyxApi.SelfTest();
->>>>>>> c0536193eafb21a3571063b6660bed350403819d
 
             if (selfTestResult.Count <= 0)
             {
@@ -166,17 +162,19 @@ namespace FreeWheels
             }
         }
 
-<<<<<<< HEAD
+
         private void ErrorCode_Click(object sender, RoutedEventArgs e)
         {
             Output.Text = "";
 
-            string errorCodeResult = Pozyx.GetErrorCode();
+            string errorCodeResult = PozyxApi.GetErrorCode();
 
 
             Output.Text += errorCodeResult + " \n";
             Debug.Write(errorCodeResult + " \n");
-=======
+
+        }
+
         private void Interval_Click(object sender, RoutedEventArgs e)
         {
             if (PozyxApi.SetPosInterval(500))
@@ -193,16 +191,16 @@ namespace FreeWheels
         {
             Output.Text = "";
             _Pozyx.Init();
-            List<Device> anchors = _Pozyx.Anchors;
+            List<Anchor> anchors = _Pozyx.Anchors;
 
-            foreach(Device anchor in _Pozyx.Anchors)
+            foreach (Anchor anchor in _Pozyx.Anchors)
             {
                 Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
                 Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
                 Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
                 Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
             }
->>>>>>> c0536193eafb21a3571063b6660bed350403819d
+
         }
     }
 }
