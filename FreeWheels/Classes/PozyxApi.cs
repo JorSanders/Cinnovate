@@ -18,10 +18,6 @@ namespace FreeWheels.Classes
         private const int POZYX_I2C_ADDRESS = 0x4B;
         private static I2cDevice _PozyxShield;
 
-        static PozyxApi()
-        {
-            Connect();
-        }
         /*
          * initiate the i2c connection to the pozyx device
          */
@@ -414,6 +410,16 @@ namespace FreeWheels.Classes
 
             return BitConverter.ToInt32(data, 0);
         }
+
+        public static bool Reset()
+        {
+            byte[] request = { 0xB0 };
+            byte[] data = Request(request, 1);
+
+            return (data.Length > 0 && data[0] == 1);
+        }
+
+
 
     }
 }

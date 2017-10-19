@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Interfaces
 {
-    public interface IPozyx
+    public interface IPozyxAPi
     {
         PozyxErrorCode GetErrorCode();
     }

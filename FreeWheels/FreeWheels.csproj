@@ -100,7 +100,7 @@
     <Compile Include="Classes\Anchor.cs" />
     <Compile Include="Classes\Pozyx.cs" />
     <Compile Include="Enums\ErrorCodes.cs" />
-    <Compile Include="Interfaces\IPozyx.cs" />
+    <Compile Include="Interfaces\IPozyxApi.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
