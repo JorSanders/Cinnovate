@@ -77,10 +77,10 @@ namespace FreeWheels.Classes
 
         public static List<string> IntStatus()
         {
+            List<string> status = new List<string>();
+
             byte[] request = { 0x5 };
             byte[] data = Request(request, 1);
-
-            List<string> status = new List<string>();
 
             byte onlyLast = 0x1;
 
@@ -97,6 +97,25 @@ namespace FreeWheels.Classes
                 if ((int)(shifted & onlyLast) == 1)
 
                     status.Add(statuscodes[i]);
+            }
+
+            return status;
+        }
+
+        public static List<string> CalibStatus ()
+        {
+            List<string> status = new List<string>();
+
+            byte[] request = { 0x6 };
+            byte[] data = Request(request, 1);
+
+            string[] statuscodes = new string[4] { "SYS", "GYR", "ACC", "MAG" };
+
+            for(int i = 0; i < 2 * statuscodes.Length; i = i + 2)
+            {
+                if((byte)((data[0] >> i) & 0x03) == 0x03){
+                    status.Add(statuscodes[i / 2]);
+                }
             }
 
             return status;

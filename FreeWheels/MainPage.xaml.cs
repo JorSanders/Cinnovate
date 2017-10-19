@@ -155,10 +155,10 @@ namespace FreeWheels
                 Output.Text = "selfTest Passed";
                 Debug.Write("selfTest Passed");
             }
-            foreach (string r in selfTestResult)
+            foreach (string str in selfTestResult)
             {
-                Output.Text += r + " \n";
-                Debug.Write(r + " \n");
+                Output.Text += str + " \n";
+                Debug.Write(str + " \n");
             }
         }
 
@@ -214,9 +214,9 @@ namespace FreeWheels
             {
                 Output.Text = "No Status Update";
             }
-            foreach (string r in status)
+            foreach (string str in status)
             {
-                Output.Text += r + " \n";
+                Output.Text += str + " \n";
             }
         }
 
@@ -225,6 +225,18 @@ namespace FreeWheels
             Position myPosition = _Pozyx.MyPozyx.Position;
             Output.Text = "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
             Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
+        }
+
+        private void CalibStat_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "";
+
+            List<string> status = PozyxApi.CalibStatus();
+
+            foreach (string str in status)
+            {
+                Output.Text += "Done: " + str + " \n";
+            }
         }
     }
 }
