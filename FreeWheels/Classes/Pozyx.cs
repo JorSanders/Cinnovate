@@ -14,7 +14,8 @@ namespace FreeWheels.Classes
 
         public Pozyx()
         {
-            Init();
+            PozyxApi.Connect();
+            MyPozyx = new Tag();
         }
 
         public bool Init()
@@ -48,7 +49,7 @@ namespace FreeWheels.Classes
                 anchor.Position = PozyxApi.GetAnchorPosition(anchor.Id);
             }
 
-            MyPozyx = new Tag();    
+            MyPozyx = new Tag();
 
             return true;
         }
