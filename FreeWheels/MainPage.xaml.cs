@@ -238,5 +238,15 @@ namespace FreeWheels
                 Output.Text += "Done: " + str + " \n";
             }
         }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "Reset failed";
+            if (_Pozyx.Reset())
+            {
+                Output.Text = "Reset succes";
+            }
+        }
+
     }
 }
