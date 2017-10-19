@@ -53,5 +53,12 @@ namespace FreeWheels.Classes
 
             return true;
         }
+
+        public bool Reset()
+        {
+            Anchors = new List<Anchor>();
+            MyPozyx = new Tag();
+            return PozyxApi.Reset();
+        }
     }
 }

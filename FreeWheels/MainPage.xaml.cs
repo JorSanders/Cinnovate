@@ -227,5 +227,13 @@ namespace FreeWheels
             Output.Text = "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
             Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
         }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            Output.Text = "Reset failed";
+            if (_Pozyx.Reset()){
+                Output.Text = "Reset succes";
+            }
+        }
     }
 }
