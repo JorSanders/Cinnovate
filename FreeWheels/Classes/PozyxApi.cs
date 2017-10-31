@@ -418,8 +418,5 @@ namespace FreeWheels.Classes
 
             return (data.Length > 0 && data[0] == 1);
         }
-
-
-
     }
 }
