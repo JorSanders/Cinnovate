@@ -333,6 +333,11 @@ namespace FreeWheels.Classes
             return (data[0] == 1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
         public static RangeInfo GetRangeInfo(byte[] deviceId)
         {
             byte[] request = { 0xC7, deviceId[0], deviceId[1] };
@@ -411,6 +416,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static bool Reset()
         {
             byte[] request = { 0xB0 };
