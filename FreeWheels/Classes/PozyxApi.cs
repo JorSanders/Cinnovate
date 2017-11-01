@@ -477,5 +477,98 @@ namespace FreeWheels.Classes
 
             return true;
         }
+
+        /***********************************************************************************************
+         *      SENSOR DATA
+         * *********************************************************************************************/
+
+        public static int MaxLinAcc()
+        {
+            byte[] request = { 0x4E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static UInt32 Pressure()
+        {
+            byte[] request = { 0x50 };
+            byte[] data = Request(request, 4);
+
+            return BitConverter.ToUInt32(data, 0);
+        }
+
+        public static int AccelX()
+        {
+            byte[] request = { 0x54 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int AccelY()
+        {
+            byte[] request = { 0x56 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int AccelZ()
+        {
+            byte[] request = { 0x58 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int MagnX()
+        {
+            byte[] request = { 0x5A };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int MagnY()
+        {
+            byte[] request = { 0x5C };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int MagnZ()
+        {
+            byte[] request = { 0x5E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int GyroX()
+        {
+            byte[] request = { 0x60 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int Gyroy()
+        {
+            byte[] request = { 0x62 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
+        public static int GyroZ()
+        {
+            byte[] request = { 0x64 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt32(data, 0);
+        }
+
     }
 }
