@@ -282,19 +282,6 @@ namespace FreeWheels.Classes
             return false;
         }
 
-        public static bool SetPosInterval(int interval)
-        {
-            byte[] request = { 0x18, 0x01, 0xf4 };
-            byte[] data = Request(request, 2);
-
-            if (data.Length > 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         /*
          * Do the ranging for a given Device
          * 
@@ -418,5 +405,213 @@ namespace FreeWheels.Classes
 
             return (data.Length > 0 && data[0] == 1);
         }
+
+        /// <summary>
+        ///     This register configures the external interrupt pin of the Pozyx device. It should be configured in combination with the POZYX_INT_MASK register.
+        /// </summary>
+        /// <param name="pinNum">
+        ///     Selects the pin used by the interrupt. Possible values:
+        ///     0 - No pin(default)
+        ///     1 - GPIO pin 1 (pin 9 on the pozyx tag)
+        ///     2 - GPIO pin 2 (pin 10 on the pozyx tag)
+        ///     3 - GPIO pin 3 (pin 11 on the pozyx tag)
+        ///     4 - GPIO pin 4 (pin 12 on the pozyx tag)
+        ///     5 - GPIO pin 5 (pin 2 on the pozyx tag)
+        ///     6 - GPIO pin 6 (pin 3 on the pozyx tag)
+        /// </param>
+        /// <param name="mode">
+        ///     Select the interrupt pin mode. Possible values:
+        ///     0 - Push-pull(default): the pin will actively set the interrupt line high or low.The line cannot be shared with multiple devices.
+        ///     1 - open drain: this allows the user to share the interrupt line with multiple devices.This mode requires an external pull-up or pull-down resistor.
+        /// </param>
+        /// <param name="act">
+        ///     The voltage level when an interrupt happens. Possible values:
+        ///     0 - active low(default): 0V
+        ///     1 - active high: 3.3V
+        /// </param>
+        /// <param name="latch">
+        ///     Select if the interrupt pin should latch after an interrupt. Possible values:
+        ///     0 - No latch(default): the interrupt is a short pulse of about 6µs
+        ///      1 - Latch: after an interrupt, the interrupt pin will stay at the active level until the POZYX_INT_STATE register is read from
+        /// </param>
+        public static void IntConfig(int pinNum =0, int mode=0, int act=0, int latch=0)
+        {
+            byte parameters = 0x0;
+
+            parameters &= (byte)pinNum;
+
+            if (mode == 1)
+            {
+                parameters &= 0x8;
+            }
+            if (act == 1)
+            {
+                parameters &= 0x10;
+            }
+            if (latch == 1)
+            {
+                parameters &= 0x20;
+            }
+
+            byte[] request = { 0x11 };
+            byte[] data = Request(request, 1);
+        }
+
+        /// <summary>
+        ///     This register selects and configures any additional positioning filters used by the pozyx device.
+        /// </summary>
+        /// <param name="Strength">
+        ///     Indicates the strength of the filter. In general, the position will be delayed by the number of samples equal to the strength.
+        ///     Possible values: 0-15 
+        /// </param>
+        /// <param name="filter">
+        /// 	This is the filter type. Possible values:
+        /// 	1 : NONE(Default value). No additional filtering is applied.
+        /// 	2 : FIR.A low-pass filter is applied which filters out high-frequency jitters.
+        /// 	3 : MOVING_AVERAGE.A moving average filter is applied, which smoothens the trajectory.
+        /// 	4 : MOVING_MEDIAN.A moving median filter is applied, which filters out outliers.
+        /// </param>
+        public static void PosFilter(int strength, int filter)
+        {
+            byte parameters = (byte)filter;
+
+            byte strengthByte = (byte)(strength << 4);
+
+            parameters &= strengthByte;
+
+            byte[] request = { 0x14, parameters };
+            byte[] data = Request(request, 1);
+        }
+
+        /// <summary>
+        ///     This register configures the functionality of the 6 LEDs on the pozyx device. At all times, the user can control LEDs 1 through 4 using POZYX_LED_CTRL.
+        /// </summary>
+        /// <param name="led1">
+        ///     Possible values:
+        ///     0 : The LED is not controlled by the Pozyx system.
+        ///     1 : The LED is controlled by the Pozyx system.The LED will blink (roughly) every 2s to indicate that the device is working properly.
+        /// </param>
+        /// <param name="led2">
+        /// 	Possible values:
+        /// 	0 : The LED is not controlled by the Pozyx system.
+        /// 	1 : The LED is controlled by the Pozyx system.The LED will be turned on when the device is performing a register write operation or a register function (i.e., calibrating, positioning, ..). 
+        /// </param>
+        /// <param name="led3">
+        ///     0 : The LED is not controlled by the Pozyx system.
+        ///     1 : The LED is controlled by the Pozyx system.The LED will be turned on when the device is performing a register write operation or a register function(i.e., calibrating, positioning, ..). 
+        /// </param>
+        ///  <param name="led4">
+        ///     Possible values:
+        /// 	0 : The LED is not controlled by the Pozyx system.
+        /// 	1 : The LED is controlled by the Pozyx system.The LED is turned on whenever an error occurs. The error can be read from the POZYX_ERRORCODE register.
+        /// </param>
+        /// <param name="ledRx">
+        /// 	Possible values:
+        /// 	0 : The LED will not blink upon reception of an UWB message.
+        /// 	1 : The LED will blink upon reception of an UWB message.
+        /// </param>
+        /// <param name="ledTx">
+        ///     Possible values:
+        ///     0 : The LED will not blink upon transmission of an UWB message.
+        ///     1 : The LED will blink upon transmission of an UWB message.
+        /// </param>
+        public static void ConfigLeds(int led1, int led2, int led3, int led4, int ledRx, int ledTx)
+        {
+            byte parameters = 0x0;
+
+            if(led1 == 1)
+            {
+                parameters &= 0x1;
+            }
+            if (led2 == 1)
+            {
+                parameters &= 0x2;
+            }
+            if (led3 == 1)
+            {
+                parameters &= 0x4;
+            }
+            if (led4 == 1)
+            {
+                parameters &= 0x8;
+            }
+            if (ledRx == 1)
+            {
+                parameters &= 0x10;
+            }
+            if (ledTx == 1)
+            {
+                parameters &= 0x20;
+            }
+
+            byte[] request = { 0x15, parameters };
+            byte[] data = Request(request, 1);
+        }
+
+        /// <summary>
+        ///     This register selects and configures the positioning algorithm used by the pozyx device.
+        /// </summary>
+        /// <param name="algorith">
+        ///     Indicates which algorithm to use for positioning
+        ///     0: UWB-only (Default value).
+        ///     4: Tracking
+        /// </param>
+        /// <param name="dim">
+        ///     This indicates the spatial dimension. Possible values:
+        ///     2 : 2D (Default value).
+        ///     1 : 2,5D
+        ///     3 : 3D
+        /// </param>
+        public static void PosAlg(int algorithm, int dim)
+        {
+            byte parameters = 0x0;
+
+            parameters &= (byte)algorithm;
+
+            byte dimByte = (byte)(dim << 4);
+
+            parameters &= dimByte;
+
+            byte[] request = { 0x16, parameters };
+            byte[] data = Request(request, 1);
+        }
+
+        /// <summary>
+        ///     Configure the number of anchors and selection procedure
+        /// </summary>
+        /// <param name="num">
+        /// 	Indicate the maximum number of anchors to be used for positioning. Value between 3 and 15.
+        /// </param>
+        /// <param name="mode">
+        ///     a single bit to indicate wether to choose from a fixed set of anchors or perform automatic anchor selection. Possible values:
+        ///     0 : indicates fixed anchor set. 
+        ///     1 : indicates automatic anchor selection.
+        /// </param>
+        public static void PosNumAnchors(int num, int mode)
+        {
+            byte parameters = 0x0;
+
+            parameters &= (byte)num;
+
+            byte modeByte = (byte)(mode << 7);
+
+            parameters &= modeByte;
+
+            byte[] request = { 0x17, parameters };
+            byte[] data = Request(request, 1);
+        }
+
+        /// <summary>
+        /// Pozyx can be run in continuous mode to provide continuous positioning. The interval in milliseconds between successive updates can be configured with this register. 
+        /// </summary>
+        /// <param name="interval">The value is capped between 10ms and 60000ms (1 minute). Writing the value 0 to this registers disables the continuous mode.</param>
+        public static void PosInterval(int interval)
+        {
+            byte parameters = (byte)interval;
+
+            byte[] request = { 0x18, parameters };
+            byte[] data = Request(request, 1);
+        }
+
     }
 }
