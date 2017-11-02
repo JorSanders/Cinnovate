@@ -144,8 +144,7 @@ namespace FreeWheels.Classes
 
         /*
          * Returns the number of devices stored internally
-         */
-        public static int GetDeviceListSize()
+         */ public static int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Request(request, 1);
@@ -157,6 +156,7 @@ namespace FreeWheels.Classes
 
             return 0;
         }
+       
 
         /*
          * Starts the positioning proces
@@ -477,5 +477,33 @@ namespace FreeWheels.Classes
 
             return true;
         }
+
+        public static int RxNetworkId()
+        {
+            byte[] request = { 0x82 };
+            byte[] data = Request(request, 2);
+
+            byte[] rxNetworkId = { data[0], data[1] };
+            
+            return BitConverter.ToUInt16(rxNetworkId, 0);
+        }
+
+        public static int RxDataLen()
+        {
+            byte[] request = { 0x84 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        public static int Gpio1()
+        {
+            byte[] request = { 0x85 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+
     }
 }
