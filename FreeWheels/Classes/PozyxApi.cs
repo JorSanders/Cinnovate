@@ -348,6 +348,11 @@ namespace FreeWheels.Classes
             return (data[0] == 1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
         public static RangeInfo GetRangeInfo(byte[] deviceId)
         {
             byte[] request = { 0xC7, deviceId[0], deviceId[1] };
@@ -426,6 +431,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static bool Reset()
         {
             byte[] request = { 0xB0 };
@@ -434,6 +443,7 @@ namespace FreeWheels.Classes
             return (data.Length > 0 && data[0] == 1);
         }
 
+<<<<<<< HEAD
         /// <summary>
         ///     This register configures the external interrupt pin of the Pozyx device. It should be configured in combination with the POZYX_INT_MASK register.
         /// </summary>
@@ -770,5 +780,56 @@ namespace FreeWheels.Classes
             return data[0];
         }
 
+=======
+        /*
+         * Configures which interrupts are enabled
+         * 
+         * @param err, Enables interrupts whenever an error occurs
+         * @param pos, Enables interrupts whenever a new positiong update is availabe
+         * @param imu, Enables interrupts whenever a new IMU update is availabe
+         * @param rxData, Enables interrupts whenever data is received through the ultra-wideband network
+         * @param funt,	Enables interrupts whenever a register function call has completed
+         * @param pin, Configures the interup pin valid options are 0 and 1
+         *
+         * @return Only returns false if pin is invalid otherwise true
+         */
+        public static bool IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
+        {
+            byte parameters = 0x0;
+
+            if (err)
+            {
+                parameters &= 0x1;
+            }
+            if (pos)
+            {
+                parameters &= 0x2;
+            }
+            if (imu)
+            {
+                parameters &= 0x4;
+            }
+            if (rxData)
+            {
+                parameters &= 0x8;
+            }
+            if (funt)
+            {
+                parameters &= 0x10;
+            }
+            if(pin > 1)
+            {
+                return false;
+            }
+            else if (pin == 1){
+                parameters &= 0x80;
+            }
+
+            byte[] request = { 0x10, parameters };
+            byte[] data = Request(request, 1);
+
+            return true;
+        }
+>>>>>>> origin/develop
     }
 }
