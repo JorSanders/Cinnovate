@@ -164,10 +164,14 @@ namespace FreeWheels
 
         private void Interval_Click(object sender, RoutedEventArgs e)
         {
+            int[] bla= PozyxApi.IntConfig();
+            int a = 0;
         }
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
+            PozyxApi.IntConfig(1,1,1,1);
+            /*
             Output.Text = "";
             _Pozyx.Init();
             List<Anchor> anchors = _Pozyx.Anchors;
@@ -183,6 +187,7 @@ namespace FreeWheels
             Position myPosition = _Pozyx.MyPozyx.Position;
             Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
             Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
+            */
         }
 
         private void ErrorCode_Click(object sender, RoutedEventArgs e)

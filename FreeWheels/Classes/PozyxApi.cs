@@ -50,6 +50,33 @@ namespace FreeWheels.Classes
             }
         }
 
+        public static void Write(byte[] data)
+        {
+            try
+            {
+                _PozyxShield.Write(data);
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+            }
+        }
+
+
+        public static byte[] Read(byte[] buffer)
+        {
+            try
+            {
+                _PozyxShield.Read(buffer);
+                return buffer;
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+                return new byte[0];
+            }
+        }
+
         /*
          * Returns the firmware version
          */
@@ -98,7 +125,7 @@ namespace FreeWheels.Classes
             return status;
         }
 
-        public static List<string> CalibStatus ()
+        public static List<string> CalibStatus()
         {
             List<string> status = new List<string>();
 
@@ -107,9 +134,10 @@ namespace FreeWheels.Classes
 
             string[] statuscodes = new string[4] { "SYS", "GYR", "ACC", "MAG" };
 
-            for(int i = 0; i < 2 * statuscodes.Length; i = i + 2)
+            for (int i = 0; i < 2 * statuscodes.Length; i = i + 2)
             {
-                if((byte)((data[0] >> i) & 0x03) == 0x03){
+                if ((byte)((data[0] >> i) & 0x03) == 0x03)
+                {
                     status.Add(statuscodes[i / 2]);
                 }
             }
@@ -432,29 +460,42 @@ namespace FreeWheels.Classes
         /// <param name="latch">
         ///     Select if the interrupt pin should latch after an interrupt. Possible values:
         ///     0 - No latch(default): the interrupt is a short pulse of about 6µs
-        ///      1 - Latch: after an interrupt, the interrupt pin will stay at the active level until the POZYX_INT_STATE register is read from
+        ///     1 - Latch: after an interrupt, the interrupt pin will stay at the active level until the POZYX_INT_STATE register is read from
         /// </param>
-        public static void IntConfig(int pinNum =0, int mode=0, int act=0, int latch=0)
+        public static void IntConfig(int pinNum, int mode, int act, int latch)
         {
-            byte parameters = 0x0;
+            byte parameters = (byte)pinNum;
 
-            parameters &= (byte)pinNum;
+            int[] options = { mode, act, latch};
 
-            if (mode == 1)
+            for (int i = 0; i < options.Count(); i++)
             {
-                parameters &= 0x8;
-            }
-            if (act == 1)
-            {
-                parameters &= 0x10;
-            }
-            if (latch == 1)
-            {
-                parameters &= 0x20;
+                if (options[i] == 1)
+                {
+                    parameters = (byte)(0x1 << (byte)i+3 | parameters);
+                }
             }
 
+            byte[] request = { 0x11, parameters };
+            Write(request);
+        }
+
+        /// <summary>
+        ///     See IntConfig(int pinNum, int mode, int act, int latch)
+        /// </summary>
+        /// <returns>
+        /// int[4]
+        /// 0: pinnum
+        /// 1: mode
+        /// 2: act
+        /// 3: latch
+        /// </returns>
+        public static int[] IntConfig()
+        {
             byte[] request = { 0x11 };
             byte[] data = Request(request, 1);
+
+            return new int[] { data[0] & 0x7, data[0] & 0x8, data[0] & 0x20, data[0] & 0x40 };
         }
 
         /// <summary>
@@ -480,8 +521,21 @@ namespace FreeWheels.Classes
             parameters &= strengthByte;
 
             byte[] request = { 0x14, parameters };
-            byte[] data = Request(request, 1);
+            Write(request);
         }
+
+        /// <summary>
+        ///     See PosFilter(int strength, int filter)
+        /// </summary>
+        /// <returns></returns>
+        public static int[] PosFilter()
+        {
+            byte[] request = { 0x14 };
+            byte[] data = Request(request, 1);
+
+            return new int[] { data[1] & 0xF0, data[1] & 0x0F };
+        }
+
 
         /// <summary>
         ///     This register configures the functionality of the 6 LEDs on the pozyx device. At all times, the user can control LEDs 1 through 4 using POZYX_LED_CTRL.
@@ -515,38 +569,45 @@ namespace FreeWheels.Classes
         ///     0 : The LED will not blink upon transmission of an UWB message.
         ///     1 : The LED will blink upon transmission of an UWB message.
         /// </param>
-        public static void ConfigLeds(int led1, int led2, int led3, int led4, int ledRx, int ledTx)
+        public static void ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
         {
             byte parameters = 0x0;
 
-            if(led1 == 1)
+            bool[] leds = { led1, led2, led3, led4, ledRx, ledTx };
+
+            for (int i = 0; i < leds.Count(); i++)
             {
-                parameters &= 0x1;
-            }
-            if (led2 == 1)
-            {
-                parameters &= 0x2;
-            }
-            if (led3 == 1)
-            {
-                parameters &= 0x4;
-            }
-            if (led4 == 1)
-            {
-                parameters &= 0x8;
-            }
-            if (ledRx == 1)
-            {
-                parameters &= 0x10;
-            }
-            if (ledTx == 1)
-            {
-                parameters &= 0x20;
+                if (leds[i])
+                {
+                    parameters = (byte)(0x1 << (byte)i | parameters);
+                }
             }
 
             byte[] request = { 0x15, parameters };
-            byte[] data = Request(request, 1);
+            Write(request);
         }
+
+        /// <summary>
+        ///     See ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
+        /// </summary>
+        /// <returns>
+        ///     int[6] value 1 means led is used. 
+        /// </returns>
+        public static bool[] ConfigLeds()
+        {
+            byte[] request = { 0x15 };
+            byte[] data = Request(request, 1);
+
+            bool[] leds = new bool[6];
+
+            for (int i = 0; i < leds.Count(); i++)
+            {
+                leds[i] = (data[0] >> i & 0x1) == 1;
+            }
+
+            return leds;
+        }
+
 
         /// <summary>
         ///     This register selects and configures the positioning algorithm used by the pozyx device.
@@ -565,16 +626,32 @@ namespace FreeWheels.Classes
         public static void PosAlg(int algorithm, int dim)
         {
             byte parameters = 0x0;
-
             parameters &= (byte)algorithm;
-
             byte dimByte = (byte)(dim << 4);
-
             parameters &= dimByte;
 
             byte[] request = { 0x16, parameters };
-            byte[] data = Request(request, 1);
+            Write(request);
         }
+
+        /// <summary>
+        ///     See PosAlg(int algorithm, int dim)
+        /// </summary>
+        /// <returns></returns>
+        public static int[] PosAlg()
+        {
+            byte[] request = { 0x16 };
+            byte[] data = Request(request, 1);
+
+            int[] result = new int[2];
+
+            result[0] = data[0] & 0xF;
+            result[1] = data[1] >> 4;
+
+            return result;
+        }
+
+
 
         /// <summary>
         ///     Configure the number of anchors and selection procedure
@@ -590,15 +667,32 @@ namespace FreeWheels.Classes
         public static void PosNumAnchors(int num, int mode)
         {
             byte parameters = 0x0;
-
             parameters &= (byte)num;
-
             byte modeByte = (byte)(mode << 7);
-
             parameters &= modeByte;
-
             byte[] request = { 0x17, parameters };
-            byte[] data = Request(request, 1);
+
+            Write(request);
+        }
+
+        /// <summary>
+        ///     see PosNumAnchors(int num, int mode)
+        /// </summary>
+        /// <returns>
+        ///     int array
+        ///     0: fixed anchor set (number of anchors)
+        ///     1: mode
+        /// </returns>
+        public static int[] PosNumAnchors()
+        {
+            byte[] request = { 0x17};
+            byte[] data = Request(request,1);
+            int[] result = new int[2];
+
+            result[0] = data[0] & 0xF;
+            result[1] = data[1] >> 7;
+
+            return result;
         }
 
         /// <summary>
@@ -607,10 +701,73 @@ namespace FreeWheels.Classes
         /// <param name="interval">The value is capped between 10ms and 60000ms (1 minute). Writing the value 0 to this registers disables the continuous mode.</param>
         public static void PosInterval(int interval)
         {
-            byte parameters = (byte)interval;
+            byte[] intervalBytes = BitConverter.GetBytes(interval);
+            byte[] request = { 0x18, intervalBytes[0], intervalBytes[1] };
+            Write(request);
+        }
 
-            byte[] request = { 0x18, parameters };
+        /// <summary>
+        ///     See void PosInterval(int interval)
+        /// </summary>
+        /// <returns></returns>
+        public static int PosInterval()
+        {
+            byte[] request = { 0x18 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToUInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The network id.
+        /// </summary>
+        /// <returns></returns>
+        public static int NetworkId()
+        {
+            byte[] request = { 0x1A };
+            return BitConverter.ToInt32( Request(request, 2), 0);
+        }
+        
+        /// <summary>
+        /// set the network id
+        /// </summary>
+        /// <param name="networkId">bytearray with a length of 2</param>
+        public static void NetworkId(byte[] networkId)
+        {
+            byte[] request = { 0x1A, networkId[0], networkId[1]};
+            Write(request);
+        }
+
+        /// <summary>
+        ///     Select the ultra-wideband transmission and reception channel. In general the transmission range increases at lower frequencies, i.e., lower channels. Allow up to 20ms to let the device switch channel. 
+        ///     Warning: to enable wireless communication between two devices they must operate on the same channel.
+        /// </summary>
+        /// <param name="uwbChannel">
+        ///     Default value: 5 
+        ///     Indicate the UWB channel. Possible values:
+        ///     1 : Centre frequency 3494.4MHz, using the band(MHz): 3244.8 – 3744, bandwidth 499.2 MHz 
+        ///     2 : Centre frequency 3993.6MHz, using the band(MHz): 3774 – 4243.2, bandwidth 499.2 MHz
+        ///     3 : Centre frequency 4492.8MHz, using the band(MHz): 4243.2 – 4742.4 bandwidth 499.2 MHz
+        ///     4 : Centre frequency 3993.6MHz, using the band(MHz): 3328 – 4659.2 bandwidth 1331.2 MHz(capped to 900MHz)
+        ///     5 : Centre frequency 6489.6MHz, using the band(MHz): 6240 – 6739.2 bandwidth 499.2 MHz
+        ///     7 : Centre frequency 6489.6MHz, using the band(MHz): 5980.3 – 6998.9 bandwidth 1081.6 MHz(capped to 900MHz)
+        /// </param>
+        public static void UwbChannel(int uwbChannel)
+        {
+            byte[] request = { 0x1C, (byte)uwbChannel };
+            Write(request);
+        }
+
+        /// <summary>
+        ///     Retrieves the UwbChanel
+        /// </summary>
+        /// <returns>See  void UwbChannel(int uwbChannel)</returns>
+        public static int UwbChannel()
+        {
+            byte[] request = { 0x1C };
             byte[] data = Request(request, 1);
+
+            return data[0];
         }
 
     }
