@@ -196,7 +196,7 @@ namespace FreeWheels.Classes
 
                 if (data[i] == 0 && data[i + 1] == 0)
                 {
-                    return result;
+                    break;
                 }
 
                 byte[] id = new byte[] { data[i], data[i + 1] };
@@ -477,5 +477,119 @@ namespace FreeWheels.Classes
 
             return true;
         }
+
+        /***************************************************************************************************
+         *      DEVICE LIST FUNCTIONS
+         * *************************************************************************************************/
+
+        
+        public static List<byte[]> DevicesGetIds(int offset = 0, int size = 20)
+        {
+            byte[] request = { 0xC0, (byte)offset, (byte)size };
+            byte[] data = Request(request, size * 2 + 1); //2 bytes per device + 1 byte for success/failure
+
+            List<byte[]> DeviceIds= new List<byte[]>();
+
+            if(data[0] == 1)
+            {
+                for (int i = 1; i < data.Length; i += 2)
+                {
+                    if(!(data[i-1] == 0 && data[i] == 0))
+                    {
+                        DeviceIds.Add(new byte[] { data[i - 1], data[i] });
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return DeviceIds;
+
+        }
+
+        public static bool DevicesClear()
+        {
+            byte[] request = { 0xC3 };
+            byte[] data = Request(request, 1);
+
+            return data[0] == 1;
+        }
+
+        public static bool DeviceAdd(int networkID, int flag, int x, int y, int z)
+        {
+            byte[] request = new byte[15];
+            request[0] = 0xC4;
+
+            // Convert parameters to byte[]
+            byte[] bNetworkID = BitConverter.GetBytes((UInt16)networkID);
+            byte[] bFlag    = BitConverter.GetBytes((byte)flag);
+            byte[] bX       = BitConverter.GetBytes(x);
+            byte[] bY       = BitConverter.GetBytes(y);
+            byte[] bZ       = BitConverter.GetBytes(z);
+
+            //Join byte[] to single byte[] Request
+            bNetworkID.CopyTo(request, 1);
+            bFlag.CopyTo(request, 3);
+            bX.CopyTo(request, 4);
+            bY.CopyTo(request, 8);
+            bZ.CopyTo(request, 12);
+
+            byte[] data = Request(request, 1);
+
+            return data[0] == 1;
+        }
+
+        public static DeviceInfo DeviceGetInfo(int networkID)
+        {
+            byte[] request = new byte[3];
+            request[0] = 0xC5;
+
+            byte[] bNetworkID = BitConverter.GetBytes((UInt16)networkID);
+            bNetworkID.CopyTo(request, 1);
+
+            byte[] data = Request(request, 16);
+
+            if (data[0] == 1)
+            {
+                int flag = (int)data[3];
+                int x = BitConverter.ToInt32(new byte[] { data[4], data[5], data[6], data[7] }, 0);
+                int y = BitConverter.ToInt32(new byte[] { data[8], data[9], data[10], data[11] }, 0);
+                int z = BitConverter.ToInt32(new byte[] { data[12], data[13], data[14], data[15] }, 0);
+
+                return new DeviceInfo(flag, x, y, z);
+            }
+
+            return new DeviceInfo();
+        }
+
+        public static DeviceInfo DeviceGetCoords(int networkID)
+        {
+            byte[] request = new byte[3];
+            request[0] = 0xC5;
+
+            byte[] bNetworkID = BitConverter.GetBytes((UInt16)networkID);
+            bNetworkID.CopyTo(request, 1);
+
+            byte[] data = Request(request, 12);
+
+            if (data[0] == 1)
+            {
+                int x = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
+                int y = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
+                int z = BitConverter.ToInt32(new byte[] { data[9], data[10], data[11], data[12] }, 0);
+
+                return new DeviceInfo(x, y, z);
+            }
+
+            return new DeviceInfo();
+        }
+
+        public static void CirData(int offset, int size)
+        {
+
+        }
+
     }
 }
