@@ -504,7 +504,6 @@ namespace FreeWheels.Classes
             }
 
             return DeviceIds;
-
         }
 
         /// <summary>
@@ -654,6 +653,5 @@ namespace FreeWheels.Classes
 
             return CirData;
         }
-
     }
 }
