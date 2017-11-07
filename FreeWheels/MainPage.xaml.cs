@@ -248,5 +248,68 @@ namespace FreeWheels
             }
         }
 
+        private void General_Click(object sender, RoutedEventArgs e)
+        {
+
+            //0x82
+            /*
+            Output.Text = "";
+
+            int rxNetworkId = PozyxApi.RxNetworkId();
+           
+            Output.Text += "Ids: " + rxNetworkId + " \n";
+
+            */
+
+            //0x84
+            /*
+            Output.Text = "";
+
+            int rxDataLen = PozyxApi.RxDataLen();
+
+            Output.Text += "RxDataLen: " + rxDataLen + " \n";
+            */
+
+            //0x85
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio1();
+
+            Output.Text += "GPIO1: " + gpio1 + " \n";
+            */
+
+            //0x86
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio2();
+
+            Output.Text += "GPIO2: " + gpio2 + " \n";
+            */
+
+            //0x87
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio3();
+
+            Output.Text += "GPIO3: " + gpio3 + " \n";
+            */
+
+            //0x88
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio4();
+
+            Output.Text += "GPIO4: " + gpio4 + " \n";
+            */
+
+
+
+
+        }
+
     }
 }
