@@ -504,6 +504,28 @@ namespace FreeWheels.Classes
             return data[0];
         }
 
+        public static int Gpio2()
+        {
+            byte[] request = { 0x86 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+        public static int Gpio3()
+        {
+            byte[] request = { 0x87 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+        public static int Gpio4()
+        {
+            byte[] request = { 0x88 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
 
     }
 }

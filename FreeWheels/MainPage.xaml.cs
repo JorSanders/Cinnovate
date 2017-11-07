@@ -261,7 +261,7 @@ namespace FreeWheels
 
             */
 
-            //0x83
+            //0x84
             /*
             Output.Text = "";
 
@@ -270,7 +270,7 @@ namespace FreeWheels
             Output.Text += "RxDataLen: " + rxDataLen + " \n";
             */
 
-            //0x84
+            //0x85
             /*
             Output.Text = "";
 
@@ -278,6 +278,34 @@ namespace FreeWheels
 
             Output.Text += "GPIO1: " + gpio1 + " \n";
             */
+
+            //0x86
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio2();
+
+            Output.Text += "GPIO2: " + gpio2 + " \n";
+            */
+
+            //0x87
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio3();
+
+            Output.Text += "GPIO3: " + gpio3 + " \n";
+            */
+
+            //0x88
+            /*
+            Output.Text = "";
+
+            int gpio1 = PozyxApi.Gpio4();
+
+            Output.Text += "GPIO4: " + gpio4 + " \n";
+            */
+
 
 
 
