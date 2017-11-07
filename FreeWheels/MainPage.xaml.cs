@@ -170,24 +170,7 @@ namespace FreeWheels
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
-            PozyxApi.PosInterval(500);
-            /*
-            Output.Text = "";
-            _Pozyx.Init();
-            List<Anchor> anchors = _Pozyx.Anchors;
-
-            foreach(Anchor anchor in _Pozyx.Anchors)
-            {
-                Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
-                Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
-                Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
-                Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
-            }
-
-            Position myPosition = _Pozyx.MyPozyx.Position;
-            Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
-            Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
-            */
+            // Test Your Code Here
         }
 
         private void ErrorCode_Click(object sender, RoutedEventArgs e)
@@ -243,6 +226,11 @@ namespace FreeWheels
             {
                 Output.Text = "Reset succes";
             }
+        }
+
+        private void General_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }
