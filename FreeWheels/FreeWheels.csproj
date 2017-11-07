@@ -95,6 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\Device.cs" />
     <Compile Include="Classes\Tag.cs" />
     <Compile Include="Classes\Position.cs" />
     <Compile Include="Classes\Anchor.cs" />
