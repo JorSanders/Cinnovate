@@ -144,8 +144,7 @@ namespace FreeWheels.Classes
 
         /*
          * Returns the number of devices stored internally
-         */
-        public static int GetDeviceListSize()
+         */ public static int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Request(request, 1);
@@ -157,6 +156,7 @@ namespace FreeWheels.Classes
 
             return 0;
         }
+       
 
         /*
          * Starts the positioning proces
@@ -392,6 +392,14 @@ namespace FreeWheels.Classes
 
         }
 
+        /*******************************************************************************************************
+         *      POSITIONING DATA
+         * *****************************************************************************************************/
+
+        /// <summary>
+        ///     x-coordinate of the device in mm.
+        /// </summary>
+        /// <returns></returns>
         public static int PosX()
         {
             byte[] request = { 0x30 };
@@ -400,6 +408,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        ///     y-coordinate of the device in mm.
+        /// </summary>
+        /// <returns></returns>
         public static int PosY()
         {
             byte[] request = { 0x34 };
@@ -408,6 +420,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        ///     z-coordinate of the device in mm.
+        /// </summary>
+        /// <returns></returns>
         public static int PosZ()
         {
             byte[] request = { 0x38 };
@@ -417,7 +433,80 @@ namespace FreeWheels.Classes
         }
 
         /// <summary>
-        /// 
+        ///     estimated error covariance of x
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrX()
+        {
+            byte[] request = { 0x3C };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     estimated error covariance of y
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrY()
+        {
+            byte[] request = { 0x3E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     estimated error covariance of z
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrZ()
+        {
+            byte[] request = { 0x40 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     estimated covariance of xy
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrXY()
+        {
+            byte[] request = { 0x42 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        /// 	estimated covariance of xz
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrXZ()
+        {
+            byte[] request = { 0x44 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        /// 	estimated covariance of YZ
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrYZ()
+        {
+            byte[] request = { 0x46 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     Calling this function resets the Pozyx device.
+        ///     This also clears the device list and returns the settings to their defualt state (including UWB settings)
         /// </summary>
         /// <returns></returns>
         public static bool Reset()
@@ -652,6 +741,458 @@ namespace FreeWheels.Classes
             }
 
             return CirData;
+        }
+         /***********************************************************************************************
+         *      SENSOR DATA
+         * *********************************************************************************************/
+
+        /// <summary>
+        ///     This register contains the maximum measured norm of the 3D linear acceleration.
+        ///     This value is reset after reading the register.
+        ///     The sensor data is represented as an unsigned 16-bit integer.
+        ///     1mg = 1 int.
+        /// </summary>
+        /// <returns>Maximum linear acceleration</returns>
+        public static int MaxLinAcc()
+        {
+            byte[] request = { 0x4E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToUInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register holds the pressure exerted on the pozyx device.
+        ///     At sealevel the pressure is The pressure is stored as an unsigned 32-bit integer.
+        ///     1mPa = 1 int.
+        /// </summary>
+        /// <returns>Pressure data</returns>
+        public static UInt32 Pressure()
+        {
+            byte[] request = { 0x50 };
+            byte[] data = Request(request, 4);
+
+            return BitConverter.ToUInt32(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the offset compensated acceleration in the x-axis of the Pozyx device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>Accelerometer data (in mg)</returns>
+        public static int AccelX()
+        {
+            byte[] request = { 0x54 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the offset compensated acceleration in the y-axis of the Pozyx device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>Accelerometer data (in mg)</returns>
+        public static int AccelY()
+        {
+            byte[] request = { 0x56 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the offset compensated acceleration in the z-axis of the Pozyx device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>Accelerometer data (in mg)</returns>
+        public static int AccelZ()
+        {
+            byte[] request = { 0x58 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the magnetic field strength along the x-axis of the Pozyx device.
+        ///     The sensor data is stored as a signed 16-bit integer.
+        ///     1µT = 16 int.
+        /// </summary>
+        /// <returns>Magnemtometer data</returns>
+        public static int MagnX()
+        {
+            byte[] request = { 0x5A };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the magnetic field strength along the y-axis of the Pozyx device.
+        ///     The sensor data is stored as a signed 16-bit integer.
+        ///     1µT = 16 int.
+        /// </summary>
+        /// <returns>Magnemtometer data</returns>
+        public static int MagnY()
+        {
+            byte[] request = { 0x5C };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the magnetic field strength along the z-axis of the Pozyx device.
+        ///     The sensor data is stored as a signed 16-bit integer.
+        ///     1µT = 16 int.
+        /// </summary>
+        /// <returns>Magnemtometer data</returns>
+        public static int MagnZ()
+        {
+            byte[] request = { 0x5E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the offset compensated angular velocity for the x-axis of the Pozyx device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1degree = 16 int.
+        /// </summary>
+        /// <returns>Gyroscope data</returns>
+        public static int GyroX()
+        {
+            byte[] request = { 0x60 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the offset compensated angular velocity for the y-axis of the Pozyx device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1degree = 16 int.
+        /// </summary>
+        /// <returns>Gyroscope data</returns>
+        public static int GyroY()
+        {
+            byte[] request = { 0x62 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the offset compensated angular velocity for the z-axis of the Pozyx device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1degree = 16 int.
+        /// </summary>
+        /// <returns>Gyroscope data</returns>
+        public static int GyroZ()
+        {
+            byte[] request = { 0x64 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the absolute heading or yaw of the device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1degree = 16 int.
+        /// </summary>
+        /// <returns>Euler angles heading (or yaw)</returns>
+        public static int EulHeading()
+        {
+            byte[] request = { 0x66 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the roll of the device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1degree = 16 int.
+        /// </summary>
+        /// <returns>Euler angles roll</returns>
+        public static int EulRoll()
+        {
+            byte[] request = { 0x68 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     This register contains the pitch of the device.
+        ///     The sensor data is represented as a signed 16-bit integer.
+        ///     1degree = 16 int.
+        /// </summary>
+        /// <returns>Euler angles pitch</returns>
+        public static int EulPitch()
+        {
+            byte[] request = { 0x6A };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The orientation can be represented using quaternions (w, x, y, z).
+        ///     This register contains the weight w and is represented as a signed 16-bit integer.
+        ///     1 quaternion(unit less) = 2^14 int = 16384 int.
+        /// </summary>
+        /// <returns>Weight of quaternion</returns>
+        public static int QuatW()
+        {
+            byte[] request = { 0x6C };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The orientation can be represented using quaternions (w, x, y, z).
+        ///     This register contains the x and is represented as a signed 16-bit integer.
+        ///     1 quaternion(unit less) = 2^14 int = 16384 int.
+        /// </summary>
+        /// <returns>x of quaternion</returns>
+        public static int QuatX()
+        {
+            byte[] request = { 0x6E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The orientation can be represented using quaternions (w, x, y, z).
+        ///     This register contains the y and is represented as a signed 16-bit integer.
+        ///     1 quaternion(unit less) = 2^14 int = 16384 int.
+        /// </summary>
+        /// <returns>y of quaternion</returns>
+        public static int QuatY()
+        {
+            byte[] request = { 0x70 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The orientation can be represented using quaternions (w, x, y, z).
+        ///     This register contains the z and is represented as a signed 16-bit integer.
+        ///     1 quaternion(unit less) = 2^14 int = 16384 int.
+        /// </summary>
+        /// <returns>z of quaternion</returns>
+        public static int QuatZ()
+        {
+            byte[] request = { 0x72 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The linear acceleration is the total acceleration minus the gravity.
+        ///     The linear acceleration expressed the acceleration due to movement.
+        ///     This register holds the linear acceleration along the x-axis of the pozyx device (i.e. body coordinates).
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>Linear acceleration in x-direction</returns>
+        public static int LiaX()
+        {
+            byte[] request = { 0x74 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The linear acceleration is the total acceleration minus the gravity.
+        ///     The linear acceleration expressed the acceleration due to movement.
+        ///     This register holds the linear acceleration along the y-axis of the pozyx device (i.e. body coordinates).
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>Linear acceleration in y-direction</returns>
+        public static int LiaY()
+        {
+            byte[] request = { 0x76 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     The linear acceleration is the total acceleration minus the gravity.
+        ///     The linear acceleration expressed the acceleration due to movement.
+        ///     This register holds the linear acceleration along the z-axis of the pozyx device (i.e. body coordinates).
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>Linear acceleration in z-direction</returns>
+        public static int LiaZ()
+        {
+            byte[] request = { 0x78 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     Gravity is a force of 1g( = 9.80665 m/s2 ) directed towards the ground.
+        ///     This register represents the gravity component in the x-axis and is represented by a singed 16-bit integer.
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>x-component of gravity vector</returns>
+        public static int GravX()
+        {
+            byte[] request = { 0x7A };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     Gravity is a force of 1g( = 9.80665 m/s2 ) directed towards the ground.
+        ///     This register represents the gravity component in the y-axis and is represented by a singed 16-bit integer.
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>y-component of gravity vector</returns>
+        public static int GravY()
+        {
+            byte[] request = { 0x7C };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     Gravity is a force of 1g( = 9.80665 m/s2 ) directed towards the ground.
+        ///     This register represents the gravity component in the z-axis and is represented by a singed 16-bit integer.
+        ///     1mg = 16 int.
+        /// </summary>
+        /// <returns>z-component of gravity vector</returns>
+        public static int GravZ()
+        {
+            byte[] request = { 0x7E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     Read out the internal chip temperature.
+        ///     This is loosely related to the ambient room temperature.
+        ///     For more accurate ambient temperature measurements, it is recommended to use a separate sensor.
+        /// </summary>
+        /// <returns>Temperature</returns>
+        public static int Temperature()
+        {
+            byte[] request = { 0x80 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+        
+        /// <summary>
+        ///     Places the network id of device A in POZYX_RX_NETWORK_ID
+        /// </summary>
+        /// <returns>Network id of the latest received message</returns>
+        public static int RxNetworkId()
+        {
+            byte[] request = { 0x82 };
+            byte[] data = Request(request, 2);
+
+            byte[] rxNetworkId = { data[0], data[1] };
+            
+            return BitConverter.ToUInt16(rxNetworkId, 0);
+        }
+
+        /// <summary>
+        ///     Places the length of the received data in the register
+        /// </summary>
+        /// <returns>The length of the latest received message</returns>
+        public static int RxDataLen()
+        {
+            byte[] request = { 0x84 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// 
+        /// <returns>Value of the GPIO pin 1</returns>
+        public static int Gpio1()
+        {
+            byte[] request = { 0x85 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// <returns>Value of the GPIO pin 2</returns>
+        public static int Gpio2()
+        {
+            byte[] request = { 0x86 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// <returns>Value of the GPIO pin 3</returns>
+        public static int Gpio3()
+        {
+            byte[] request = { 0x87 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// <returns>Value of the GPIO pin 4</returns>
+        public static int Gpio4()
+        {
+            byte[] request = { 0x88 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
         }
     }
 }
