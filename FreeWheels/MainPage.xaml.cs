@@ -164,35 +164,13 @@ namespace FreeWheels
 
         private void Interval_Click(object sender, RoutedEventArgs e)
         {
-            if (PozyxApi.SetPosInterval(500))
-            {
-                Output.Text = "Set Interval: SUCCESS";
-            }
-            else
-            {
-                Output.Text = "Set Interval: FAILED";
-            }
+            int[] bla= PozyxApi.IntConfig();
+            int a = 0;
         }
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
-
-            var test = PozyxApi.DeviceAdd(new byte[] { 0x00, 0x00 }, 55, 20, 30, 40);
-            //Output.Text = "";
-            //_Pozyx.Init();
-            //List<Anchor> anchors = _Pozyx.Anchors;
-
-            //foreach(Anchor anchor in _Pozyx.Anchors)
-            //{
-            //    Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
-            //    Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
-            //    Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
-            //    Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
-            //}
-
-            //Position myPosition = _Pozyx.MyPozyx.Position;
-            //Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
-            //Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
+            // Test Your Code Here
         }
 
         private void ErrorCode_Click(object sender, RoutedEventArgs e)
