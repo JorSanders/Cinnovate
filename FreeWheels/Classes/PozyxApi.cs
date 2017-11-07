@@ -443,7 +443,6 @@ namespace FreeWheels.Classes
             return (data.Length > 0 && data[0] == 1);
         }
 
-<<<<<<< HEAD
         /// <summary>
         ///     This register configures the external interrupt pin of the Pozyx device. It should be configured in combination with the POZYX_INT_MASK register.
         /// </summary>
@@ -476,13 +475,13 @@ namespace FreeWheels.Classes
         {
             byte parameters = (byte)pinNum;
 
-            int[] options = { mode, act, latch};
+            int[] options = { mode, act, latch };
 
             for (int i = 0; i < options.Count(); i++)
             {
                 if (options[i] == 1)
                 {
-                    parameters = (byte)(0x1 << (byte)i+3 | parameters);
+                    parameters = (byte)(0x1 << (byte)i + 3 | parameters);
                 }
             }
 
@@ -490,16 +489,7 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     See IntConfig(int pinNum, int mode, int act, int latch)
-        /// </summary>
-        /// <returns>
-        /// int[4]
-        /// 0: pinnum
-        /// 1: mode
-        /// 2: act
-        /// 3: latch
-        /// </returns>
+        // See IntConfig(int pinNum, int mode, int act, int latch)
         public static int[] IntConfig()
         {
             byte[] request = { 0x11 };
@@ -534,10 +524,7 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     See PosFilter(int strength, int filter)
-        /// </summary>
-        /// <returns></returns>
+        // See PosFilter(int strength, int filter)
         public static int[] PosFilter()
         {
             byte[] request = { 0x14 };
@@ -545,7 +532,6 @@ namespace FreeWheels.Classes
 
             return new int[] { data[1] & 0xF0, data[1] & 0x0F };
         }
-
 
         /// <summary>
         ///     This register configures the functionality of the 6 LEDs on the pozyx device. At all times, the user can control LEDs 1 through 4 using POZYX_LED_CTRL.
@@ -597,12 +583,7 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     See ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
-        /// </summary>
-        /// <returns>
-        ///     int[6] value 1 means led is used. 
-        /// </returns>
+        // See ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
         public static bool[] ConfigLeds()
         {
             byte[] request = { 0x15 };
@@ -644,10 +625,7 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     See PosAlg(int algorithm, int dim)
-        /// </summary>
-        /// <returns></returns>
+        // See PosAlg(int algorithm, int dim)
         public static int[] PosAlg()
         {
             byte[] request = { 0x16 };
@@ -660,9 +638,7 @@ namespace FreeWheels.Classes
 
             return result;
         }
-
-
-
+        
         /// <summary>
         ///     Configure the number of anchors and selection procedure
         /// </summary>
@@ -685,18 +661,11 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     see PosNumAnchors(int num, int mode)
-        /// </summary>
-        /// <returns>
-        ///     int array
-        ///     0: fixed anchor set (number of anchors)
-        ///     1: mode
-        /// </returns>
+        // PosNumAnchors(int num, int mode)
         public static int[] PosNumAnchors()
         {
-            byte[] request = { 0x17};
-            byte[] data = Request(request,1);
+            byte[] request = { 0x17 };
+            byte[] data = Request(request, 1);
             int[] result = new int[2];
 
             result[0] = data[0] & 0xF;
@@ -706,9 +675,13 @@ namespace FreeWheels.Classes
         }
 
         /// <summary>
-        /// Pozyx can be run in continuous mode to provide continuous positioning. The interval in milliseconds between successive updates can be configured with this register. 
+        ///     Pozyx can be run in continuous mode to provide continuous positioning. 
+        ///     The interval in milliseconds between successive updates can be configured with this register. 
         /// </summary>
-        /// <param name="interval">The value is capped between 10ms and 60000ms (1 minute). Writing the value 0 to this registers disables the continuous mode.</param>
+        /// <param name="interval">
+        ///     The value is capped between 10ms and 60000ms (1 minute). 
+        ///     Writing the value 0 to this registers disables the continuous mode.
+        /// </param>
         public static void PosInterval(int interval)
         {
             byte[] intervalBytes = BitConverter.GetBytes(interval);
@@ -716,10 +689,7 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     See void PosInterval(int interval)
-        /// </summary>
-        /// <returns></returns>
+        // See void PosInterval(int interval)
         public static int PosInterval()
         {
             byte[] request = { 0x18 };
@@ -729,23 +699,20 @@ namespace FreeWheels.Classes
         }
 
         /// <summary>
-        ///     The network id.
-        /// </summary>
-        /// <returns></returns>
-        public static int NetworkId()
-        {
-            byte[] request = { 0x1A };
-            return BitConverter.ToInt32( Request(request, 2), 0);
-        }
-        
-        /// <summary>
-        /// set the network id
+        ///     set the network id
         /// </summary>
         /// <param name="networkId">bytearray with a length of 2</param>
         public static void NetworkId(byte[] networkId)
         {
-            byte[] request = { 0x1A, networkId[0], networkId[1]};
+            byte[] request = { 0x1A, networkId[0], networkId[1] };
             Write(request);
+        }
+
+        // See NetworkId(byte[] networkId)
+        public static int NetworkId()
+        {
+            byte[] request = { 0x1A };
+            return BitConverter.ToInt32(Request(request, 2), 0);
         }
 
         /// <summary>
@@ -768,10 +735,8 @@ namespace FreeWheels.Classes
             Write(request);
         }
 
-        /// <summary>
-        ///     Retrieves the UwbChanel
-        /// </summary>
-        /// <returns>See  void UwbChannel(int uwbChannel)</returns>
+
+        // See UwbChannel(int uwbChannel)
         public static int UwbChannel()
         {
             byte[] request = { 0x1C };
@@ -780,56 +745,316 @@ namespace FreeWheels.Classes
             return data[0];
         }
 
-=======
-        /*
-         * Configures which interrupts are enabled
-         * 
-         * @param err, Enables interrupts whenever an error occurs
-         * @param pos, Enables interrupts whenever a new positiong update is availabe
-         * @param imu, Enables interrupts whenever a new IMU update is availabe
-         * @param rxData, Enables interrupts whenever data is received through the ultra-wideband network
-         * @param funt,	Enables interrupts whenever a register function call has completed
-         * @param pin, Configures the interup pin valid options are 0 and 1
-         *
-         * @return Only returns false if pin is invalid otherwise true
-         */
-        public static bool IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
+        /// <summary>
+        ///     	Indicates which interrupts are enabled.    
+        /// </summary>
+        /// <param name="err">Enables interrupts whenever an error occurs.</param>
+        /// <param name="pos">Enables interrupts whenever a new positiong update is availabe.</param>
+        /// <param name="imu">Enables interrupts whenever a new IMU update is availabe.</param>
+        /// <param name="rxData">Enables interrupts whenever data is received through the ultra-wideband network.</param>
+        /// <param name="funt">Enables interrupts whenever a register function call has completed.</param>
+        /// <param name="pin">Configures the interrupt pin.</param>
+        public static void IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
         {
             byte parameters = 0x0;
 
-            if (err)
+            bool[] interupts = { err, pos, imu, rxData, funt };
+
+            for (int i = 0; i < interupts.Count(); i++)
             {
-                parameters &= 0x1;
+                if (interupts[i])
+                {
+                    parameters = (byte)(0x1 << i | parameters);
+                }
             }
-            if (pos)
-            {
-                parameters &= 0x2;
-            }
-            if (imu)
-            {
-                parameters &= 0x4;
-            }
-            if (rxData)
-            {
-                parameters &= 0x8;
-            }
-            if (funt)
-            {
-                parameters &= 0x10;
-            }
-            if(pin > 1)
-            {
-                return false;
-            }
-            else if (pin == 1){
-                parameters &= 0x80;
-            }
+
+            parameters = (byte)(pin << 7 | parameters);
+
 
             byte[] request = { 0x10, parameters };
+            Write(request);
+        }
+
+        // See IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
+        public static List<string> IntMask()
+        {
+            byte[] request = { 0x10 };
             byte[] data = Request(request, 1);
 
-            return true;
+            List<string> interupts = new List<string>();
+
+            interupts.Add(((0x80 & data[0]) == 1) ? "PIN1" : "PIN0");
+
+            string[] interuptFlags = { "ERR", "POS", "IMU", "RXDATA", "FUNC" };
+
+            for (int i = 0; i < interuptFlags.Length; i++)
+            {
+                if ((data[0] >> i & 0x1) == 1)
+                {
+                    interupts.Add(interuptFlags[i]);
+                }
+            }
+
+            return interupts;
         }
->>>>>>> origin/develop
+
+        /// <summary>
+        ///     This register describes the UWB bitrate and nominal pulse repition frequency (PRF).
+        /// </summary>
+        /// <param name="bitrate">
+        ///     Indicate the UWB bitrate. Possible values:
+        ///     0 : bitrate 110 kbits/s(Default value)
+        ///     1 : bitrate 850 kbits/s
+        ///     2 : bitrate 6.8 Mbits/s</param>
+        /// <param name="prf">
+        ///     Indicates the pulse repetition frequency to be used. Possible values
+        ///     1 : 16 MHz 
+        ///     2 : 64 MHz (default value)
+        /// </param>
+        public static void UwbRates(int bitrate, int prf)
+        {
+            byte parameters = (byte)prf;
+            parameters |= (byte)(prf << 6);
+
+            byte[] request = { 0x1D, parameters };
+            Write(request);
+        }
+
+        // See UwbRates(int bitrate, int prf)
+        public static int[] UwbRates()
+        {
+            byte[] request = { 0x1D };
+            byte[] data = Request(request, 1);
+
+            return new int[] { data[0] & 0x3F, data[0] >> 6 };
+        }
+
+        /// <summary>
+        ///     This register describes the preamble length of the UWB wireless packets.
+        /// </summary>
+        /// <param name="plen">
+        ///     Indicate the UWB preamble length. Possible values:
+        ///     12 : 4096 symbols.Standard preamble length 4096 symbols
+        ///     40 : 2048 symbols.Non-standard preamble length 2048 symbols
+        ///     24 : 1536 symbols.Non-standard preamble length 1536 symbols
+        ///     8  : 1024 symbols.Standard preamble length 1024 symbols(default value)
+        ///     52 : 512 symbols.Non-standard preamble length 512 symbols
+        ///     36 : 256 symbols.Non-standard preamble length 256 symbols
+        ///     20 : 128 symbols.Non-standard preamble length 128 symbols
+        ///     4  : 64 symbols.Standard preamble length 64 symbols
+        /// </param>
+        public static void UwbPlen(int plen)
+        {
+            byte[] request = { 0x1E, (byte)plen };
+            Write(request);
+        }
+
+        // See UwbPlen(int plen)
+        public static int UwbPlen()
+        {
+            byte[] request = { 0x1E };
+            byte[] data = Request(request, 1);
+            return data[0];
+        }
+
+        /// <summary>
+        ///     Configure the power gain for the UWB transmitter
+        ///     Warning: when changing channel, bitrate or preamble length, the power is also overwritten to the default value for this UWB configuration.
+        ///     Warning: changing this value can make the Pozyx device fall out of regulation.
+        /// </summary>
+        /// <param name="gain">
+        ///     Possible values are between 0 and 67. 1dB = 2 int.
+        /// </param>
+        public static void UwbGain(int gain)
+        {
+            byte[] request = { 0x1F, (byte)gain };
+            Write(request);
+        }
+
+        // See UwbGain(int gain)
+        public static int UwbGain()
+        {
+            byte[] request = { 0x1F };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register contains the trimming value to fine-tune the operating frequency of the crystal oscillator used by the ultra-wideband front-end. 
+        ///     By carefully selecting this value, the operating frequency can be tuned with an error of 1ppm. 
+        ///     A smaller error on the operating frequency will increase the sensitivity of the UWB receiver. 
+        /// </summary>
+        /// <param name="xTalTrim"></param>
+        public static void XTalTrim(int xTalTrim)
+        {
+            byte[] request = { 0x20, (byte)xTalTrim };
+            Write(request);
+        }
+
+        // See XTalTrim(int xTalTrim)
+        public static int XTalTrim()
+        {
+            byte[] request = { 0x20 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register determines how the ranging measurements are made. 
+        /// </summary>
+        /// <param name="rangeProtocol">
+        ///     0: PRECISION (Default value)
+        ///     1: FAST
+        /// </param>
+        public static void RangeProtocol(int rangeProtocol)
+        {
+            byte[] request = { 0x21, (byte)rangeProtocol };
+            Write(request);
+        }
+
+        // See RangeProtocol(int rangeProtocol)
+        public static int RangeProtocol()
+        {
+            byte[] request = { 0x21 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     Configure the mode of operation of the pozyx device
+        /// </summary>
+        /// <param name="operationMode">
+        ///     0 : Tag mode. In tag mode, the device can more around. In this mode the device cannot be used by other devices for positioning.
+        ///     1 : Anchor mode.In anchor mode the device is assumed to be immobile. The device can be used by other devices for positioning.
+        /// </param>
+        public static void OperationMode(int operationMode)
+        {
+            byte[] request = { 0x22, (byte)operationMode };
+            Write(request);
+        }
+
+        // See OperationMode(int operationMode)
+        public static int OperationMode()
+        {
+            byte[] request = { 0x22 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     Configure the mode of operation of the sensors
+        /// </summary>
+        /// <param name="sensorMode">
+        ///     Possible values:
+        ///     Non-fusion modes:
+        ///     0 : MODE_OFF
+        ///     1 : ACCONLY 
+        ///     2 : MAGONLY 
+        ///     3 : GYROONLY 
+        ///     4 : ACCMAGx
+        ///     5 : ACCGYRO 
+        ///     6 : MAGGYRO 
+        ///     7 : AMG
+        ///     Fusion modes:
+        ///     8 : IMU 
+        ///     9 : COMPASS 
+        ///     10 : M4G 
+        ///     11 : NDOF_FMC_OFF
+        ///     12 : NDOF
+        /// </param>
+        public static void SensorsMode(int sensorMode)
+        {
+            byte[] request = { 0x23, (byte)sensorMode };
+            Write(request);
+        }
+
+        // See SensorsMode(int sensorMode)
+        public static int SensorsMode()
+        {
+            byte[] request = { 0x23 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     Configure GPIO pin 1.
+        /// </summary>
+        /// <param name="mode">
+        ///     Indicates the input or output mode of the pin
+        ///     0 : digital input
+        ///     1 : digital output(push-pull)
+        ///     2 : digital output(open-drain)
+        /// </param>
+        /// <param name="pull">
+        ///     When selecting input or open-drain output, the pin can be internally connected with a pull-up (to 0V) or pull-down (to 3.3V) resistor. 
+        ///     0 : no pull-up or pull-down resistor.
+        ///     1 : pull-up resistor. 
+        ///     2 : pull-down resistor
+        /// </param>
+        public static void ConfigGpio1(int mode, int pull)
+        {
+            byte parameters = (byte)mode;
+            parameters |= (byte)(pull >> 3);
+            byte[] request = { 0x27, parameters };
+            Write(request);
+        }
+
+        // See ConfigGpio1(int mode, int pull)
+        public static int[] ConfigGpio1()
+        {
+            byte[] request = { 0x27  };
+            byte[] data = Request(request, 1);
+            return new int[] { data[0] & 0x7, data[0] >> 3};
+        }
+
+        public static void ConfigGpio2(int mode, int pull)
+        {
+            byte parameters = (byte)mode;
+            parameters |= (byte)(pull >> 3);
+            byte[] request = { 0x28, parameters };
+            Write(request);
+        }
+
+        public static int[] ConfigGpio2()
+        {
+            byte[] request = { 0x28 };
+            byte[] data = Request(request, 1);
+            return new int[] { data[0] & 0x7, data[0] >> 3 };
+        }
+
+        public static void ConfigGpio3(int mode, int pull)
+        {
+            byte parameters = (byte)mode;
+            parameters |= (byte)(pull >> 3);
+            byte[] request = { 0x29, parameters };
+            Write(request);
+        }
+
+        public static int[] ConfigGpio3()
+        {
+            byte[] request = { 0x29 };
+            byte[] data = Request(request, 1);
+            return new int[] { data[0] & 0x7, data[0] >> 3 };
+        }
+
+        public static void ConfigGpio4(int mode, int pull)
+        {
+            byte parameters = (byte)mode;
+            parameters |= (byte)(pull >> 3);
+            byte[] request = { 0x2A, parameters };
+            Write(request);
+        }
+
+        public static int[] ConfigGpio4()
+        {
+            byte[] request = { 0x2A };
+            byte[] data = Request(request, 1);
+            return new int[] { data[0] & 0x7, data[0] >> 3 };
+        }
     }
 }
