@@ -176,21 +176,23 @@ namespace FreeWheels
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
-            Output.Text = "";
-            _Pozyx.Init();
-            List<Anchor> anchors = _Pozyx.Anchors;
 
-            foreach(Anchor anchor in _Pozyx.Anchors)
-            {
-                Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
-                Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
-                Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
-                Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
-            }
+            var test = PozyxApi.DeviceAdd(new byte[] { 0x00, 0x00 }, 55, 20, 30, 40);
+            //Output.Text = "";
+            //_Pozyx.Init();
+            //List<Anchor> anchors = _Pozyx.Anchors;
 
-            Position myPosition = _Pozyx.MyPozyx.Position;
-            Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
-            Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
+            //foreach(Anchor anchor in _Pozyx.Anchors)
+            //{
+            //    Output.Text += anchor.Id[0] + " - " + anchor.Id[1] + " \n";
+            //    Debug.Write(anchor.Id[0] + " - " + anchor.Id[1] + " \n");
+            //    Output.Text += "x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n";
+            //    Debug.Write("x: " + anchor.Position.X + "\t y: " + anchor.Position.Y + "\t z: " + anchor.Position.Z + "\n\n");
+            //}
+
+            //Position myPosition = _Pozyx.MyPozyx.Position;
+            //Output.Text += "x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n";
+            //Debug.Write("x: " + myPosition.X + "\t y: " + myPosition.Y + "\t z: " + myPosition.Z + "\n\n");
         }
 
         private void ErrorCode_Click(object sender, RoutedEventArgs e)
