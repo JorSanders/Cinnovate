@@ -144,8 +144,7 @@ namespace FreeWheels.Classes
 
         /*
          * Returns the number of devices stored internally
-         */
-        public static int GetDeviceListSize()
+         */ public static int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Request(request, 1);
@@ -157,6 +156,7 @@ namespace FreeWheels.Classes
 
             return 0;
         }
+       
 
         /*
          * Starts the positioning proces
@@ -392,6 +392,14 @@ namespace FreeWheels.Classes
 
         }
 
+        /*******************************************************************************************************
+         *      POSITIONING DATA
+         * *****************************************************************************************************/
+
+        /// <summary>
+        ///     x-coordinate of the device in mm.
+        /// </summary>
+        /// <returns></returns>
         public static int PosX()
         {
             byte[] request = { 0x30 };
@@ -400,6 +408,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        ///     y-coordinate of the device in mm.
+        /// </summary>
+        /// <returns></returns>
         public static int PosY()
         {
             byte[] request = { 0x34 };
@@ -408,6 +420,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        ///     z-coordinate of the device in mm.
+        /// </summary>
+        /// <returns></returns>
         public static int PosZ()
         {
             byte[] request = { 0x38 };
@@ -417,7 +433,80 @@ namespace FreeWheels.Classes
         }
 
         /// <summary>
-        /// 
+        ///     estimated error covariance of x
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrX()
+        {
+            byte[] request = { 0x3C };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     estimated error covariance of y
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrY()
+        {
+            byte[] request = { 0x3E };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     estimated error covariance of z
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrZ()
+        {
+            byte[] request = { 0x40 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     estimated covariance of xy
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrXY()
+        {
+            byte[] request = { 0x42 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        /// 	estimated covariance of xz
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrXZ()
+        {
+            byte[] request = { 0x44 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        /// 	estimated covariance of YZ
+        /// </summary>
+        /// <returns></returns>
+        public static int PosErrYZ()
+        {
+            byte[] request = { 0x46 };
+            byte[] data = Request(request, 2);
+
+            return BitConverter.ToInt16(data, 0);
+        }
+
+        /// <summary>
+        ///     Calling this function resets the Pozyx device.
+        ///     This also clears the device list and returns the settings to their defualt state (including UWB settings)
         /// </summary>
         /// <returns></returns>
         public static bool Reset()
@@ -835,6 +924,100 @@ namespace FreeWheels.Classes
 
             return data[0];
         }
+        
+        /// <summary>
+        ///     Places the network id of device A in POZYX_RX_NETWORK_ID
+        /// </summary>
+        /// <returns>Network id of the latest received message</returns>
+        public static int RxNetworkId()
+        {
+            byte[] request = { 0x82 };
+            byte[] data = Request(request, 2);
 
+            byte[] rxNetworkId = { data[0], data[1] };
+            
+            return BitConverter.ToUInt16(rxNetworkId, 0);
+        }
+
+        /// <summary>
+        ///     Places the length of the received data in the register
+        /// </summary>
+        /// <returns>The length of the latest received message</returns>
+        public static int RxDataLen()
+        {
+            byte[] request = { 0x84 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// 
+        /// <returns>Value of the GPIO pin 1</returns>
+        public static int Gpio1()
+        {
+            byte[] request = { 0x85 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// <returns>Value of the GPIO pin 2</returns>
+        public static int Gpio2()
+        {
+            byte[] request = { 0x86 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// <returns>Value of the GPIO pin 3</returns>
+        public static int Gpio3()
+        {
+            byte[] request = { 0x87 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        /// <summary>
+        ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
+        ///     When the pin is configured as an output, the value written will determine the new state of the pin.
+        ///     Possible values:
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
+        ///     Default value: 0
+        /// </summary>
+        /// <returns>Value of the GPIO pin 4</returns>
+        public static int Gpio4()
+        {
+            byte[] request = { 0x88 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
     }
 }

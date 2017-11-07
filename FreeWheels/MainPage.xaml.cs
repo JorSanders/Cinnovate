@@ -248,5 +248,10 @@ namespace FreeWheels
             }
         }
 
+        private void General_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }
