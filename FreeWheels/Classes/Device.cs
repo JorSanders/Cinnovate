@@ -8,7 +8,6 @@ namespace FreeWheels.Classes
 {
     public class Device
     {
-
         public int NetworkID { get; set; }
         public int Flag { get; set; }
 
@@ -20,7 +19,5 @@ namespace FreeWheels.Classes
         {
             this.NetworkID = networkID;
         }
-
     }
-
 }
