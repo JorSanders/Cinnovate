@@ -441,7 +441,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x3C };
             byte[] data = Request(request, 2);
 
-            return BitConverter.ToInt32(data, 0);
+            return BitConverter.ToInt16(data, 0);
         }
 
         /// <summary>
@@ -453,7 +453,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x3E };
             byte[] data = Request(request, 2);
 
-            return BitConverter.ToInt32(data, 0);
+            return BitConverter.ToInt16(data, 0);
         }
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x40 };
             byte[] data = Request(request, 2);
 
-            return BitConverter.ToInt32(data, 0);
+            return BitConverter.ToInt16(data, 0);
         }
 
         /// <summary>
@@ -477,7 +477,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x42 };
             byte[] data = Request(request, 2);
 
-            return BitConverter.ToInt32(data, 0);
+            return BitConverter.ToInt16(data, 0);
         }
 
         /// <summary>
@@ -489,7 +489,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x44 };
             byte[] data = Request(request, 2);
 
-            return BitConverter.ToInt32(data, 0);
+            return BitConverter.ToInt16(data, 0);
         }
 
         /// <summary>
@@ -501,7 +501,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x46 };
             byte[] data = Request(request, 2);
 
-            return BitConverter.ToInt32(data, 0);
+            return BitConverter.ToInt16(data, 0);
         }
 
         /// <summary>
