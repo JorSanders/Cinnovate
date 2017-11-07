@@ -144,8 +144,7 @@ namespace FreeWheels.Classes
 
         /*
          * Returns the number of devices stored internally
-         */
-        public static int GetDeviceListSize()
+         */ public static int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Request(request, 1);
@@ -157,6 +156,7 @@ namespace FreeWheels.Classes
 
             return 0;
         }
+       
 
         /*
          * Starts the positioning proces
@@ -333,6 +333,11 @@ namespace FreeWheels.Classes
             return (data[0] == 1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
         public static RangeInfo GetRangeInfo(byte[] deviceId)
         {
             byte[] request = { 0xC7, deviceId[0], deviceId[1] };
@@ -411,6 +416,10 @@ namespace FreeWheels.Classes
             return BitConverter.ToInt32(data, 0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static bool Reset()
         {
             byte[] request = { 0xB0 };
@@ -419,6 +428,103 @@ namespace FreeWheels.Classes
             return (data.Length > 0 && data[0] == 1);
         }
 
+        /*
+         * Configures which interrupts are enabled
+         * 
+         * @param err, Enables interrupts whenever an error occurs
+         * @param pos, Enables interrupts whenever a new positiong update is availabe
+         * @param imu, Enables interrupts whenever a new IMU update is availabe
+         * @param rxData, Enables interrupts whenever data is received through the ultra-wideband network
+         * @param funt,	Enables interrupts whenever a register function call has completed
+         * @param pin, Configures the interup pin valid options are 0 and 1
+         *
+         * @return Only returns false if pin is invalid otherwise true
+         */
+        public static bool IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
+        {
+            byte parameters = 0x0;
+
+            if (err)
+            {
+                parameters &= 0x1;
+            }
+            if (pos)
+            {
+                parameters &= 0x2;
+            }
+            if (imu)
+            {
+                parameters &= 0x4;
+            }
+            if (rxData)
+            {
+                parameters &= 0x8;
+            }
+            if (funt)
+            {
+                parameters &= 0x10;
+            }
+            if(pin > 1)
+            {
+                return false;
+            }
+            else if (pin == 1){
+                parameters &= 0x80;
+            }
+
+            byte[] request = { 0x10, parameters };
+            byte[] data = Request(request, 1);
+
+            return true;
+        }
+
+        public static int RxNetworkId()
+        {
+            byte[] request = { 0x82 };
+            byte[] data = Request(request, 2);
+
+            byte[] rxNetworkId = { data[0], data[1] };
+            
+            return BitConverter.ToUInt16(rxNetworkId, 0);
+        }
+
+        public static int RxDataLen()
+        {
+            byte[] request = { 0x84 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        public static int Gpio1()
+        {
+            byte[] request = { 0x85 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+
+        public static int Gpio2()
+        {
+            byte[] request = { 0x86 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+        public static int Gpio3()
+        {
+            byte[] request = { 0x87 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
+        public static int Gpio4()
+        {
+            byte[] request = { 0x88 };
+            byte[] data = Request(request, 1);
+
+            return data[0];
+        }
 
 
     }
