@@ -170,7 +170,7 @@ namespace FreeWheels
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
-            PozyxApi.IntConfig(1,1,1,1);
+            PozyxApi.PosInterval(500);
             /*
             Output.Text = "";
             _Pozyx.Init();

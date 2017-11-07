@@ -443,6 +443,10 @@ namespace FreeWheels.Classes
             return (data.Length > 0 && data[0] == 1);
         }
 
+        /***********************************************************************************************
+         *      CONFIGURATION REGISTERS
+         ***********************************************************************************************/
+
         /// <summary>
         ///     This register configures the external interrupt pin of the Pozyx device. It should be configured in combination with the POZYX_INT_MASK register.
         /// </summary>
@@ -474,7 +478,6 @@ namespace FreeWheels.Classes
         public static void IntConfig(int pinNum, int mode, int act, int latch)
         {
             byte parameters = (byte)pinNum;
-
             int[] options = { mode, act, latch };
 
             for (int i = 0; i < options.Count(); i++)
@@ -515,10 +518,8 @@ namespace FreeWheels.Classes
         public static void PosFilter(int strength, int filter)
         {
             byte parameters = (byte)filter;
-
             byte strengthByte = (byte)(strength << 4);
-
-            parameters &= strengthByte;
+            parameters |= strengthByte;
 
             byte[] request = { 0x14, parameters };
             Write(request);
@@ -530,7 +531,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x14 };
             byte[] data = Request(request, 1);
 
-            return new int[] { data[1] & 0xF0, data[1] & 0x0F };
+            return new int[] { data[0] & 0xF0, data[0] & 0x0F };
         }
 
         /// <summary>
@@ -568,7 +569,6 @@ namespace FreeWheels.Classes
         public static void ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
         {
             byte parameters = 0x0;
-
             bool[] leds = { led1, led2, led3, led4, ledRx, ledTx };
 
             for (int i = 0; i < leds.Count(); i++)
@@ -603,7 +603,7 @@ namespace FreeWheels.Classes
         /// <summary>
         ///     This register selects and configures the positioning algorithm used by the pozyx device.
         /// </summary>
-        /// <param name="algorith">
+        /// <param name="algorithm">
         ///     Indicates which algorithm to use for positioning
         ///     0: UWB-only (Default value).
         ///     4: Tracking
@@ -631,12 +631,7 @@ namespace FreeWheels.Classes
             byte[] request = { 0x16 };
             byte[] data = Request(request, 1);
 
-            int[] result = new int[2];
-
-            result[0] = data[0] & 0xF;
-            result[1] = data[1] >> 4;
-
-            return result;
+            return new int[] { data[0] & 0xF, data[0] >> 4 };
         }
         
         /// <summary>
@@ -656,8 +651,8 @@ namespace FreeWheels.Classes
             parameters &= (byte)num;
             byte modeByte = (byte)(mode << 7);
             parameters &= modeByte;
-            byte[] request = { 0x17, parameters };
 
+            byte[] request = { 0x17, parameters };
             Write(request);
         }
 
@@ -666,12 +661,8 @@ namespace FreeWheels.Classes
         {
             byte[] request = { 0x17 };
             byte[] data = Request(request, 1);
-            int[] result = new int[2];
 
-            result[0] = data[0] & 0xF;
-            result[1] = data[1] >> 7;
-
-            return result;
+            return new int[] { data[0] & 0xF, data[0] >> 7 };
         }
 
         /// <summary>
@@ -685,6 +676,7 @@ namespace FreeWheels.Classes
         public static void PosInterval(int interval)
         {
             byte[] intervalBytes = BitConverter.GetBytes(interval);
+
             byte[] request = { 0x18, intervalBytes[0], intervalBytes[1] };
             Write(request);
         }
@@ -701,15 +693,18 @@ namespace FreeWheels.Classes
         /// <summary>
         ///     set the network id
         /// </summary>
-        /// <param name="networkId">bytearray with a length of 2</param>
-        public static void NetworkId(byte[] networkId)
+        /// <param name="networkID"></param>
+        public static void NetworkID(int networkID)
         {
-            byte[] request = { 0x1A, networkId[0], networkId[1] };
+            byte[] request = new byte[3];
+            request[0] = 0x1A;
+            BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
+
             Write(request);
         }
 
-        // See NetworkId(byte[] networkId)
-        public static int NetworkId()
+        // See NetworkId(NetworkID(int networkID))
+        public static int NetworkID()
         {
             byte[] request = { 0x1A };
             return BitConverter.ToInt32(Request(request, 2), 0);
@@ -757,7 +752,6 @@ namespace FreeWheels.Classes
         public static void IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
         {
             byte parameters = 0x0;
-
             bool[] interupts = { err, pos, imu, rxData, funt };
 
             for (int i = 0; i < interupts.Count(); i++)
@@ -767,9 +761,7 @@ namespace FreeWheels.Classes
                     parameters = (byte)(0x1 << i | parameters);
                 }
             }
-
             parameters = (byte)(pin << 7 | parameters);
-
 
             byte[] request = { 0x10, parameters };
             Write(request);
@@ -782,7 +774,6 @@ namespace FreeWheels.Classes
             byte[] data = Request(request, 1);
 
             List<string> interupts = new List<string>();
-
             interupts.Add(((0x80 & data[0]) == 1) ? "PIN1" : "PIN0");
 
             string[] interuptFlags = { "ERR", "POS", "IMU", "RXDATA", "FUNC" };
@@ -854,6 +845,7 @@ namespace FreeWheels.Classes
         {
             byte[] request = { 0x1E };
             byte[] data = Request(request, 1);
+
             return data[0];
         }
 
@@ -949,22 +941,21 @@ namespace FreeWheels.Classes
         ///     Configure the mode of operation of the sensors
         /// </summary>
         /// <param name="sensorMode">
-        ///     Possible values:
         ///     Non-fusion modes:
-        ///     0 : MODE_OFF
-        ///     1 : ACCONLY 
-        ///     2 : MAGONLY 
-        ///     3 : GYROONLY 
-        ///     4 : ACCMAGx
-        ///     5 : ACCGYRO 
-        ///     6 : MAGGYRO 
-        ///     7 : AMG
+        ///         0 : MODE_OFF
+        ///         1 : ACCONLY 
+        ///         2 : MAGONLY 
+        ///         3 : GYROONLY 
+        ///         4 : ACCMAGx
+        ///         5 : ACCGYRO 
+        ///         6 : MAGGYRO 
+        ///         7 : AMG
         ///     Fusion modes:
-        ///     8 : IMU 
-        ///     9 : COMPASS 
-        ///     10 : M4G 
-        ///     11 : NDOF_FMC_OFF
-        ///     12 : NDOF
+        ///         8 : IMU 
+        ///         9 : COMPASS 
+        ///         10 : M4G 
+        ///         11 : NDOF_FMC_OFF
+        ///         12 : NDOF
         /// </param>
         public static void SensorsMode(int sensorMode)
         {
@@ -1000,6 +991,7 @@ namespace FreeWheels.Classes
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
+
             byte[] request = { 0x27, parameters };
             Write(request);
         }
@@ -1009,6 +1001,7 @@ namespace FreeWheels.Classes
         {
             byte[] request = { 0x27  };
             byte[] data = Request(request, 1);
+
             return new int[] { data[0] & 0x7, data[0] >> 3};
         }
 
@@ -1016,6 +1009,7 @@ namespace FreeWheels.Classes
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
+
             byte[] request = { 0x28, parameters };
             Write(request);
         }
@@ -1024,6 +1018,7 @@ namespace FreeWheels.Classes
         {
             byte[] request = { 0x28 };
             byte[] data = Request(request, 1);
+
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
 
@@ -1031,6 +1026,7 @@ namespace FreeWheels.Classes
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
+
             byte[] request = { 0x29, parameters };
             Write(request);
         }
@@ -1039,6 +1035,7 @@ namespace FreeWheels.Classes
         {
             byte[] request = { 0x29 };
             byte[] data = Request(request, 1);
+
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
 
@@ -1046,6 +1043,7 @@ namespace FreeWheels.Classes
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
+
             byte[] request = { 0x2A, parameters };
             Write(request);
         }
@@ -1054,6 +1052,7 @@ namespace FreeWheels.Classes
         {
             byte[] request = { 0x2A };
             byte[] data = Request(request, 1);
+
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
     }
