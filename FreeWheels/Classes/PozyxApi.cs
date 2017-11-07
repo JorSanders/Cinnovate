@@ -508,8 +508,8 @@ namespace FreeWheels.Classes
         ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
         ///     When the pin is configured as an output, the value written will determine the new state of the pin.
         ///     Possible values:
-0 :     ///     The digital state of the pin is LOW at 0V.
-1 :     ///     The digital state of the pin is HIGH at 3.3V.
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
         ///     Default value: 0
         /// </summary>
         /// 
@@ -526,8 +526,8 @@ namespace FreeWheels.Classes
         ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
         ///     When the pin is configured as an output, the value written will determine the new state of the pin.
         ///     Possible values:
-0 :     ///     The digital state of the pin is LOW at 0V.
-1 :     ///     The digital state of the pin is HIGH at 3.3V.
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 2</returns>
@@ -543,8 +543,8 @@ namespace FreeWheels.Classes
         ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
         ///     When the pin is configured as an output, the value written will determine the new state of the pin.
         ///     Possible values:
-0 :     ///     The digital state of the pin is LOW at 0V.
-1 :     ///     The digital state of the pin is HIGH at 3.3V.
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 3</returns>
@@ -560,8 +560,8 @@ namespace FreeWheels.Classes
         ///     This register can be read from to obtain the current state of the GPIO pin if it is configured as an input. 
         ///     When the pin is configured as an output, the value written will determine the new state of the pin.
         ///     Possible values:
-0 :     ///     The digital state of the pin is LOW at 0V.
-1 :     ///     The digital state of the pin is HIGH at 3.3V.
+        ///     The digital state of the pin is LOW at 0V.
+        ///     The digital state of the pin is HIGH at 3.3V.
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 4</returns>
