@@ -167,8 +167,8 @@ namespace FreeWheels
         {
             //int[] bla= ConfigurationRegisters.IntConfig();
             //int a = 0;
-            bool test = RegisterFunctions.TXSend(0, new byte[] { 0x0 });
-            Output.Text = "TXSEND: " + test.ToString();
+            bool test = _Pozyx.LetsGo();
+            Output.Text = "";
         }
 
         private void Anchors_Click(object sender, RoutedEventArgs e)

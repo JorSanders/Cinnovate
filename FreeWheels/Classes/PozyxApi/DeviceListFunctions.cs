@@ -56,7 +56,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <returns>Success</returns>
         public static bool DeviceAdd(int networkID, int flag, int x, int y, int z)
         {
-            byte[] request = new byte[15];
+            byte[] request = new byte[16];
             request[0] = 0xC4;
 
             // Convert parameters to byte[] and join with byte[] request
