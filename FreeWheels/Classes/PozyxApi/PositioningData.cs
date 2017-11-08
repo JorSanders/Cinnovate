@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes.PozyxApi
 {
-    class PositioningData
+    public static class PositioningData
     {
         /// <summary>
         ///     x-coordinate of the device in mm.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes.PozyxApi
 {
-    class DeviceListFunctions
+    public static class DeviceListFunctions
     {
         /// <summary>
         ///     Get all the network IDs's of devices in the device list.

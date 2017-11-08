@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes.PozyxApi
 {
-    class GeneralData
+    public static class GeneralData
     {
         /// <summary>
         ///     Returns the number of devices stored internally

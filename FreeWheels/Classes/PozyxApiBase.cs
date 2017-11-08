@@ -13,7 +13,7 @@ using Windows.UI.Xaml;
 
 namespace FreeWheels.Classes
 {
-    public static class PozyxApi //: IPozyx
+    public static class PozyxApiBase //: IPozyx
     {
         private const int POZYX_I2C_ADDRESS = 0x4B;
         private static I2cDevice _PozyxShield;

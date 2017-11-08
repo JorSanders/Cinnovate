@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FreeWheels.Classes.PozyxApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,28 +15,28 @@ namespace FreeWheels.Classes
 
         public Pozyx()
         {
-            PozyxApi.Connect();
+            Connection.Connect();
             MyPozyx = new Tag();
         }
 
         public bool Init()
         {
-            if (!PozyxApi.DiscoverDevices())
+            if (!PozyxApiBase.DiscoverDevices())
             {
                 return false;
             }
 
-            if (!PozyxApi.StartPositioning())
+            if (!PozyxApiBase.StartPositioning())
             {
                 return false;
             }
 
-            if (!PozyxApi.CalibrateDevices())
+            if (!PozyxApiBase.CalibrateDevices())
             {
                 return false;
             }
 
-            List<byte[]> anchorIds = PozyxApi.GetAnchorIds();
+            List<byte[]> anchorIds = PozyxApiBase.GetAnchorIds();
 
             Anchors = new List<Anchor>();
 
@@ -46,7 +47,7 @@ namespace FreeWheels.Classes
 
             foreach (Anchor anchor in Anchors)
             {
-                anchor.Position = PozyxApi.GetAnchorPosition(anchor.Id);
+                anchor.Position = PozyxApiBase.GetAnchorPosition(anchor.Id);
             }
 
             MyPozyx = new Tag();
@@ -58,7 +59,7 @@ namespace FreeWheels.Classes
         {
             Anchors = new List<Anchor>();
             MyPozyx = new Tag();
-            return PozyxApi.Reset();
+            return PozyxApiBase.Reset();
         }
     }
 }

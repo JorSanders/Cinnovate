@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.Classes.PozyxApi
 {
-    class SensorData
+    public static class SensorData
     {
         /// <summary>
         ///     This register contains the maximum measured norm of the 3D linear acceleration.
