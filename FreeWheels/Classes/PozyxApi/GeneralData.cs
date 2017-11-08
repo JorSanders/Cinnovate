@@ -15,7 +15,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             if (data.Length > 0)
             {
@@ -32,7 +32,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int RxNetworkId()
         {
             byte[] request = { 0x82 };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             byte[] rxNetworkId = { data[0], data[1] };
 
@@ -46,7 +46,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int RxDataLen()
         {
             byte[] request = { 0x84 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0];
         }
@@ -64,7 +64,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int Gpio1()
         {
             byte[] request = { 0x85 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0];
         }
@@ -81,7 +81,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int Gpio2()
         {
             byte[] request = { 0x86 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0];
         }
@@ -98,7 +98,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int Gpio3()
         {
             byte[] request = { 0x87 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0];
         }
@@ -115,7 +115,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int Gpio4()
         {
             byte[] request = { 0x88 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0];
         }

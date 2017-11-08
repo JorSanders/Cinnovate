@@ -15,7 +15,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosX()
         {
             byte[] request = { 0x30 };
-            byte[] data = Request(request, 4);
+            byte[] data = Connection.ReadWrite(request, 4);
 
             return BitConverter.ToInt32(data, 0);
         }
@@ -27,7 +27,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosY()
         {
             byte[] request = { 0x34 };
-            byte[] data = Request(request, 4);
+            byte[] data = Connection.ReadWrite(request, 4);
 
             return BitConverter.ToInt32(data, 0);
         }
@@ -39,7 +39,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosZ()
         {
             byte[] request = { 0x38 };
-            byte[] data = Request(request, 4);
+            byte[] data = Connection.ReadWrite(request, 4);
 
             return BitConverter.ToInt32(data, 0);
         }
@@ -51,7 +51,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosErrX()
         {
             byte[] request = { 0x3C };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -63,7 +63,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosErrY()
         {
             byte[] request = { 0x3E };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -75,7 +75,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosErrZ()
         {
             byte[] request = { 0x40 };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -87,7 +87,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosErrXY()
         {
             byte[] request = { 0x42 };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -99,7 +99,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosErrXZ()
         {
             byte[] request = { 0x44 };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -111,7 +111,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int PosErrYZ()
         {
             byte[] request = { 0x46 };
-            byte[] data = Request(request, 2);
+            byte[] data = Connection.ReadWrite(request, 2);
 
             return BitConverter.ToInt16(data, 0);
         }

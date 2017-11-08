@@ -17,7 +17,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static int[] DevicesGetIds(int offset = 0, int size = 20)
         {
             byte[] request = { 0xC0, (byte)offset, (byte)size };
-            byte[] data = Request(request, size * 2 + 1); //2 bytes per device + 1 byte for success/failure
+            byte[] data = Connection.ReadWrite(request, size * 2 + 1); //2 bytes per device + 1 byte for success/failure
 
             int[] DeviceIds = new int[size];
 
@@ -39,7 +39,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static bool DevicesClear()
         {
             byte[] request = { 0xC3 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
         }
@@ -66,7 +66,7 @@ namespace FreeWheels.Classes.PozyxApi
             BitConverter.GetBytes(y).CopyTo(request, 8);
             BitConverter.GetBytes(z).CopyTo(request, 12);
 
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
         }
@@ -88,7 +88,7 @@ namespace FreeWheels.Classes.PozyxApi
             request[0] = 0xC5;
             BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
 
-            byte[] data = Request(request, 16);
+            byte[] data = Connection.ReadWrite(request, 16);
 
             int[] DeviceInfo = new int[5];
 
@@ -120,7 +120,7 @@ namespace FreeWheels.Classes.PozyxApi
             request[0] = 0xC5;
             BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
 
-            byte[] data = Request(request, 12);
+            byte[] data = Connection.ReadWrite(request, 12);
 
             int[] DeviceInfo = new int[3];
 
@@ -142,7 +142,7 @@ namespace FreeWheels.Classes.PozyxApi
         public static RangeInfo GetRangeInfo(byte[] deviceId)
         {
             byte[] request = { 0xC7, deviceId[0], deviceId[1] };
-            byte[] data = Request(request, 11);
+            byte[] data = Connection.ReadWrite(request, 11);
 
             if (data[0] == 1)
             {
@@ -185,7 +185,7 @@ namespace FreeWheels.Classes.PozyxApi
             BitConverter.GetBytes((UInt16)offset).CopyTo(request, 1);
             request[3] = (byte)size;
 
-            byte[] data = Request(request, (size * 2 + 1));
+            byte[] data = Connection.ReadWrite(request, (size * 2 + 1));
 
             int[][] CirData = new int[size * 2][];
 
