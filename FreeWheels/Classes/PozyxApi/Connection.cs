@@ -54,5 +54,31 @@ namespace FreeWheels.Classes.PozyxApi
             {
             }
         }
+
+        public static byte[] RemoteReadWrite(byte[] networkID, byte[] request, int length)
+        {
+            try
+            {
+                var data = new byte[length];
+                _PozyxShield.WriteRead(request, data);
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new byte[0];
+            }
+        }
+
+        public static void RemoteWrite(byte[] networkID, byte[] data)
+        {
+            try
+            {
+                _PozyxShield.Write(data);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
     }
 }

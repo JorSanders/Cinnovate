@@ -53,7 +53,7 @@ namespace FreeWheels
                 int nReturnBytes = Int32.Parse(NumberOfReturnBytes.Text);
 
                 //make the request
-                byte[] result = PozyxApiBase.Request(request, nReturnBytes);
+                byte[] result = Connection.ReadWrite(request, nReturnBytes);
 
                 //wipe output text
                 Output.Text = "";
@@ -165,13 +165,16 @@ namespace FreeWheels
 
         private void Interval_Click(object sender, RoutedEventArgs e)
         {
-            int[] bla= ConfigurationRegisters.IntConfig();
-            int a = 0;
+            //int[] bla= ConfigurationRegisters.IntConfig();
+            //int a = 0;
+            bool test = RegisterFunctions.TXSend(0, new byte[] { 0x0 });
+            Output.Text = "TXSEND: " + test.ToString();
         }
 
         private void Anchors_Click(object sender, RoutedEventArgs e)
         {
-            // Test Your Code Here
+            bool test = RegisterFunctions.TXData(0, new byte[] { 0x0 });
+            Output.Text = "TXDATA: " + test.ToString();
         }
 
         private void ErrorCode_Click(object sender, RoutedEventArgs e)

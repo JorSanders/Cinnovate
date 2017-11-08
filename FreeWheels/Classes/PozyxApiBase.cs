@@ -1,4 +1,5 @@
 ﻿using FreeWheels.Classes;
+using FreeWheels.Classes.PozyxApi;
 using FreeWheels.Enums;
 using FreeWheels.Interfaces;
 using System;
@@ -15,67 +16,6 @@ namespace FreeWheels.Classes
 {
     public static class PozyxApiBase //: IPozyx
     {
-        private const int POZYX_I2C_ADDRESS = 0x4B;
-        private static I2cDevice _PozyxShield;
-
-        /*
-         * initiate the i2c connection to the pozyx device
-         */
-        public static async Task Connect()
-        {
-            string i2cDeviceSelector = I2cDevice.GetDeviceSelector();
-
-            IReadOnlyList<DeviceInformation> devices = await DeviceInformation.FindAllAsync(i2cDeviceSelector);
-
-            var Pozyx_settings = new I2cConnectionSettings(POZYX_I2C_ADDRESS);
-
-            _PozyxShield = await I2cDevice.FromIdAsync(devices[0].Id, Pozyx_settings);
-        }
-
-        /*
-         * Send a byte i2c device
-         */
-        public static byte[] Request(byte[] request, int length)
-        {
-            try
-            {
-                var data = new byte[length];
-                _PozyxShield.WriteRead(request, data);
-                return data;
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-                return new byte[0];
-            }
-        }
-
-        public static void Write(byte[] data)
-        {
-            try
-            {
-                _PozyxShield.Write(data);
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-            }
-        }
-
-
-        public static byte[] Read(byte[] buffer)
-        {
-            try
-            {
-                _PozyxShield.Read(buffer);
-                return buffer;
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-                return new byte[0];
-            }
-        }
 
         /*
          * Returns the firmware version
@@ -83,7 +23,7 @@ namespace FreeWheels.Classes
         public static string GetFirmwareVersion()
         {
             byte[] request = { 0x1 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             if (data.Length > 0)
             {
@@ -103,7 +43,7 @@ namespace FreeWheels.Classes
             List<string> status = new List<string>();
 
             byte[] request = { 0x5 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             byte onlyLast = 0x1;
 
@@ -130,7 +70,7 @@ namespace FreeWheels.Classes
             List<string> status = new List<string>();
 
             byte[] request = { 0x6 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             string[] statuscodes = new string[4] { "SYS", "GYR", "ACC", "MAG" };
 
@@ -160,7 +100,7 @@ namespace FreeWheels.Classes
         public static bool DiscoverDevices(int deviceType = 0, int devices = 10, int waitTime = 10)
         {
             byte[] request = { 0xC1, (byte)deviceType, (byte)devices, (byte)waitTime };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             if (data.Length > 0 && data[0] == 1)
             {
@@ -176,7 +116,7 @@ namespace FreeWheels.Classes
         public static bool StartPositioning()
         {
             byte[] request = { 0xB6 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             if (data.Length > 0 && data[0] == 1)
             {
@@ -192,7 +132,7 @@ namespace FreeWheels.Classes
         public static List<byte[]> GetAnchorIds()
         {
             byte[] request = { 0xB8 };
-            byte[] data = Request(request, 33);
+            byte[] data = Connection.ReadWrite(request, 33);
 
             List<byte[]> result = new List<byte[]>();
 
@@ -221,7 +161,7 @@ namespace FreeWheels.Classes
         public static Position GetAnchorPosition(byte[] anchorId)
         {
             byte[] request = { 0xC6, anchorId[0], anchorId[1] };
-            byte[] data = Request(request, 13);
+            byte[] data = Connection.ReadWrite(request, 13);
 
             if (data.Length <= 0 || data[0] != 1)
             {
@@ -245,7 +185,7 @@ namespace FreeWheels.Classes
         public static List<string> SelfTest()
         {
             byte[] request = { 0x3 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             List<string> errors = new List<string>();
 
@@ -284,7 +224,7 @@ namespace FreeWheels.Classes
         {
             //byte[] request = { 0xC2, 0x02, 0x38, 0x60, 0x5B, 0x60, 0x29, 0x60, 0x47, 0x60};
             byte[] request = { 0xC2 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             if (data.Length > 0 && data[0] == 1)
             {
@@ -308,7 +248,7 @@ namespace FreeWheels.Classes
             request[1] = deviceId[0];
             request[2] = deviceId[1];
 
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             if (data[0] == 1)
             {
@@ -327,7 +267,7 @@ namespace FreeWheels.Classes
         public static bool DoRanging(byte[] deviceId)
         {
             byte[] request = { 0xB5, deviceId[0], deviceId[1] };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return (data[0] == 1);
         }
@@ -335,7 +275,7 @@ namespace FreeWheels.Classes
         public static string GetErrorCode()
         {
             byte[] request = { 0x4 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
 
             if (data.Length <= 0)
@@ -377,7 +317,7 @@ namespace FreeWheels.Classes
         public static bool Reset()
         {
             byte[] request = { 0xB0 };
-            byte[] data = Request(request, 1);
+            byte[] data = Connection.ReadWrite(request, 1);
 
             return (data.Length > 0 && data[0] == 1);
         }
