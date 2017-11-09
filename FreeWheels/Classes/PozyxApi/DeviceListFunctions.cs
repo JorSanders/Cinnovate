@@ -101,9 +101,9 @@ namespace FreeWheels.Classes.PozyxApi
             request[1] = (byte)calibrationOption;
             request[2] = (byte)measurements;
 
-            for (int i = 3; i<networkIds.Length + 3; i++)
+            for (int i = 0; i < networkIds.Length * 2; i += 2)
             {
-                request[i] = (byte)networkIds[i];
+                BitConverter.GetBytes((UInt16)networkIds[i/2]).CopyTo(request, i + 3);
             }
 
             byte[] data = Connection.ReadWrite(request, 1);
