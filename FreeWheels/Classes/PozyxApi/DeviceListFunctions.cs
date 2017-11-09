@@ -33,6 +33,55 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         /// <summary>
+        ///     This function performs a discovery operation to identify other pozyx devices within radio range.
+        ///     Newly discovered devices will be added to the internal device list.
+        ///     This process may take several milliseconds.
+        /// </summary>
+        /// <param name="deviceType">
+        ///     Discover options (optional). This determines which type of devices should be discovered.
+        ///     The type is given by theoperation mode in POZYX_OPERATION_MODE.
+        ///     Possible values:
+        ///         (0x0) Anchors only(default value)
+        ///         (0x1) Tags only 
+        ///         (0x2) All Pozyx devices
+        /// </param>
+        /// <param name="idleSlots">
+        ///     Number of Idle slots (optional). The number of slots to wait for a response of an undiscovered device.
+        ///     If no response was received the discovery process is terminated.
+        ///     The default value is 3 idle slots.
+        /// </param>
+        /// <param name="idleSlotDuration">
+        ///     Idle slot duration (optional). The time duration in milliseconds of the idle slot.
+        ///     Depending on the ultra-wideband settings a shorter or longer slot duration must be chosen.
+        ///     The default value is 10ms.
+        /// </param>
+        /// <returns>Success</returns>
+        public static bool DevicesDiscover(int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
+        {
+            byte[] request = { 0xC1, (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
+            byte[] data = Connection.ReadWrite(request, 1);
+
+            return data[0] == 1;
+        }
+
+        public static bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds)
+        {
+            byte[] request = new byte[3 + networkIds.Length];
+            request[0] = 0xC2;
+            request[1] = (byte)calibrationOption;
+            request[2] = (byte)measurements;
+
+            for (int i = 3; i<networkIds.Length + 3; i++)
+            {
+                request[i] = (byte)networkIds[i];
+            }
+
+            byte[] data = Connection.ReadWrite(request, 1);
+
+            return data[0] == 1;
+        }
+
+        /// <summary>
         ///     Clear the list of all pozyx devices.
         /// </summary>
         /// <returns>Success</returns>
