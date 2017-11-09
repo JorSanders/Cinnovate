@@ -64,8 +64,38 @@ namespace FreeWheels.Classes.PozyxApi
             return data[0] == 1;
         }
 
-        public static bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds)
+        /// <summary>
+        ///     This function estimates the relative position of up to 6 pozyx devices within range.
+        ///     This function can be used for quickly setting up the positioning system.
+        ///     This procedure may take several hundres of milliseconds depending on the number of devices in range and the number of range measurements requested.
+        ///     During the calibration proces LED 2 will turned on.
+        ///     At the end of calibration the corresponding bit in the POZYX_CALIB_STATUS register will be set.
+        ///     Note that only the coordinates of pozyx devices within range are determined.
+        ///     The resulting coordinates are stored in the internal device list.
+        ///     It is advised that during the calibration process, the pozyx tag is not used for other wireless communication.
+        /// </summary>
+        /// <param name="calibrationOption">
+        ///     Calibration options (optional).
+        ///     Possible values:
+        ///         (0x02) 2D (default). The relative x and y coordinates of the anchors are estimated.It is expected that all anchors are located in the same 2D plane.
+        ///         (0x01) 2.5D. The relative x and y coordinates of the anchors are estimated. However it is not expected that all anchors are located in the same 2D plane. For this option to work, the z-coordinates of the anchors must be available in the device list.
+        /// </param>
+        /// <param name="measurements">
+        ///     Number of Measurements (optional).
+        ///     This describes the number of range measurements that should be made for the estimation.Note that a larger number of measurements will increase the accuracy of the relative coordinates, but will also make the process take longer.
+        ///     The default value is 10 measurments.
+        /// </param>
+        /// <param name="networkIds">
+        ///     (Network id anchor 0)  (optional) The network id of the first anchor is given. This anchor will be used to define the origin, i.e., it's coordinates will be forced to zero.
+        ///     (Network id anchor 1)  (optional) The network id of the second anchor is given. This anchor will be used to determine the x-axis, i.e., its y coordinate will be forced to zero.
+        ///     (Network id anchor 2)  (optional) The network id of the third anchor is given. This anchor will be used to determine the which way is up for the y-coordinate, i.e., its y coordinate will be forced to be positive.
+        ///     (Network id anchor 3+) (optional) The network id of the fourth anchor is given.
+        /// </param>
+        /// <returns>Success</returns>
+        public static bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds = null)
         {
+            networkIds = networkIds ?? new int[0];
+
             byte[] request = new byte[3 + networkIds.Length];
             request[0] = 0xC2;
             request[1] = (byte)calibrationOption;

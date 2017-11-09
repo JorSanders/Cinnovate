@@ -103,6 +103,7 @@
     <Compile Include="Classes\PozyxApi\PositioningData.cs" />
     <Compile Include="Classes\PozyxApi\RegisterFunctions.cs" />
     <Compile Include="Classes\PozyxApi\SensorData.cs" />
+    <Compile Include="Classes\PozyxApi\StatusRegisters.cs" />
     <Compile Include="Classes\Tag.cs" />
     <Compile Include="Classes\Position.cs" />
     <Compile Include="Classes\Anchor.cs" />
