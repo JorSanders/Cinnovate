@@ -8,22 +8,31 @@ namespace FreeWheels.Classes.PozyxApi
 {
     public static class RegisterFunctions
     {
-        
-        /*
-        public static bool LedCTRL()
+        public static bool LedCTRL(bool led_1, bool led_2, bool led_3, bool led_4, bool useled_1, bool useled_2, bool useled_3, bool useled_4)
         {
+            byte parameters = 0x0;
+            bool[] leds = { led_1, led_2, led_3, led_4, useled_1, useled_2, useled_3, useled_4 };
 
+            for (int i = 0; i < leds.Count(); i++)
+            {
+                if (leds[i])
+                {
+                   parameters = (byte)(0x1 << (byte)i | parameters);
+                }
+            }
 
+            byte[] request = { 0xB1, parameters };
+            byte[] data = Connection.ReadWrite(request, 1);
+
+            return data[0] == 1;
         }
-
-        */
+        
         public static bool TXData(int offset, byte[] dataBytes)
         {
             byte[] request = new byte[dataBytes.Length + 2];
             request[0] = 0xB2;
             request[1] = (byte)offset;
             dataBytes.CopyTo(request, 2);
-
             byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
@@ -32,7 +41,6 @@ namespace FreeWheels.Classes.PozyxApi
         public static bool TXSend(int networkID, byte[] dataBytes)
         {
             byte[] request = new byte[] { 0xB3, 0x60, 0x5B, 0x02 };
-
             byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
@@ -62,11 +70,10 @@ namespace FreeWheels.Classes.PozyxApi
             BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
             byte[] data = Connection.ReadWrite(request, 1);
 
-            
             return data[0] == 1;
         }
 
-        public static bool PosSetAnchorId(int[] networkIds)
+        public static bool PosSetAnchorIds(int[] networkIds)
         {
             byte[] request = new byte[networkIds.Length * 2 + 1];
             request[0] = 0xB7;
@@ -100,17 +107,14 @@ namespace FreeWheels.Classes.PozyxApi
 
             byte[] request = new byte[dataTypes + 1];
             request[0] = 0xBA;
-
-            
             request[1] = (byte)dataTypes;
             
-
             byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
         }
 
-        public static List<int> FlashDetails()
+        public static List<int> FlashDetail()
         {
             List<int> flashDetail = new List<int>();
 
