@@ -231,9 +231,79 @@ namespace FreeWheels
                 Output.Text = "Reset succes";
             }
         }
-
+        
         private void General_Click(object sender, RoutedEventArgs e)
         {
+            /*
+            // 0xb4
+            Output.Text = "";
+
+            List<int> status = RegisterFunctions.RXData();
+
+
+            for (int i = 0; i < status.Count; i++) {
+                Output.Text += status[i] + " \n";
+            }
+            */
+
+            /*
+            //0xb5
+            Output.Text = "";
+
+            int networkId = 24667;
+
+            bool status = RegisterFunctions.DoRanging(networkId);
+
+            Output.Text += status + " \n";
+
+            */
+
+            /*
+            //0xb7
+            Output.Text = "";
+
+            int[] networkId = { 24667, 24632 };
+
+            for (int i = 0; i < networkId.Length; i++) {
+                bool status = RegisterFunctions.PosSetAnchorId(networkId);
+                Output.Text += status + " \n";
+            }
+            */
+
+            /*
+            //0xb9
+            Output.Text = "";
+
+            bool status = RegisterFunctions.FlashReset();
+
+            Output.Text += status + " \n";
+            */
+
+            /*
+            0xba
+            Output.Text = "";
+
+            int flashSave = 1;
+            int[] regData = { };
+
+           
+            bool status = RegisterFunctions.FlashSave(flashSave, regData);
+            Output.Text += status + " \n";
+            */
+            
+
+           
+            //0xbb
+            Output.Text = "";
+
+            List<int> status = RegisterFunctions.FlashDetails();
+ 
+            for(int i = 0; i < status.Count; i++) { 
+                Output.Text += status[i] + " \n";
+            }
+
+
+
 
         }
 
