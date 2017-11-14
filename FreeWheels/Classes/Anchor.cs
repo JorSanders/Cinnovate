@@ -21,14 +21,6 @@ namespace FreeWheels.Classes
             this.Id = id;
         }
 
-        public void Ranging()
-        {
-            if (PozyxApiBase.DoRanging(this.Id))
-            {
-                this.RangeInfo = DeviceListFunctions.GetRangeInfo(Id);
-            }
-        }
-
     }
 
     public class RangeInfo
