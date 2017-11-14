@@ -10,17 +10,17 @@ namespace FreeWheels.Classes.PozyxApi
     {
         /// <summary>
         ///     Calling this function resets the Pozyx device.
-        ///     This also clears the device list and returns the settings to their default state (including UWB settings)
+        ///     This also clears the device list and returns the settings to their defualt state (including UWB settings)
         /// </summary>
         /// <returns></returns>
-        public static bool Reset()
+        public static bool ResetSys()
         {
             byte[] request = { 0xB0 };
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return (data.Length > 0 && data[0] == 1);
+            return data[0] == 1;
         }
-
+        
         /// <summary>
         ///     Gives control over the 4 onboard pozyx LEDS. 
         /// </summary>
@@ -180,33 +180,28 @@ namespace FreeWheels.Classes.PozyxApi
         ///     When the positioning algorithm is set to the automatic anchor selection mode in (POZYX_POS_NUM_ANCHORS), this list will be filled automatically with the anchors chosen by the anchor selection algorithm.
         /// </summary>
         /// <returns> Anchor IDs that are used for the positioning algorithm. </returns>
-        public static List<byte[]> GetAnchorIds()
+        public static List<int> PosGetAnchorIds()
         {
             byte[] request = { 0xB8 };
             byte[] data = Connection.ReadWrite(request, 33);
 
-            List<byte[]> result = new List<byte[]>();
+            List<int> anchorIds = new List<int>();
 
-            if (data.Length <= 0 || data[0] != 1)
+            if(data[0] == 1)
             {
-                return result;
+                return anchorIds;
             }
-
-            //byte[][] result = new byte[data.Length / 2][];
 
             for (int i = 1; i + 1 < data.Length; i += 2)
             {
-
-                if (data[i] == 0 && data[i + 1] == 0)
+                if (!(data[i] == 0 && data[i + 1] == 0))
                 {
-                    break;
+                    int id = BitConverter.ToUInt16(new byte[] { data[i], data[i + 1] }, 0);
+                    anchorIds.Add(id);
                 }
-
-                byte[] id = new byte[] { data[i], data[i + 1] };
-                result.Add(id);
             }
 
-            return result;
+            return anchorIds;
         }
 
         /// <summary>
