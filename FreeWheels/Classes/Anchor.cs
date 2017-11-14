@@ -1,3 +1,4 @@
+using FreeWheels.Classes.PozyxApi;
 using FreeWheels.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,9 @@ namespace FreeWheels.Classes
 
         public void Ranging()
         {
-            if (PozyxApi.DoRanging(this.Id))
+            if (PozyxApiBase.DoRanging(this.Id))
             {
-                this.RangeInfo = PozyxApi.GetRangeInfo(Id);
+                this.RangeInfo = DeviceListFunctions.GetRangeInfo(Id);
             }
         }
 
