@@ -78,6 +78,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 2</returns>
+        /// 
         public static int Gpio2()
         {
             byte[] request = { 0x86 };

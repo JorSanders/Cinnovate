@@ -97,6 +97,7 @@ namespace FreeWheels.Classes.PozyxApi
             networkIds = networkIds ?? new int[0];
 
             byte[] request = new byte[3 + networkIds.Length * 2];
+
             request[0] = 0xC2;
             request[1] = (byte)calibrationOption;
             request[2] = (byte)measurements;
@@ -218,23 +219,23 @@ namespace FreeWheels.Classes.PozyxApi
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
-        public static RangeInfo GetRangeInfo(byte[] deviceId)
-        {
-            byte[] request = { 0xC7, deviceId[0], deviceId[1] };
-            byte[] data = Connection.ReadWrite(request, 11);
+        //public static RangeInfo GetRangeInfo(byte[] deviceId)
+        //{
+        //    byte[] request = { 0xC7, deviceId[0], deviceId[1] };
+        //    byte[] data = Connection.ReadWrite(request, 11);
 
-            if (data[0] == 1)
-            {
-                int timestamp = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
-                int lastmeasurement = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
-                int signalstrength = BitConverter.ToInt32(new byte[] { data[9], data[10] }, 0);
+        //    if (data[0] == 1)
+        //    {
+        //        int timestamp = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
+        //        int lastmeasurement = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
+        //        int signalstrength = BitConverter.ToInt32(new byte[] { data[9], data[10] }, 0);
 
-                return new RangeInfo(timestamp, lastmeasurement, signalstrength);
-            }
+        //        return new RangeInfo(timestamp, lastmeasurement, signalstrength);
+        //    }
 
-            return new RangeInfo();
+        //    return new RangeInfo();
 
-        }
+        //}
 
         /// <summary>
         ///     This function returns the channel impulse response (CIR) of the last received ultra-wideband message.

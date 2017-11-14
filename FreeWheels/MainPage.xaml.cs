@@ -37,7 +37,6 @@ namespace FreeWheels
             this.InitializeComponent();
             _Pozyx = new Pozyx();
 
-            //Start();
         }
 
         async void Start()
@@ -74,5 +73,6 @@ namespace FreeWheels
             Start();
             this.StartButton.Visibility = Visibility.Collapsed;
         }
+
     }
 }
