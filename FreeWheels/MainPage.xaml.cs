@@ -36,7 +36,43 @@ namespace FreeWheels
         {
             this.InitializeComponent();
             _Pozyx = new Pozyx();
+
+            //Start();
         }
 
+        async void Start()
+        {
+            _Pozyx.LetsGo();
+
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+
+            dispatcherTimer.Start();
+        }
+
+        void dispatcherTimer_Tick(object sender, object e)
+        {
+            int x = PositioningData.PosX();
+            int y = PositioningData.PosY();
+            int z = PositioningData.PosZ();
+
+            this.Output.Text = "x: " + x + "\t y: " + y + "\t z: " + z;
+
+            String timeStamp = DateTime.Now.ToString();
+            this.Timestamp.Text = "Timestamp: " + timeStamp;
+
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterFunctions.ResetSys();
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            Start();
+            this.StartButton.Visibility = Visibility.Collapsed;
+        }
     }
 }

@@ -29,13 +29,13 @@ namespace FreeWheels.Classes
 
             ConfigurationRegisters.PosAlg(0, 3);
 
-            ConfigurationRegisters.PosInterval(100);
+            ConfigurationRegisters.PosInterval(400);
 
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            //DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            //dispatcherTimer.Tick += dispatcherTimer_Tick;
+            //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
 
-            dispatcherTimer.Start();
+            //dispatcherTimer.Start();
 
             return true;
         }

@@ -96,7 +96,7 @@ namespace FreeWheels.Classes.PozyxApi
         {
             networkIds = networkIds ?? new int[0];
 
-            byte[] request = new byte[3 + networkIds.Length];
+            byte[] request = new byte[3 + networkIds.Length * 2];
             request[0] = 0xC2;
             request[1] = (byte)calibrationOption;
             request[2] = (byte)measurements;
