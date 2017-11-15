@@ -14,5 +14,12 @@
         <TextBlock x:Name="Timestamp" HorizontalAlignment="Left" Margin="10,10,0,35" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom" Foreground="#FF666666" />
         <TextBlock HorizontalAlignment="Left" Margin="10,10,0,10" TextWrapping="Wrap" Text="Smart World - Project FreeWheels" VerticalAlignment="Bottom" Foreground="#FF666666" />
         <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontFamily="Tahoma" FontSize="36"/>
+        <Button x:Name="CalibButton" Content="calib" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="CalibButton_Click" />
+        
+        <Button x:Name="DiscoverButton" Content="Discover" HorizontalAlignment="Left" Margin="170,0,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="DiscoverButton_Click" />
+        <Button x:Name="SetAnchorsButton" Content="Set anc" HorizontalAlignment="Left" Margin="170,149,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="SetAnchors_Click" />
+        <Button x:Name="ManualButton" Content="Manual" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="ManualButton_Click" />
+        <Button x:Name="AnchorPosButton" Content="Anc pos" HorizontalAlignment="Left" Margin="320,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="AnchorPosButton_Click" />
+        <Button x:Name="ClearButton" Content="Clear" HorizontalAlignment="Left" Margin="470,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Clear_Click" />
     </Grid>
 </Page>
