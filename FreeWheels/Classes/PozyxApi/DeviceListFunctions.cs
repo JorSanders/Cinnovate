@@ -104,7 +104,7 @@ namespace FreeWheels.Classes.PozyxApi
 
             for (int i = 0; i < networkIds.Length * 2; i += 2)
             {
-                BitConverter.GetBytes((UInt16)networkIds[i/2]).CopyTo(request, i + 3);
+                BitConverter.GetBytes((UInt16)networkIds[i / 2]).CopyTo(request, i + 3);
             }
 
             byte[] data = Connection.ReadWrite(request, 1);
@@ -197,46 +197,24 @@ namespace FreeWheels.Classes.PozyxApi
         public static int[] DeviceGetCoords(int networkID)
         {
             byte[] request = new byte[3];
-            request[0] = 0xC5;
+            request[0] = 0xC6;
             BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
 
-            byte[] data = Connection.ReadWrite(request, 12);
+            byte[] data = Connection.ReadWrite(request, 13);
 
-            int[] DeviceInfo = new int[3];
+            int[] DeviceCoords = new int[3];
 
             if (data[0] == 1)
             {
-                DeviceInfo[0] = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
-                DeviceInfo[1] = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
-                DeviceInfo[2] = BitConverter.ToInt32(new byte[] { data[9], data[10], data[11], data[12] }, 0);
+                DeviceCoords[0] = BitConverter.ToInt32(data, 1);
+                DeviceCoords[1] = BitConverter.ToInt32(data, 5);
+                DeviceCoords[2] = BitConverter.ToInt32(data, 9);
             }
 
-            return DeviceInfo;
+            return DeviceCoords;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="deviceId"></param>
-        /// <returns></returns>
-        //public static RangeInfo GetRangeInfo(byte[] deviceId)
-        //{
-        //    byte[] request = { 0xC7, deviceId[0], deviceId[1] };
-        //    byte[] data = Connection.ReadWrite(request, 11);
-
-        //    if (data[0] == 1)
-        //    {
-        //        int timestamp = BitConverter.ToInt32(new byte[] { data[1], data[2], data[3], data[4] }, 0);
-        //        int lastmeasurement = BitConverter.ToInt32(new byte[] { data[5], data[6], data[7], data[8] }, 0);
-        //        int signalstrength = BitConverter.ToInt32(new byte[] { data[9], data[10] }, 0);
-
-        //        return new RangeInfo(timestamp, lastmeasurement, signalstrength);
-        //    }
-
-        //    return new RangeInfo();
-
-        //}
-
+      
         /// <summary>
         ///     This function returns the channel impulse response (CIR) of the last received ultra-wideband message.
         ///     The CIR can be used for diagnostic purposes, or to run custom timing algorithms.
