@@ -21,5 +21,6 @@
         <Button x:Name="ManualButton" Content="Manual" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="ManualButton_Click" />
         <Button x:Name="AnchorPosButton" Content="Anc pos" HorizontalAlignment="Left" Margin="320,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="AnchorPosButton_Click" />
         <Button x:Name="ClearButton" Content="Clear" HorizontalAlignment="Left" Margin="470,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Clear_Click" />
+        <Button x:Name="AidsButton" Content="Aids" HorizontalAlignment="Left" Margin="620,150,0,0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Aids_Click" />
     </Grid>
 </Page>

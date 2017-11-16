@@ -28,8 +28,6 @@ namespace FreeWheels.Classes
             DeviceListFunctions.DeviceAdd(24617, 1, 0, 8200, 1800);
             DeviceListFunctions.DeviceAdd(24647, 1, 2500, 8200, 2000);
 
-            DeviceListFunctions.CalibrateDevices(2, 10 /*, anchorIds */);
-
             ConfigurationRegisters.PosAlg(0, 1);
 
             ConfigurationRegisters.PosInterval(400);
