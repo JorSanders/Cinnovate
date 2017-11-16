@@ -15,11 +15,11 @@
         <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartButton_Click" />
         
         <!-- Sidebar -->
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="TestGrid_Click" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button Content="Setup" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="TestGrid_Click" />
+        <Button Content="Algoritm" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button Content="Filter" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
         <Button Content="Button" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button Content="Stop" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
         
         <!-- Footer -->
         <Image HorizontalAlignment="Right" Height="108" Margin="0,80,10,13" VerticalAlignment="Bottom" Width="108" Source="Assets/logo-cinnovate.jpg"/>
