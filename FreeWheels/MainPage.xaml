@@ -15,7 +15,7 @@
 
         <!-- Sidebar -->
         <Button x:Name="Button1" Content="Start/Stop" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop_Click" />
-        <Button x:Name="Button2" Content="Button" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button x:Name="Button2" Content="Button" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="TestClick_Button" />
         <Button x:Name="Button3" Content="Button" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
         <Button x:Name="Button4" Content="Button" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
         <Button x:Name="Button5" Content="Button" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />

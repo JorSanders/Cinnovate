@@ -76,6 +76,12 @@ namespace FreeWheels
 
             this.GridCanvas.Invalidate();
 
+            string err = StatusRegisters.ErrorCode();
+            if(err != "0x00 - Success")
+            {
+                Debug.WriteLine("ERROR: " + err);
+            }
+
         }
 
         void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
@@ -139,7 +145,7 @@ namespace FreeWheels
             RegisterFunctions.ResetSys();
         }
 
-        private void StartStop_Click(object sender, RoutedEventArgs e)
+        private async void StartStop_Click(object sender, RoutedEventArgs e)
         {
             if (dispatcherTimer.IsEnabled)
             {
@@ -154,7 +160,7 @@ namespace FreeWheels
                 if (this.Init)
                 {
                     this.Init = false;
-                    _Pozyx.LetsGo();
+                    await _Pozyx.LetsGo();
 
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
@@ -169,6 +175,11 @@ namespace FreeWheels
                 Button5.IsEnabled = false;
             }
 
+        }
+
+        private void TestClick_Button(object sender, RoutedEventArgs e)
+        {
+            
         }
 
     }
