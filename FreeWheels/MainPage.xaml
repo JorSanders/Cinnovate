@@ -12,14 +12,13 @@
 
         <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="160,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontFamily="Tahoma" FontSize="36"/>
         <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="ResetButton_Click" />
-        <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartButton_Click" />
-        
+
         <!-- Sidebar -->
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="TestGrid_Click" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
-        <Button Content="Button" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button x:Name="Button1" Content="Start/Stop" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop_Click" />
+        <Button x:Name="Button2" Content="Button" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button x:Name="Button3" Content="Button" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button x:Name="Button4" Content="Button" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
+        <Button x:Name="Button5" Content="Button" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />
         
         <!-- Footer -->
         <Image HorizontalAlignment="Right" Height="108" Margin="0,80,10,13" VerticalAlignment="Bottom" Width="108" Source="Assets/logo-cinnovate.jpg"/>
