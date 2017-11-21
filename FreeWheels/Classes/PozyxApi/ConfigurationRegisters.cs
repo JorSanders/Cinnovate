@@ -177,10 +177,9 @@ namespace FreeWheels.Classes.PozyxApi
         /// </param>
         public static void PosAlg(int algorithm, int dim)
         {
-            byte parameters = 0x0;
-            parameters &= (byte)algorithm;
+            byte parameters = (byte)algorithm;
             byte dimByte = (byte)(dim << 4);
-            parameters &= dimByte;
+            parameters |= dimByte;
 
             byte[] request = { 0x16, parameters };
             Connection.Write(request);

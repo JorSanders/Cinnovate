@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,13 +35,34 @@ namespace FreeWheels.Classes.PozyxApi
         {
             try
             {
+                bool debug = false;
+
+                if (debug)
+                {
+                    Debug.Write("Request\n");
+
+                    foreach (byte reques in request)
+                    {
+                        Debug.Write(reques.ToString("X2") + "\n");
+                    }
+                }
                 var data = new byte[length];
                 _PozyxShield.WriteRead(request, data);
+                if (debug)
+                {
+                    Debug.Write("data\n");
+
+                    foreach (byte dat in data)
+                    {
+                        Debug.Write(dat.ToString("X2") + "\n");
+                    }
+                }
                 return data;
+
             }
             catch (Exception ex)
             {
-                return new byte[0];
+                return new byte[length];
             }
         }
 
@@ -65,7 +87,7 @@ namespace FreeWheels.Classes.PozyxApi
             }
             catch (Exception ex)
             {
-                return new byte[0];
+                return new byte[length];
             }
         }
 

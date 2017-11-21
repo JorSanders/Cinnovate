@@ -187,7 +187,7 @@ namespace FreeWheels.Classes.PozyxApi
 
             List<int> anchorIds = new List<int>();
 
-            if(data[0] == 1)
+            if(data[0] == 0)
             {
                 return anchorIds;
             }

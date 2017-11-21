@@ -32,7 +32,11 @@ namespace FreeWheels.Classes
             DeviceListFunctions.DeviceAdd(24647, 1, 0, 8123, 1900);
             DeviceListFunctions.DeviceAdd(24617, 1, 3105, 8176, 2050);
 
-            ConfigurationRegisters.PosAlg(0, 3);
+            
+            ConfigurationRegisters.PosAlg(4, 3);
+
+            int[] posAlg = ConfigurationRegisters.PosAlg();
+            Debug.Write("PosAlg:" + posAlg[0] + ", " + posAlg[1]);
 
             ConfigurationRegisters.PosInterval(200);
         }
