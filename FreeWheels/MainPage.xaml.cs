@@ -47,19 +47,21 @@ namespace FreeWheels
             this.InitializeComponent();
             _Pozyx = new Pozyx();
 
+            /*
             this.Tag = new Position();
             this.Anchors = new Position[4];
             this.Anchors[0] = new Position(0, 0, 1880);
             this.Anchors[1] = new Position(0, 2554, 1600);
             this.Anchors[2] = new Position(8123, 0, 1900);
             this.Anchors[3] = new Position(8176, 3105, 2050);
+            */
 
             GridCanvas.Invalidate();
         }
 
         async void Start()
         {
-            ConfigurationRegisters.PosAlg(0, 3);
+            ConfigurationRegisters.PosAlg(0, 2);
             ConfigurationRegisters.PosInterval(400);
 
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
@@ -83,16 +85,6 @@ namespace FreeWheels
             this.Timestamp.Text = "Timestamp: " + timeStamp;
 
             this.GridCanvas.Invalidate();
-
-        }
-
-        private async void TestGrid_Click(object sender, RoutedEventArgs e)
-        {
-
-            // Get Screen Size/Bounds
-            var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
-            var scaleFactor = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-            var size = new Size(bounds.Width * scaleFactor, bounds.Height * scaleFactor);
 
         }
 
@@ -137,7 +129,7 @@ namespace FreeWheels
             }
 
             //Anchor Test
-            foreach(Position anchor in this.Anchors)
+            foreach (Position anchor in this.Anchors)
             {
                 args.DrawingSession.DrawEllipse((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, 5, Colors.Blue);
                 args.DrawingSession.FillCircle((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, Colors.Blue);
@@ -169,86 +161,9 @@ namespace FreeWheels
             GridCanvas.Visibility = Visibility.Visible;
         }
 
-        private void ManualButton_Click(object sender, RoutedEventArgs e)
+        private async void Setup_Click(object sender, RoutedEventArgs e)
         {
-            Debug.Write("Manual\n");
-            DeviceListFunctions.DeviceAdd(24632, 1, 0, 0, 1800);
-            DeviceListFunctions.DeviceAdd(24667, 1, 2500, 0, 1500);
-            DeviceListFunctions.DeviceAdd(24617, 1, 0, 8200, 1800);
-            DeviceListFunctions.DeviceAdd(24647, 1, 2500, 8200, 2000);
-        }
-
-        private void CalibButton_Click(object sender, RoutedEventArgs e)
-        {
-            int[] deviceIds = DeviceListFunctions.DevicesGetIds(0, 4);
-            Debug.Write("Calib\n");
-            DeviceListFunctions.CalibrateDevices(2, 10, deviceIds);
-        }
-
-        private void DiscoverButton_Click(object sender, RoutedEventArgs e)
-        {
-            Debug.Write("Discover\n");
-            DeviceListFunctions.DevicesDiscover(0);
-        }
-
-        private void SetAnchors_Click(object sender, RoutedEventArgs e)
-        {
-            Debug.Write("Set anchors\n");
-            int[] deviceIds = DeviceListFunctions.DevicesGetIds(0, 4);
-            RegisterFunctions.PosSetAnchorIds(deviceIds);
-        }
-
-        private void AnchorPosButton_Click(object sender, RoutedEventArgs e)
-        {
-            int[] anchorIds = RegisterFunctions.PosGetAnchorIds().ToArray();
-            Debug.Write("Anchor pos\n");
-            foreach (int anchorId in anchorIds)
-            {
-                Debug.Write(anchorId + " \n");
-                int[] pos = DeviceListFunctions.DeviceGetCoords(anchorId);
-                Debug.Write(pos[0] + " \n");
-                Debug.Write(pos[1] + " \n");
-                Debug.Write(pos[2] + " \n\n");
-
-            }
-        }
-
-        private void Clear_Click(object sender, RoutedEventArgs e)
-        {
-            Debug.Write("Clear\n");
-            DeviceListFunctions.DevicesClear();
-        }
-
-        private void Aids_Click(object sender, RoutedEventArgs e)
-        {
-            int[] anchorIds = RegisterFunctions.PosGetAnchorIds().ToArray();
-            int[][] anchors = new int[anchorIds.Length][];
-            Debug.Write("Anchor pos\n");
-            int i = 0;
-            foreach (int anchorId in anchorIds)
-            {
-                Debug.Write(anchorId + " \n");
-                int[] pos = DeviceListFunctions.DeviceGetCoords(anchorId);
-                Debug.Write(pos[0] + " \n");
-                Debug.Write(pos[1] + " \n");
-                Debug.Write(pos[2] + " \n\n");
-
-                anchors[i] = new int[4];
-                anchors[i][0] = anchorId;
-                anchors[i][1] = pos[0];
-                anchors[i][2] = pos[1];
-                anchors[i][3] = pos[2];
-                i++;
-            }
-
-            //DeviceListFunctions.DevicesClear();
-            int height = 2000;
-
-            for (int j = 0; j < anchors.Length; j++)
-            {
-                DeviceListFunctions.DeviceAdd(anchors[j][0], 1, anchors[j][1], anchors[j][2], height);
-            }
-
+            _Pozyx.SetAnchors();
         }
     }
 }
