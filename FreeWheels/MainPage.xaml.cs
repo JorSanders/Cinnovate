@@ -50,15 +50,9 @@ namespace FreeWheels
             this.Init = true;
             this.InitializeComponent();
             _Pozyx = new Pozyx();
+            this.Tag = new Position();
 
             dispatcherTimer = new DispatcherTimer();
-
-            this.Tag = new Position();
-            this.Anchors = new Position[4];
-            this.Anchors[0] = new Position(0, 0, 1880);
-            this.Anchors[1] = new Position(0, 2554, 1600);
-            this.Anchors[2] = new Position(8123, 0, 1900);
-            this.Anchors[3] = new Position(8176, 3105, 2050);
 
             GridCanvas.Invalidate();
         }
@@ -77,7 +71,7 @@ namespace FreeWheels
             this.GridCanvas.Invalidate();
 
             string err = StatusRegisters.ErrorCode();
-            if(err != "0x00 - Success")
+            if (err != "0x00 - Success")
             {
                 Debug.WriteLine("ERROR: " + err);
             }
@@ -125,18 +119,30 @@ namespace FreeWheels
                 args.DrawingSession.DrawText((Math.Round(i / space) - 1).ToString(), 0, i + 3, Colors.LightGray, textFormat);
             }
 
+
             //Draw Anchors
-            foreach (Position anchor in this.Anchors)
+            /*
+            foreach (Anchor anchor in _Pozyx.Anchors)
             {
                 args.DrawingSession.DrawEllipse((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, 5, Colors.Blue);
                 args.DrawingSession.FillCircle((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, Colors.Blue);
-                args.DrawingSession.DrawText("ID: 0x6038", (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
+                args.DrawingSession.DrawText("ID: " + anchor.Id.ToString(), (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
                 args.DrawingSession.DrawText(anchor.X + "," + anchor.Y + "," + anchor.Z, (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 20), Colors.DarkGray, textFormat);
+            }
+            */
+            foreach (Anchor anchor in _Pozyx.Anchors)
+            {
+                args.DrawingSession.DrawEllipse((float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space), 5, 5, Colors.Blue);
+                args.DrawingSession.FillCircle((float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space), 5, Colors.Blue);
+                args.DrawingSession.DrawText("ID: " + anchor.Id.ToString("x4"), (float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
+                args.DrawingSession.DrawText(anchor.X + "," + anchor.Y + "," + anchor.Z, (float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space + 20), Colors.DarkGray, textFormat);
             }
 
             //Draw Tag
-            //args.DrawingSession.DrawEllipse((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, 5, Colors.Green);
-            //args.DrawingSession.FillCircle((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, Colors.Green);
+            /*
+            args.DrawingSession.DrawEllipse((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, 5, Colors.Green);
+            args.DrawingSession.FillCircle((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, Colors.Green);
+            */
 
             args.DrawingSession.DrawEllipse((float)(this.Tag.Y * pixelSize + space), (float)(this.Tag.X * pixelSize + space), 5, 5, Colors.Green);
             args.DrawingSession.FillCircle((float)(this.Tag.Y * pixelSize + space), (float)(this.Tag.X * pixelSize + space), 5, Colors.Green);
@@ -153,6 +159,7 @@ namespace FreeWheels
             if (dispatcherTimer.IsEnabled)
             {
                 dispatcherTimer.Stop();
+                Button1.IsEnabled = true;
                 Button2.IsEnabled = true;
                 Button3.IsEnabled = true;
                 Button4.IsEnabled = true;
@@ -172,6 +179,7 @@ namespace FreeWheels
                 }
 
                 dispatcherTimer.Start();
+                Button1.IsEnabled = false;
                 Button2.IsEnabled = false;
                 Button3.IsEnabled = false;
                 Button4.IsEnabled = false;
@@ -180,10 +188,46 @@ namespace FreeWheels
 
         }
 
-        private void TestClick_Button(object sender, RoutedEventArgs e)
+        private async void StartStop2_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (dispatcherTimer.IsEnabled)
+            {
+                dispatcherTimer.Stop();
+                Button2.IsEnabled = true;
+                Button3.IsEnabled = true;
+                Button4.IsEnabled = true;
+                Button5.IsEnabled = true;
+            }
+            else if (_Pozyx.Anchors.Count >= 4)
+            {
+                _Pozyx.setConfiguration();
+                dispatcherTimer.Tick += dispatcherTimer_Tick;
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+
+                GridCanvas.Visibility = Visibility.Visible;
+
+                dispatcherTimer.Start();
+                Button2.IsEnabled = false;
+                Button4.IsEnabled = false;
+                Button5.IsEnabled = false;
+            }
+
         }
 
+        private async void DiscoverAnchors_Click(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Stop();
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
+            await _Pozyx.SetAnchors();
+            Button1.IsEnabled = true;
+            Button2.IsEnabled = true;
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+        }
     }
 }
