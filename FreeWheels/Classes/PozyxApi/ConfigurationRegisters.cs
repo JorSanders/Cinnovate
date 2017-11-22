@@ -92,7 +92,7 @@ namespace FreeWheels.Classes.PozyxApi
             byte[] request = { 0x14 };
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return new int[] { data[0] & 0xF0, data[0] & 0x0F };
+            return new int[] { data[0] >> 4, data[0] & 0x0F };
         }
 
         /// <summary>

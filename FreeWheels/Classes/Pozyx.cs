@@ -20,7 +20,7 @@ namespace FreeWheels.Classes
         public async Task LetsGo()
         {
 
-            Debug.WriteLine("INFO: Flash Reset" + (RegisterFunctions.FlashReset() ? "SUCCESS" : "FAILURE"));
+            Debug.WriteLine("INFO: Flash Reset - " + (RegisterFunctions.FlashReset() ? "SUCCESS" : "FAILURE"));
             await (Task.Delay(5000));
 
             DeviceListFunctions.DevicesClear();
@@ -57,8 +57,8 @@ namespace FreeWheels.Classes
             Debug.WriteLine("PosAlg:" + posAlg[0] + ", " + posAlg[1]);
             await (Task.Delay(1000));
 
-            ConfigurationRegisters.PosFilter(15, 1);
-            Debug.WriteLine("INFO: Set Position Filter - 15, 1");
+            ConfigurationRegisters.PosFilter(15, 3);
+            Debug.WriteLine("INFO: Set Position Filter - 15, 4");
             await (Task.Delay(1000));
 
             int[] posFilter = ConfigurationRegisters.PosFilter();
@@ -71,6 +71,7 @@ namespace FreeWheels.Classes
 
             Debug.WriteLine("PosInterval:" + ConfigurationRegisters.PosInterval());
             await (Task.Delay(1000));
+
         }
 
     }

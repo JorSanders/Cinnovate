@@ -135,8 +135,11 @@ namespace FreeWheels
             }
 
             //Draw Tag
-            args.DrawingSession.DrawEllipse((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, 5, Colors.Green);
-            args.DrawingSession.FillCircle((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, Colors.Green);
+            //args.DrawingSession.DrawEllipse((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, 5, Colors.Green);
+            //args.DrawingSession.FillCircle((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, Colors.Green);
+
+            args.DrawingSession.DrawEllipse((float)(this.Tag.Y * pixelSize + space), (float)(this.Tag.X * pixelSize + space), 5, 5, Colors.Green);
+            args.DrawingSession.FillCircle((float)(this.Tag.Y * pixelSize + space), (float)(this.Tag.X * pixelSize + space), 5, Colors.Green);
 
         }
 
