@@ -14,17 +14,16 @@ namespace FreeWheels.Tests
     {
 
         private Pozyx _Pozyx;
-
-
+        private Position position;
 
         public StandardDeviation(Pozyx pozyx)
         {
             _Pozyx = pozyx;
+            this.position = new Position();
         }
 
         public async Task<List<int>> coords()
         {
-
 
             _Pozyx.LetsGo();
             await Task.Delay(500);
@@ -59,12 +58,8 @@ namespace FreeWheels.Tests
 
             DateTime dt = DateTime.Now.AddMilliseconds(5000);
 
-
-
-
             Debug.WriteLine("------");
             Debug.WriteLine("------");
-
 
             //Device info
 
@@ -130,24 +125,43 @@ namespace FreeWheels.Tests
 
         }
 
-        //void dispatcherTimer_Tick(object sender, object e)
-        //{
+        public double[] GetDeviations(List<Position> data)
+        {
+            double[] deviations = new double[data.Count];
 
+            for (int i = 0; i < data.Count; i ++)
+            {
+                // D² = A² + B² + C²
+                deviations[i] = Math.Sqrt(Math.Pow(data[i].X, 2) + Math.Pow(data[i].Y, 2) + Math.Pow(data[i].Z, 2));
+            }
 
-        //    xList.Add(PositioningData.PosX());
-        //    yList.Add(PositioningData.PosY());
-        //    zList.Add(PositioningData.PosZ());
+            return deviations;
+        }
 
-        //    for (int i = 0; i < xList.Count; i++)
-        //    {
-        //        Debug.WriteLine(xList[i]);
-        //    }
+        public double GetStandardDeviation(List<Position> PosList)
+        {
+            //Convert Positions List
+            double[] data = GetDeviations(PosList);
 
+            int size = data.Length;
+            double total = data.Sum();
+            double average = total / size;
 
-        //    String timeStamp = DateTime.Now.ToString();
+            double[] deviations = new double[size];
 
+            // Calc Deviation on Average
+            for(int i = 0; i < size; i++)
+            {
+                deviations[i] = Math.Pow(data[i] - average, 2);
+            }
 
-        //}
+            double deviationsTotal = deviations.Sum();
+            double averageDeviation = deviationsTotal / size;
+            double standardDeviation = Math.Sqrt(averageDeviation);
+
+            return standardDeviation;
+
+        }
 
     }
 }
