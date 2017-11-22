@@ -14,5 +14,6 @@
         <TextBlock x:Name="Timestamp" HorizontalAlignment="Left" Margin="10,10,0,35" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom" Foreground="#FF666666" />
         <TextBlock HorizontalAlignment="Left" Margin="10,10,0,10" TextWrapping="Wrap" Text="Smart World - Project FreeWheels" VerticalAlignment="Bottom" Foreground="#FF666666" />
         <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontFamily="Tahoma" FontSize="36"/>
+        <Button x:Name="GetStandardDeviation" Content="Deviation" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="GetStandardDeviation_Click" />
     </Grid>
 </Page>

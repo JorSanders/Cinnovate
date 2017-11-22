@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Text;
 using FreeWheels.Classes;
 using FreeWheels.Classes.PozyxApi;
+using FreeWheels.Tests;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -50,6 +51,7 @@ namespace FreeWheels
             dispatcherTimer.Start();
         }
 
+
         void dispatcherTimer_Tick(object sender, object e)
         {
             int x = PositioningData.PosX();
@@ -74,5 +76,15 @@ namespace FreeWheels
             this.StartButton.Visibility = Visibility.Collapsed;
         }
 
+        private void GetStandardDeviation_Click(object sender, RoutedEventArgs e)
+        {
+            StandardDeviation standard = new StandardDeviation(_Pozyx);
+
+            Task<List<int>> coordResult = standard.coords();
+
+
+            
+
+        }
     }
 }
