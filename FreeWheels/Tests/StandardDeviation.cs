@@ -28,10 +28,6 @@ namespace FreeWheels.Tests
             _Pozyx.LetsGo();
             await Task.Delay(500);
 
-            //Count number of bad data returns
-            long xlowest = 10000;
-            long countwrong = 0;
-
             //Interval xyz results
             List<int> xList = new List<int>();
             List<int> yList = new List<int>();
@@ -52,62 +48,43 @@ namespace FreeWheels.Tests
 
             //Time
             int timeDelay = 200;
-            int numResults = 100;
-            int numOfResults = 0;
-
-
+            int numResults = 0;
             DateTime dt = DateTime.Now.AddMilliseconds(5000);
 
+            //start sign
             Debug.WriteLine("------");
-            Debug.WriteLine("------");
 
-            //Device info
-
-
-            //DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            //dispatcherTimer.Tick += dispatcherTimer_Tick;
-            //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
-
-            //dispatcherTimer.Start();
-
-
-            //if (zList.Count == 10)
-            //{
-            //    dispatcherTimer.Stop();
-            //}
-
-            for (int i = 0; i < numResults; i++)
+            while (dt > DateTime.Now)
             {
-                //
-                if (dt < DateTime.Now)
-                {
-                    i = numResults;
-                    Debug.WriteLine(numOfResults);
-                }
-                
-                //
+                //adds x y and z to lists
                 xList.Add(PositioningData.PosX());
                 yList.Add(PositioningData.PosY());
                 zList.Add(PositioningData.PosZ());
+                //calculates the sum of x y and z
+                sumX += PositioningData.PosX();
+                sumY += PositioningData.PosY();
+                sumZ += PositioningData.PosZ();
+                numResults++;
+                await Task.Delay(timeDelay);
+            }
+            //confirms finished result
+            Debug.WriteLine("Adding positioning finished");
+
+            //prints the x y and z results
+            Debug.WriteLine("number of results " + numResults);
+            for (int i = 0; i < numResults; i++)
+            {
                 Debug.Write(xList[i] + " ");
                 Debug.Write(yList[i] + " ");
                 Debug.WriteLine(zList[i]);
-                sumX += xList[i];
-                sumY += yList[i];
-                sumZ += zList[i];
-
-
-                await Task.Delay(timeDelay);
-                numOfResults++;
-
-
+                await Task.Delay(100);
             }
 
-
-            //average
+            //calculates the average x y and z results
             averageX = sumX / numResults;
             averageY = sumY / numResults;
             averageZ = sumZ / numResults;
+
             Debug.WriteLine("----------------------------------------------");
             Debug.WriteLine("Last " + numResults + " results averages: ");
             Debug.Write("Location ");
@@ -118,11 +95,9 @@ namespace FreeWheels.Tests
             Debug.Write(" z(" + convType + "): ");
             Debug.WriteLine(averageZ / convValue);
             Debug.WriteLine("----------------------------------------------");
-
-
+            
 
             return xList;
-
         }
 
         public double[] GetDeviations(List<Position> data)
