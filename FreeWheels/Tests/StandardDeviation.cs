@@ -15,6 +15,7 @@ namespace FreeWheels.Tests
 
         private Pozyx _Pozyx;
         private Position position;
+        public List<Position> PositionsList;
 
         public StandardDeviation(Pozyx pozyx)
         {
@@ -22,11 +23,15 @@ namespace FreeWheels.Tests
             this.position = new Position();
         }
 
-        public async Task<List<int>> coords()
+        // public async Task<List<int>> coords()
+        public async Task coords()
         {
-
+            RegisterFunctions.ResetSys();
+            await Task.Delay(2000);
+            RegisterFunctions.FlashReset();
+            await Task.Delay(2000);
             _Pozyx.LetsGo();
-            await Task.Delay(500);
+            await Task.Delay(2000);
 
             //Interval xyz results
             List<int> xList = new List<int>();
@@ -54,50 +59,59 @@ namespace FreeWheels.Tests
             //start sign
             Debug.WriteLine("------");
 
+            List<Position> PosList = new List<Position>();
+
             while (dt > DateTime.Now)
             {
+                int x = PositioningData.PosX();
+                int y = PositioningData.PosY();
+                int z = PositioningData.PosZ();
+
+                PosList.Add(new Position(x, y, z));
+
                 //adds x y and z to lists
-                xList.Add(PositioningData.PosX());
-                yList.Add(PositioningData.PosY());
-                zList.Add(PositioningData.PosZ());
-                //calculates the sum of x y and z
-                sumX += PositioningData.PosX();
-                sumY += PositioningData.PosY();
-                sumZ += PositioningData.PosZ();
-                numResults++;
+                //xList.Add(PositioningData.PosX());
+                //yList.Add(PositioningData.PosY());
+                //zList.Add(PositioningData.PosZ());
+                ////calculates the sum of x y and z
+                //sumX += PositioningData.PosX();
+                //sumY += PositioningData.PosY();
+                //sumZ += PositioningData.PosZ();
+                //numResults++;
                 await Task.Delay(timeDelay);
             }
             //confirms finished result
-            Debug.WriteLine("Adding positioning finished");
+            //Debug.WriteLine("Adding positioning finished");
 
-            //prints the x y and z results
-            Debug.WriteLine("number of results " + numResults);
-            for (int i = 0; i < numResults; i++)
-            {
-                Debug.Write(xList[i] + " ");
-                Debug.Write(yList[i] + " ");
-                Debug.WriteLine(zList[i]);
-                await Task.Delay(100);
-            }
+            ////prints the x y and z results
+            //Debug.WriteLine("number of results " + numResults);
+            //for (int i = 0; i < numResults; i++)
+            //{
+            //    Debug.Write(xList[i] + " ");
+            //    Debug.Write(yList[i] + " ");
+            //    Debug.WriteLine(zList[i]);
+            //    await Task.Delay(100);
+            //}
 
-            //calculates the average x y and z results
-            averageX = sumX / numResults;
-            averageY = sumY / numResults;
-            averageZ = sumZ / numResults;
+            ////calculates the average x y and z results
+            //averageX = sumX / numResults;
+            //averageY = sumY / numResults;
+            //averageZ = sumZ / numResults;
 
-            Debug.WriteLine("----------------------------------------------");
-            Debug.WriteLine("Last " + numResults + " results averages: ");
-            Debug.Write("Location ");
-            Debug.Write("x(" + convType + "): ");
-            Debug.Write(averageX / convValue);
-            Debug.Write(" y(" + convType + "): ");
-            Debug.Write(averageY / convValue);  
-            Debug.Write(" z(" + convType + "): ");
-            Debug.WriteLine(averageZ / convValue);
-            Debug.WriteLine("----------------------------------------------");
-            
+            //Debug.WriteLine("----------------------------------------------");
+            //Debug.WriteLine("Last " + numResults + " results averages: ");
+            //Debug.Write("Location ");
+            //Debug.Write("x(" + convType + "): ");
+            //Debug.Write(averageX / convValue);
+            //Debug.Write(" y(" + convType + "): ");
+            //Debug.Write(averageY / convValue);  
+            //Debug.Write(" z(" + convType + "): ");
+            //Debug.WriteLine(averageZ / convValue);
+            //Debug.WriteLine("----------------------------------------------");
 
-            return xList;
+            //return xList;
+
+            this.PositionsList = PosList;
         }
 
         public double[] GetDeviations(List<Position> data)
