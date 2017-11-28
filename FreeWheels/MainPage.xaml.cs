@@ -18,8 +18,6 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
-using FreeWheels.Classes;
-using FreeWheels.Classes.PozyxApi;
 using Windows.Graphics.Imaging;
 using Windows.UI.ViewManagement;
 using Windows.Graphics.Display;
@@ -27,6 +25,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.UI;
 using Microsoft.Graphics.Canvas.Text;
+using FreeWheels.PozyxLibrary;
+using FreeWheels.PozyxLibrary.Classes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -38,39 +38,54 @@ namespace FreeWheels
     public sealed partial class MainPage : Page
     {
         private Pozyx _Pozyx;
-
-        private Position[] Anchors;
-        private Position Tag;
+        private Position _MyPosition;
 
         private DispatcherTimer dispatcherTimer;
         private bool Init;
 
         public MainPage()
         {
+            _Pozyx = new Pozyx();
             this.Init = true;
             this.InitializeComponent();
-            _Pozyx = new Pozyx();
-            this.Tag = new Position();
-
             dispatcherTimer = new DispatcherTimer();
-
             GridCanvas.Invalidate();
+            StartUp();
         }
 
-        void dispatcherTimer_Tick(object sender, object e)
+        private async Task StartUp()
         {
-            this.Tag.X = PositioningData.PosX();
-            this.Tag.Y = PositioningData.PosY();
-            this.Tag.Z = PositioningData.PosZ();
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
+            ResetButton.IsEnabled = false;
+            await _Pozyx.Connect();
+            Button1.IsEnabled = true;
+            Button2.IsEnabled = true;
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+            ResetButton.IsEnabled = true;
+        }
 
-            this.Output.Text = "x: " + this.Tag.X + "\t y: " + this.Tag.Y + "\t z: " + this.Tag.Z;
+        void DispatcherTimer_Tick(object sender, object e)
+        {
+            _MyPosition = new Position(
+                _Pozyx.PositioningData.PosX(),
+                _Pozyx.PositioningData.PosY(),
+                _Pozyx.PositioningData.PosZ()
+                );
+            
+            this.Output.Text = "x: " + _MyPosition.X + "\t y: " + _MyPosition.Y + "\t z: " + _MyPosition.Z;
 
             String timeStamp = DateTime.Now.ToString();
             this.Timestamp.Text = "Timestamp: " + timeStamp;
 
             this.GridCanvas.Invalidate();
 
-            string err = StatusRegisters.ErrorCode();
+            string err = _Pozyx.StatusRegisters.ErrorCode();
             if (err != "0x00 - Success")
             {
                 Debug.WriteLine("ERROR: " + err);
@@ -144,14 +159,14 @@ namespace FreeWheels
             args.DrawingSession.FillCircle((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, Colors.Green);
             */
 
-            args.DrawingSession.DrawEllipse((float)(this.Tag.Y * pixelSize + space), (float)(this.Tag.X * pixelSize + space), 5, 5, Colors.Green);
-            args.DrawingSession.FillCircle((float)(this.Tag.Y * pixelSize + space), (float)(this.Tag.X * pixelSize + space), 5, Colors.Green);
+            args.DrawingSession.DrawEllipse((float)(_MyPosition.Y * pixelSize + space), (float)(_MyPosition.X * pixelSize + space), 5, 5, Colors.Green);
+            args.DrawingSession.FillCircle((float)(_MyPosition.Y * pixelSize + space), (float)(_MyPosition.X * pixelSize + space), 5, Colors.Green);
 
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            RegisterFunctions.ResetSys();
+            _Pozyx.RegisterFunctions.ResetSys();
         }
 
         private async void StartStop_Click(object sender, RoutedEventArgs e)
@@ -172,7 +187,7 @@ namespace FreeWheels
                     this.Init = false;
                     await _Pozyx.LetsGo();
 
-                    dispatcherTimer.Tick += dispatcherTimer_Tick;
+                    dispatcherTimer.Tick += DispatcherTimer_Tick;
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
 
                     GridCanvas.Visibility = Visibility.Visible;
@@ -188,7 +203,7 @@ namespace FreeWheels
 
         }
 
-        private async void StartStop2_Click(object sender, RoutedEventArgs e)
+        private void StartStop2_Click(object sender, RoutedEventArgs e)
         {
             if (dispatcherTimer.IsEnabled)
             {
@@ -200,8 +215,8 @@ namespace FreeWheels
             }
             else if (_Pozyx.Anchors.Count >= 4)
             {
-                _Pozyx.setConfiguration();
-                dispatcherTimer.Tick += dispatcherTimer_Tick;
+                _Pozyx.SetConfiguration();
+                dispatcherTimer.Tick += DispatcherTimer_Tick;
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
 
                 GridCanvas.Visibility = Visibility.Visible;

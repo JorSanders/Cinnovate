@@ -1,13 +1,22 @@
-﻿using System;
+﻿using FreeWheels.PozyxLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class ConfigurationRegisters
+    public class ConfigurationRegisters
     {
+
+        private IConnection Connection;
+
+        public ConfigurationRegisters(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
+
         /// <summary>
         ///     This register configures the external interrupt pin of the Pozyx device. It should be configured in combination with the POZYX_INT_MASK register.
         /// </summary>
@@ -36,7 +45,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     0 - No latch(default): the interrupt is a short pulse of about 6µs
         ///     1 - Latch: after an interrupt, the interrupt pin will stay at the active level until the POZYX_INT_STATE register is read from
         /// </param>
-        public static void IntConfig(int pinNum, int mode, int act, int latch)
+        public void IntConfig(int pinNum, int mode, int act, int latch)
         {
             byte parameters = (byte)pinNum;
             int[] options = { mode, act, latch };
@@ -54,7 +63,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See IntConfig(int pinNum, int mode, int act, int latch)
-        public static int[] IntConfig()
+        public int[] IntConfig()
         {
             byte[] request = { 0x11 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -76,7 +85,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// 	3 : MOVING_AVERAGE.A moving average filter is applied, which smoothens the trajectory.
         /// 	4 : MOVING_MEDIAN.A moving median filter is applied, which filters out outliers.
         /// </param>
-        public static void PosFilter(int strength, int filter)
+        public void PosFilter(int strength, int filter)
         {
             byte parameters = (byte)filter;
             byte strengthByte = (byte)(strength << 4);
@@ -87,7 +96,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See PosFilter(int strength, int filter)
-        public static int[] PosFilter()
+        public int[] PosFilter()
         {
             byte[] request = { 0x14 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -127,7 +136,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     0 : The LED will not blink upon transmission of an UWB message.
         ///     1 : The LED will blink upon transmission of an UWB message.
         /// </param>
-        public static void ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
+        public void ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
         {
             byte parameters = 0x0;
             bool[] leds = { led1, led2, led3, led4, ledRx, ledTx };
@@ -145,7 +154,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
-        public static bool[] ConfigLeds()
+        public bool[] ConfigLeds()
         {
             byte[] request = { 0x15 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -175,7 +184,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 : 2,5D
         ///     3 : 3D
         /// </param>
-        public static void PosAlg(int algorithm, int dim)
+        public void PosAlg(int algorithm, int dim)
         {
             byte parameters = (byte)algorithm;
             byte dimByte = (byte)(dim << 4);
@@ -186,7 +195,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See PosAlg(int algorithm, int dim)
-        public static int[] PosAlg()
+        public int[] PosAlg()
         {
             byte[] request = { 0x16 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -205,7 +214,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     0 : indicates fixed anchor set. 
         ///     1 : indicates automatic anchor selection.
         /// </param>
-        public static void PosNumAnchors(int num, int mode)
+        public void PosNumAnchors(int num, int mode)
         {
             byte parameters = 0x0;
             parameters &= (byte)num;
@@ -217,7 +226,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // PosNumAnchors(int num, int mode)
-        public static int[] PosNumAnchors()
+        public int[] PosNumAnchors()
         {
             byte[] request = { 0x17 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -233,7 +242,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     The value is capped between 10ms and 60000ms (1 minute). 
         ///     Writing the value 0 to this registers disables the continuous mode.
         /// </param>
-        public static void PosInterval(int interval)
+        public void PosInterval(int interval)
         {
             byte[] intervalBytes = BitConverter.GetBytes(interval);
 
@@ -242,7 +251,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See void PosInterval(int interval)
-        public static int PosInterval()
+        public int PosInterval()
         {
             byte[] request = { 0x18 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -254,7 +263,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     set the network id
         /// </summary>
         /// <param name="networkID"></param>
-        public static void NetworkID(int networkID)
+        public void NetworkID(int networkID)
         {
             byte[] request = new byte[3];
             request[0] = 0x1A;
@@ -264,7 +273,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See NetworkId(NetworkID(int networkID))
-        public static int NetworkID()
+        public int NetworkID()
         {
             byte[] request = { 0x1A };
             return BitConverter.ToInt32(Connection.ReadWrite(request, 2), 0);
@@ -284,7 +293,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     5 : Centre frequency 6489.6MHz, using the band(MHz): 6240 – 6739.2 bandwidth 499.2 MHz
         ///     7 : Centre frequency 6489.6MHz, using the band(MHz): 5980.3 – 6998.9 bandwidth 1081.6 MHz(capped to 900MHz)
         /// </param>
-        public static void UwbChannel(int uwbChannel)
+        public void UwbChannel(int uwbChannel)
         {
             byte[] request = { 0x1C, (byte)uwbChannel };
             Connection.Write(request);
@@ -292,7 +301,7 @@ namespace FreeWheels.Classes.PozyxApi
 
 
         // See UwbChannel(int uwbChannel)
-        public static int UwbChannel()
+        public int UwbChannel()
         {
             byte[] request = { 0x1C };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -309,7 +318,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="rxData">Enables interrupts whenever data is received through the ultra-wideband network.</param>
         /// <param name="funt">Enables interrupts whenever a register function call has completed.</param>
         /// <param name="pin">Configures the interrupt pin.</param>
-        public static void IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
+        public void IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
         {
             byte parameters = 0x0;
             bool[] interupts = { err, pos, imu, rxData, funt };
@@ -328,7 +337,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
-        public static List<string> IntMask()
+        public List<string> IntMask()
         {
             byte[] request = { 0x10 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -362,7 +371,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 : 16 MHz 
         ///     2 : 64 MHz (default value)
         /// </param>
-        public static void UwbRates(int bitrate, int prf)
+        public void UwbRates(int bitrate, int prf)
         {
             byte parameters = (byte)prf;
             parameters |= (byte)(prf << 6);
@@ -372,7 +381,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See UwbRates(int bitrate, int prf)
-        public static int[] UwbRates()
+        public int[] UwbRates()
         {
             byte[] request = { 0x1D };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -394,14 +403,14 @@ namespace FreeWheels.Classes.PozyxApi
         ///     20 : 128 symbols.Non-standard preamble length 128 symbols
         ///     4  : 64 symbols.Standard preamble length 64 symbols
         /// </param>
-        public static void UwbPlen(int plen)
+        public void UwbPlen(int plen)
         {
             byte[] request = { 0x1E, (byte)plen };
             Connection.Write(request);
         }
 
         // See UwbPlen(int plen)
-        public static int UwbPlen()
+        public int UwbPlen()
         {
             byte[] request = { 0x1E };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -417,14 +426,14 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="gain">
         ///     Possible values are between 0 and 67. 1dB = 2 int.
         /// </param>
-        public static void UwbGain(int gain)
+        public void UwbGain(int gain)
         {
             byte[] request = { 0x1F, (byte)gain };
             Connection.Write(request);
         }
 
         // See UwbGain(int gain)
-        public static int UwbGain()
+        public int UwbGain()
         {
             byte[] request = { 0x1F };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -438,14 +447,14 @@ namespace FreeWheels.Classes.PozyxApi
         ///     A smaller error on the operating frequency will increase the sensitivity of the UWB receiver. 
         /// </summary>
         /// <param name="xTalTrim"></param>
-        public static void XTalTrim(int xTalTrim)
+        public void XTalTrim(int xTalTrim)
         {
             byte[] request = { 0x20, (byte)xTalTrim };
             Connection.Write(request);
         }
 
         // See XTalTrim(int xTalTrim)
-        public static int XTalTrim()
+        public int XTalTrim()
         {
             byte[] request = { 0x20 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -460,14 +469,14 @@ namespace FreeWheels.Classes.PozyxApi
         ///     0: PRECISION (Default value)
         ///     1: FAST
         /// </param>
-        public static void RangeProtocol(int rangeProtocol)
+        public void RangeProtocol(int rangeProtocol)
         {
             byte[] request = { 0x21, (byte)rangeProtocol };
             Connection.Write(request);
         }
 
         // See RangeProtocol(int rangeProtocol)
-        public static int RangeProtocol()
+        public int RangeProtocol()
         {
             byte[] request = { 0x21 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -482,14 +491,14 @@ namespace FreeWheels.Classes.PozyxApi
         ///     0 : Tag mode. In tag mode, the device can more around. In this mode the device cannot be used by other devices for positioning.
         ///     1 : Anchor mode.In anchor mode the device is assumed to be immobile. The device can be used by other devices for positioning.
         /// </param>
-        public static void OperationMode(int operationMode)
+        public void OperationMode(int operationMode)
         {
             byte[] request = { 0x22, (byte)operationMode };
             Connection.Write(request);
         }
 
         // See OperationMode(int operationMode)
-        public static int OperationMode()
+        public int OperationMode()
         {
             byte[] request = { 0x22 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -517,14 +526,14 @@ namespace FreeWheels.Classes.PozyxApi
         ///         11 : NDOF_FMC_OFF
         ///         12 : NDOF
         /// </param>
-        public static void SensorsMode(int sensorMode)
+        public void SensorsMode(int sensorMode)
         {
             byte[] request = { 0x23, (byte)sensorMode };
             Connection.Write(request);
         }
 
         // See SensorsMode(int sensorMode)
-        public static int SensorsMode()
+        public int SensorsMode()
         {
             byte[] request = { 0x23 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -547,7 +556,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 : pull-up resistor. 
         ///     2 : pull-down resistor
         /// </param>
-        public static void ConfigGpio1(int mode, int pull)
+        public void ConfigGpio1(int mode, int pull)
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
@@ -557,7 +566,7 @@ namespace FreeWheels.Classes.PozyxApi
         }
 
         // See ConfigGpio1(int mode, int pull)
-        public static int[] ConfigGpio1()
+        public int[] ConfigGpio1()
         {
             byte[] request = { 0x27 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -565,7 +574,7 @@ namespace FreeWheels.Classes.PozyxApi
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
 
-        public static void ConfigGpio2(int mode, int pull)
+        public void ConfigGpio2(int mode, int pull)
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
@@ -574,7 +583,7 @@ namespace FreeWheels.Classes.PozyxApi
             Connection.Write(request);
         }
 
-        public static int[] ConfigGpio2()
+        public int[] ConfigGpio2()
         {
             byte[] request = { 0x28 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -582,7 +591,7 @@ namespace FreeWheels.Classes.PozyxApi
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
 
-        public static void ConfigGpio3(int mode, int pull)
+        public void ConfigGpio3(int mode, int pull)
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
@@ -591,7 +600,7 @@ namespace FreeWheels.Classes.PozyxApi
             Connection.Write(request);
         }
 
-        public static int[] ConfigGpio3()
+        public int[] ConfigGpio3()
         {
             byte[] request = { 0x29 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -599,7 +608,7 @@ namespace FreeWheels.Classes.PozyxApi
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
 
-        public static void ConfigGpio4(int mode, int pull)
+        public void ConfigGpio4(int mode, int pull)
         {
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
@@ -608,7 +617,7 @@ namespace FreeWheels.Classes.PozyxApi
             Connection.Write(request);
         }
 
-        public static int[] ConfigGpio4()
+        public int[] ConfigGpio4()
         {
             byte[] request = { 0x2A };
             byte[] data = Connection.ReadWrite(request, 1);
