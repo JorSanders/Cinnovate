@@ -113,13 +113,13 @@ namespace FreeWheels.Tests
             double averageDeviation = deviationsTotal / size;
             double standardDeviation = Math.Sqrt(averageDeviation);
 
-            return standardDeviation;
+            return Math.Round(standardDeviation,2);
 
         }
 
         public double GetAverage()
         {
-            return this.DeviationsList.Sum() / this.DeviationsList.Length;
+            return Math.Round(this.DeviationsList.Sum() / this.DeviationsList.Length, 2);
         }
 
         public double GetMedian()
@@ -202,9 +202,10 @@ namespace FreeWheels.Tests
             testResult.Average = average;
             testResult.StandardDeviation = standardDeviation;
 
-            Export.Add("Average result of " + testResult.TotalResults + " x,y,z positions: ;");
-            Export.Add("Location X; Location Y; Location Z");
-            Export.Add(testResult.Average.ToString());
+            Export.Add(testResult.TotalResults + " x,y,z results");
+            Export.Add("Average ;" + average.ToString());
+            Export.Add("Standard Deviation ;" + standardDeviation.ToString());
+            
             ExportData(Export);
             
             return testResult;

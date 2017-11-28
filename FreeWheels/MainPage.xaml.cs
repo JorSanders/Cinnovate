@@ -32,6 +32,7 @@ namespace FreeWheels
     public sealed partial class MainPage : Page
     {
         private Pozyx _Pozyx;
+        private static int X = 0;
 
         public MainPage()
         {
@@ -78,11 +79,38 @@ namespace FreeWheels
 
         private async void GetStandardDeviation_Click(object sender, RoutedEventArgs e)
         {
-            StandardDeviation standard = new StandardDeviation(_Pozyx);
 
-            await (standard.coords(5000, 200));
+            int Duration = 5000;
+            int timeDelay = Duration + 6000;
+            int Interval = 200;
+
+            StandardDeviation standard = new StandardDeviation(_Pozyx);
+            Debug.WriteLine("Test Progress started");
+            TestProgress(timeDelay);
+            Debug.WriteLine("Getting coords started");
+            await (standard.coords(Duration, Interval));
+            Debug.WriteLine("Finished");
+
 
             var testResult = standard.GetTestResult();
+
+        }
+
+        private async void TestProgress(int timeDelay)
+        {
+            int progressLength = 10;
+            int awaitTime = (timeDelay) / 10;
+            
+            for (int i = 0; i < progressLength; i++)
+            {
+                X += 1;
+                ProgressBarcontrol.Value = X;
+                if (X >= ProgressBarcontrol.Maximum) X = 0;
+                await Task.Delay(awaitTime);
+            }
+            await Task.Delay(100);
+            Loading.Text = "Finished";
+            ProgressBarcontrol.Visibility = Visibility.Collapsed;
 
         }
     }
