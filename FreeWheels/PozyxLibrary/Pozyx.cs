@@ -1,24 +1,50 @@
-﻿using FreeWheels.Classes.PozyxApi;
+﻿using FreeWheels.PozyxLibrary.Classes;
+using FreeWheels.PozyxLibrary.Interfaces;
+using FreeWheels.PozyxLibrary.RegisterHeaders;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 
-namespace FreeWheels.Classes
+namespace FreeWheels.PozyxLibrary
 {
     public class Pozyx
     {
+        private IConnection _Connection;
+        public ConfigurationRegisters ConfigurationRegisters;
+        public DeviceListFunctions DeviceListFunctions;
+        public GeneralData GeneralData;
+        public PositioningData PositioningData;
+        public RegisterFunctions RegisterFunctions;
+        public SensorData SensorData;
+        public StatusRegisters StatusRegisters;
+
         public List<Anchor> Anchors;
 
         public Pozyx()
         {
             Anchors = new List<Anchor>();
-            Connection.Connect();
-
         }
+
+        public async Task ConnectI2c()
+        {
+            _Connection = new ConnectionI2c();
+            do
+            {
+                await _Connection.Connect();
+            } while (!_Connection.connected);
+
+            ConfigurationRegisters = new ConfigurationRegisters(_Connection);
+            DeviceListFunctions = new DeviceListFunctions(_Connection);
+            GeneralData = new GeneralData(_Connection);
+            PositioningData = new PositioningData(_Connection);
+            RegisterFunctions = new RegisterFunctions(_Connection);
+            SensorData = new SensorData(_Connection);
+            StatusRegisters = new StatusRegisters(_Connection);
+        }
+
 
         /// <summary>
         ///     Discover up to 6 anchors in range. And calibrate them. Carefull this wipes the current anchorList
@@ -28,13 +54,12 @@ namespace FreeWheels.Classes
         public async Task<bool> SetAnchors(int minAnchors = 4)
         {
             bool succes;
-            int nAnchors = 6; // Pozyx can calibrate up to 6 anchors
-            int nDiscoverAttempts = 10;
-            
+            int nAnchors = 6; // TODO implement this. Maybe idleslots// Pozyx can calibrate up to 6 anchors
+
             // Clear the anchors
             Anchors = new List<Anchor>();
-            DeviceListFunctions.DevicesClear();
-            Debug.WriteLine("Devicelist cleared");
+            succes = DeviceListFunctions.DevicesClear();
+            Debug.WriteLine("Devicelist clear: " + (succes ? "succes" : "failed"));
 
             // Check the devicelist size
             int deviceListSize = await DiscoverDevices(10, 4, 0);
@@ -51,7 +76,10 @@ namespace FreeWheels.Classes
             // Set the anchor height on 1800 and the flag to 8
             foreach (int deviceId in deviceIds)
             {
-                Anchors.Add(new Anchor(deviceId, 8, 0, 0, 1800));
+                if(!AddAnchor(deviceId, 8, 0, 0, 1800))
+                {
+                    return false;
+                }
             }
 
             // Calibrate the anchors
@@ -63,7 +91,7 @@ namespace FreeWheels.Classes
             // Refresh the anchor update and print the positions
             foreach (Anchor anchor in Anchors)
             {
-                anchor.RefreshInfo();
+                RefreshAnchorInfo(anchor);
                 Debug.Write("Id: " + anchor.Id + "\t x:" + anchor.X + "\t y:" + anchor.Y + "\t z:" + anchor.Z + "\n");
             }
 
@@ -82,7 +110,7 @@ namespace FreeWheels.Classes
         /// <param name="idleSlots">Pozyx idle slot</param>
         /// <param name="idleSlotDuration">Pozyx idle slot duration</param>
         /// <returns></returns>
-        public async Task<int> DiscoverDevices(int discoverAttempts=10, int minDevices=4, int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
+        public async Task<int> DiscoverDevices(int discoverAttempts = 10, int minDevices = 4, int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
         {
             bool DiscoverSuccess;
 
@@ -96,14 +124,14 @@ namespace FreeWheels.Classes
                 deviceListSize = GeneralData.GetDeviceListSize();
                 if (deviceListSize >= minDevices)
                 {
-                    Debug.WriteLine(deviceListSize + " Devices found in " + (i+1) + " tries");
+                    Debug.WriteLine(deviceListSize + " Devices found in " + (i + 1) + " tries");
                     return deviceListSize;
                 }
             }
             return 0;
         }
 
-        public void setConfiguration()
+        public void SetConfiguration()
         {
             ConfigurationRegisters.PosInterval(100);
             ConfigurationRegisters.PosAlg(4, 3);
@@ -112,6 +140,23 @@ namespace FreeWheels.Classes
             ConfigurationRegisters.UwbRates(0, 2);
         }
 
+        public bool AddAnchor(int id, int flag, int x, int y, int z)
+        {
+            if (!DeviceListFunctions.DeviceAdd(id, flag, x, y, z))
+            {
+                return false;
+            }
+
+            Anchors.Add(new Anchor(id, flag, x, y, z));
+
+            return true;
+        }
+
+        public void RefreshAnchorInfo(Anchor anchor)
+        {
+            int[] info = DeviceListFunctions.DeviceGetInfo(anchor.Id);
+            anchor.RefreshInfo(info);
+        }
         public async Task LetsGo()
         {
 
@@ -168,6 +213,5 @@ namespace FreeWheels.Classes
             await (Task.Delay(1000));
 
         }
-
     }
 }

@@ -1,12 +1,10 @@
-using FreeWheels.Classes.PozyxApi;
-using FreeWheels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes
+namespace FreeWheels.PozyxLibrary.Classes
 {
     public class Anchor
     {
@@ -23,13 +21,10 @@ namespace FreeWheels.Classes
             X = x;
             Y = y;
             Z = z;
-
-            DeviceListFunctions.DeviceAdd(id, flag, x, y, z);
         }
 
-        public void RefreshInfo()
+        public void RefreshInfo(int[] info)
         {
-            int[] info = DeviceListFunctions.DeviceGetInfo(Id);
             this.Id = info[0];
             this.Flag = info[1];
             this.X = info[2];
