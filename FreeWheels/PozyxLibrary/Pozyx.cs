@@ -25,12 +25,12 @@ namespace FreeWheels.PozyxLibrary
 
         public Pozyx()
         {
-            _Connection = new ConnectionI2c();
             Anchors = new List<Anchor>();
         }
 
-        public async Task Connect()
+        public async Task ConnectI2c()
         {
+            _Connection = new ConnectionI2c();
             do
             {
                 await _Connection.Connect();

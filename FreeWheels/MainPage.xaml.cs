@@ -49,6 +49,7 @@ namespace FreeWheels
             this.Init = true;
             this.InitializeComponent();
             dispatcherTimer = new DispatcherTimer();
+            _MyPosition = new Position();
             //GridCanvas.Invalidate();
             StartUp();
         }
@@ -61,7 +62,7 @@ namespace FreeWheels
             Button4.IsEnabled = false;
             Button5.IsEnabled = false;
             ResetButton.IsEnabled = false;
-            await _Pozyx.Connect();
+            await _Pozyx.ConnectI2c();
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
             Button3.IsEnabled = true;
@@ -70,14 +71,14 @@ namespace FreeWheels
             ResetButton.IsEnabled = true;
         }
 
-        void DispatcherTimer_Tick(object sender, object e)
+        void dispatcherTimer_Tick(object sender, object e)
         {
             _MyPosition = new Position(
                 _Pozyx.PositioningData.PosX(),
                 _Pozyx.PositioningData.PosY(),
                 _Pozyx.PositioningData.PosZ()
                 );
-            
+
             this.Output.Text = "x: " + _MyPosition.X + "\t y: " + _MyPosition.Y + "\t z: " + _MyPosition.Z;
 
             String timeStamp = DateTime.Now.ToString();
@@ -187,7 +188,7 @@ namespace FreeWheels
                     this.Init = false;
                     await _Pozyx.LetsGo();
 
-                    dispatcherTimer.Tick += DispatcherTimer_Tick;
+                    dispatcherTimer.Tick += dispatcherTimer_Tick;
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
 
                     GridCanvas.Visibility = Visibility.Visible;
@@ -209,6 +210,7 @@ namespace FreeWheels
             {
                 dispatcherTimer.Stop();
                 Button2.IsEnabled = true;
+                Button3.Content = "Start";
                 Button3.IsEnabled = true;
                 Button4.IsEnabled = true;
                 Button5.IsEnabled = true;
@@ -216,17 +218,15 @@ namespace FreeWheels
             else if (_Pozyx.Anchors.Count >= 4)
             {
                 _Pozyx.SetConfiguration();
-                dispatcherTimer.Tick += DispatcherTimer_Tick;
+                dispatcherTimer.Tick += dispatcherTimer_Tick;
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
-
-                GridCanvas.Visibility = Visibility.Visible;
-
                 dispatcherTimer.Start();
+                GridCanvas.Visibility = Visibility.Visible; 
                 Button2.IsEnabled = false;
+                Button3.Content = "Stop";
                 Button4.IsEnabled = false;
                 Button5.IsEnabled = false;
-            }
-
+            } 
         }
 
         private async void DiscoverAnchors_Click(object sender, RoutedEventArgs e)
