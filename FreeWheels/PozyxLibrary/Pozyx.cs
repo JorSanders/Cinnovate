@@ -131,11 +131,16 @@ namespace FreeWheels.PozyxLibrary
             return 0;
         }
 
-        public void SetConfiguration()
+        public async Task SetConfiguration()
         {
             ConfigurationRegisters.PosInterval(400);
-            ConfigurationRegisters.PosAlg(0, 3);
-            ConfigurationRegisters.PosFilter(15, 1);
+            ConfigurationRegisters.PosAlg(4, 3);
+            ConfigurationRegisters.PosFilter(0, 0);
+
+            await (Task.Delay(1000));
+
+            int[] PosAlg = ConfigurationRegisters.PosAlg();
+            Debug.WriteLine(PosAlg[0] + "");
         }
 
         public bool AddAnchor(int id, int flag, int x, int y, int z)

@@ -204,7 +204,7 @@ namespace FreeWheels
 
         }
 
-        private void StartStop2_Click(object sender, RoutedEventArgs e)
+        private async void StartStop2_Click(object sender, RoutedEventArgs e)
         {
             if (dispatcherTimer.IsEnabled)
             {
@@ -217,7 +217,7 @@ namespace FreeWheels
             }
             else if (_Pozyx.Anchors.Count >= 4)
             {
-                _Pozyx.SetConfiguration();
+                await _Pozyx.SetConfiguration();
                 dispatcherTimer.Tick += dispatcherTimer_Tick;
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
                 dispatcherTimer.Start();
