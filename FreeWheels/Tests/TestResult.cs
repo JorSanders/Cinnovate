@@ -22,7 +22,7 @@ namespace FreeWheels.Tests
         public Position[] Results { get; set; }
 
         public double Median { get; set; }
-        public double Modus { get; set; }
+        public string Mode { get; set; }
         public double Average { get; set; }
         public double StandardDeviation { get; set; }
 

@@ -80,9 +80,9 @@ namespace FreeWheels
         {
             StandardDeviation standard = new StandardDeviation(_Pozyx);
 
-            await (standard.coords());
+            await (standard.coords(5000, 200));
 
-            standard.GetStandardDeviation(standard.PositionsList);
+            var testResult = standard.GetTestResult();
 
         }
     }
