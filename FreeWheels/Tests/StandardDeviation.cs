@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace FreeWheels.Tests
@@ -18,16 +19,32 @@ namespace FreeWheels.Tests
         public List<Position> PositionsList;
         public double[] DeviationsList;
         public int ZeroCount;
+        List<string> Export = new List<string>();
 
         public StandardDeviation(Pozyx pozyx)
         {
             _Pozyx = pozyx;
             this.position = new Position();
         }
+        public async void ExportData(List<string> Export)
+        {
+            //  var Export = new List<string>() { "1; 2; 6", "x;y;z" };
+
+            StorageFolder folder = ApplicationData.Current.LocalFolder;
+            StorageFile sample = await folder.CreateFileAsync("dataExport.csv", CreationCollisionOption.ReplaceExisting);
+
+            await FileIO.WriteLinesAsync(sample, Export);
+            string text = await FileIO.ReadTextAsync(sample);
+
+        }
+
 
         // public async Task<List<int>> coords()
         public async Task coords(int Duration, int Interval)
         {
+          
+            Export.Add("Location X; Location Y; Location Z");
+
             RegisterFunctions.ResetSys();
             await Task.Delay(2000);
             RegisterFunctions.FlashReset();
@@ -46,12 +63,15 @@ namespace FreeWheels.Tests
                 int y = PositioningData.PosY();
                 int z = PositioningData.PosZ();
 
+
+
                 if(x == 0 && y == 0 && z == 0)
                 {
                     this.ZeroCount += 1;
                 }
 
                 PosList.Add(new Position(x, y, z));
+                Export.Add(x + ";" + y + ";" + z);
                 await Task.Delay(Interval);
             }
 
@@ -182,6 +202,11 @@ namespace FreeWheels.Tests
             testResult.Average = average;
             testResult.StandardDeviation = standardDeviation;
 
+            Export.Add("Average result of " + testResult.TotalResults + " x,y,z positions: ;");
+            Export.Add("Location X; Location Y; Location Z");
+            Export.Add(testResult.Average.ToString());
+            ExportData(Export);
+            
             return testResult;
         }
 
