@@ -3,14 +3,10 @@ using FreeWheels.Classes.PozyxApi;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace FreeWheels.Tests
 {
@@ -18,145 +14,176 @@ namespace FreeWheels.Tests
     {
 
         private Pozyx _Pozyx;
-        private object textBlock;
+        private Position position;
+        public List<Position> PositionsList;
+        public double[] DeviationsList;
+        public int ZeroCount;
 
         public StandardDeviation(Pozyx pozyx)
         {
             _Pozyx = pozyx;
+            this.position = new Position();
         }
 
-
-        public async void ExportData(List<string> Export)
+        // public async Task<List<int>> coords()
+        public async Task coords(int Duration, int Interval)
         {
-            //  var Export = new List<string>() { "1; 2; 6", "x;y;z" };
-
-            StorageFolder folder = ApplicationData.Current.LocalFolder;
-            StorageFile sample = await folder.CreateFileAsync("dataExport.csv", CreationCollisionOption.ReplaceExisting);
-
-            await FileIO.WriteLinesAsync(sample, Export);
-            string text = await FileIO.ReadTextAsync(sample);
-
-        }
-
-
-        public async Task<List<int>> coords()
-        {
-
-            var Export = new List<string>();
-            Export.Add("Location X; Location Y; Location Z");
-
+            RegisterFunctions.ResetSys();
+            await Task.Delay(2000);
+            RegisterFunctions.FlashReset();
+            await Task.Delay(2000);
             _Pozyx.LetsGo();
-            await Task.Delay(500);
+            await Task.Delay(2000);
 
-            //sets default value
-            List<int> xList = new List<int>();
-            List<int> yList = new List<int>();
-            List<int> zList = new List<int>();
-            float sumX = 0;
-            float sumY = 0;
-            float sumZ = 0;
-            float averageX = 0;
-            float averageY = 0;
-            float averageZ = 0;
+            DateTime dt = DateTime.Now.AddMilliseconds(Duration);
 
-            //Output 
-            String convType = "cm";     // mm, cm, m
-            int convValue = 10;         // mm = 1, cm = 10, m = 1000
-
-            //Mean Deviation
-            float distanceFromMeanX;
-
-            //Time
-            int timeDelay = 200;
-            int runTimeInMins = 2;
-            int numResults = 0;
-            DateTime dt = DateTime.Now.AddMinutes(runTimeInMins);
-            int numberOfExpectedResults = (((((runTimeInMins * 60) * 1000) / timeDelay) / 100) * 83);
-
-            //start sign
-            Debug.WriteLine("------------------------");
-            Debug.WriteLine("Calculating positions...");
-            await Task.Delay(1000);
-
-            //Expected Results
+            List<Position> PosList = new List<Position>();
+            this.ZeroCount = 0;
 
             while (dt > DateTime.Now)
             {
-                //adds x y and z to lists
-                xList.Add(PositioningData.PosX());
-                yList.Add(PositioningData.PosY());
-                zList.Add(PositioningData.PosZ());
-                //calculates the sum of x y and z
-                sumX += PositioningData.PosX();
-                sumY += PositioningData.PosY();
-                sumZ += PositioningData.PosZ();
-                numResults++;
+                int x = PositioningData.PosX();
+                int y = PositioningData.PosY();
+                int z = PositioningData.PosZ();
 
-                if (numberOfExpectedResults >= 0)
+                if(x == 0 && y == 0 && z == 0)
                 {
-                    Debug.WriteLine("Expected results left " + numberOfExpectedResults + "...");
-                    numberOfExpectedResults--;
-                }
-                if (numberOfExpectedResults == -1)
-                {
-                    Debug.WriteLine("Adding positioning finished...");
-                    await Task.Delay(1000);
-
-                    Debug.WriteLine("Loading results...");
-                    await Task.Delay(1000);
+                    this.ZeroCount += 1;
                 }
 
-                await Task.Delay(timeDelay);
+                PosList.Add(new Position(x, y, z));
+                await Task.Delay(Interval);
             }
 
-            //prints the x y and z results
-            Debug.WriteLine("number of results " + numResults);
-            await Task.Delay(1000);
-            for (int i = 0; i < numResults; i++)
-            {
-                Export.Add(xList[i] + ";" + yList[i] + ";" + zList[i]);
-
-                //adds to list
-                Debug.Write(xList[i] + " ");
-                Debug.Write(yList[i] + " ");
-                Debug.WriteLine(zList[i]);
-            }
-            await Task.Delay(1000);
-            Debug.WriteLine("Finished adding results to list");
-            await Task.Delay(1000);
-
-
-            //calculates the average x y and z results
-            averageX = sumX / numResults;
-            averageY = sumY / numResults;
-            averageZ = sumZ / numResults;
-
-            float averageXConverted = averageX / convValue;
-            float averageYConverted = averageY / convValue;
-            float averageZConverted = averageZ / convValue;
-
-            //Adds average to csv file
-            Export.Add("Average result of " + numResults + " x,y,z positions: ;");
-            Export.Add("Location X; Location Y; Location Z");
-            Export.Add(averageXConverted + "(" + convType + ")" + ";" + averageYConverted + "(" + convType + ")" + ";" + averageZConverted + "(" + convType + ")");
-            Debug.WriteLine("Finished adding average results");
-
-            await Task.Delay(1000);
-            Debug.WriteLine("----------------------------------------------");
-            Debug.WriteLine("Average result of " + numResults + " x,y,z positions ");
-            Debug.Write("Location ");
-            Debug.Write("x(" + convType + "): ");
-            Debug.Write(" y(" + convType + "): ");
-            Debug.Write(averageY / convValue);
-            Debug.Write(" z(" + convType + "): ");
-            Debug.WriteLine(averageZ / convValue);
-            Debug.WriteLine("----------------------------------------------");
-
-            ExportData(Export);
-            await Task.Delay(1000);
-            Debug.WriteLine("Finished");
-            return xList;
+            this.PositionsList = PosList;
+            this.DeviationsList = GetDeviations(PosList);
         }
-        
+
+        public double[] GetDeviations(List<Position> data)
+        {
+            double[] deviations = new double[data.Count];
+
+            for (int i = 0; i < data.Count; i ++)
+            {
+                // D² = A² + B² + C²
+                deviations[i] = Math.Sqrt(Math.Pow(data[i].X, 2) + Math.Pow(data[i].Y, 2) + Math.Pow(data[i].Z, 2));
+            }
+
+            return deviations;
+        }
+
+        public double GetStandardDeviation()
+        {
+            //Convert Positions List
+            double[] data = this.DeviationsList;
+
+            int size = data.Length;
+            double total = data.Sum();
+            double average = total / size;
+
+            double[] deviations = new double[size];
+
+            // Calc Deviation on Average
+            for(int i = 0; i < size; i++)
+            {
+                deviations[i] = Math.Pow(data[i] - average, 2);
+            }
+
+            double deviationsTotal = deviations.Sum();
+            double averageDeviation = deviationsTotal / size;
+            double standardDeviation = Math.Sqrt(averageDeviation);
+
+            return standardDeviation;
+
+        }
+
+        public double GetAverage()
+        {
+            return this.DeviationsList.Sum() / this.DeviationsList.Length;
+        }
+
+        public double GetMedian()
+        {
+            double[] deviations = this.DeviationsList;
+            Array.Sort(deviations);
+
+            if(deviations.Length % 2 == 0)
+            {
+                int index = deviations.Length / 2;
+                return (deviations[index - 1] + deviations[index]) / 2;
+            }
+            else
+            {
+                int index = (int)((deviations.Length / 2) - 0.5);
+                return deviations[index];
+            }
+        }
+
+        public string GetMode()
+        {
+            Dictionary<double, int> counts = new Dictionary<double, int>();
+
+            foreach(double deviation in this.DeviationsList)
+            {
+                if (counts.ContainsKey(deviation))
+                {
+                    counts[deviation] += 1;
+                }
+                else
+                {
+                    counts.Add(deviation, 1);
+                }
+            }
+
+            Dictionary<double, int> mode = new Dictionary<double, int>();
+
+            foreach(double key in counts.Keys)
+            {
+                if (mode.Count == 0)
+                {
+                    mode.Add(key, counts[key]);
+                }
+                else if (counts[key] == mode.First().Value)
+                {
+                    mode.Add(key, counts[key]);
+                }
+                else if (counts[key] > mode.First().Value)
+                {
+                    mode = new Dictionary<double, int>();
+                    mode.Add(key, counts[key]);
+                }
+            }
+
+            string str = "";
+
+            foreach (double key in mode.Keys)
+            {
+                str += key + ", x" + mode[key];
+            }
+
+            return str;
+        }
+
+        public TestResult GetTestResult()
+        {
+            double median = GetMedian();
+            string mode = GetMode();
+            double average = GetAverage();
+            double standardDeviation = GetStandardDeviation();
+
+            TestResult testResult = new TestResult("TestCase", "Category");
+
+            testResult.TotalResults = this.DeviationsList.Count();
+            testResult.ZeroCount = this.ZeroCount;
+            testResult.TimeSpan = "200";
+
+            testResult.Median = median;
+            testResult.Mode = mode;
+            testResult.Average = average;
+            testResult.StandardDeviation = standardDeviation;
+
+            return testResult;
+        }
+
     }
 }

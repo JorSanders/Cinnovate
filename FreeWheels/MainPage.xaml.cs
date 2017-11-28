@@ -76,14 +76,14 @@ namespace FreeWheels
             this.StartButton.Visibility = Visibility.Collapsed;
         }
 
-        private void GetStandardDeviation_Click(object sender, RoutedEventArgs e)
+        private async void GetStandardDeviation_Click(object sender, RoutedEventArgs e)
         {
             StandardDeviation standard = new StandardDeviation(_Pozyx);
 
-            Task<List<int>> coordResult = standard.coords();
+            await (standard.coords(5000, 200));
 
+            var testResult = standard.GetTestResult();
 
         }
-        
     }
 }
