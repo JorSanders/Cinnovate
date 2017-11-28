@@ -1,19 +1,28 @@
-﻿using System;
+﻿using FreeWheels.PozyxLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class RegisterFunctions
+    public class RegisterFunctions
     {
+
+        private IConnection Connection;
+
+        public RegisterFunctions(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
+
         /// <summary>
         ///     Calling this function resets the Pozyx device.
         ///     This also clears the device list and returns the settings to their defualt state (including UWB settings)
         /// </summary>
         /// <returns></returns>
-        public static bool ResetSys()
+        public bool ResetSys()
         {
             byte[] request = { 0xB0 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -33,7 +42,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="useled_3"></param>
         /// <param name="useled_4"></param>
         /// <returns> True or False </returns>
-        public static bool LedCTRL(bool led_1, bool led_2, bool led_3, bool led_4, bool useled_1, bool useled_2, bool useled_3, bool useled_4)
+        public bool LedCTRL(bool led_1, bool led_2, bool led_3, bool led_4, bool useled_1, bool useled_2, bool useled_3, bool useled_4)
         {
             byte parameters = 0x0;
             bool[] leds = { led_1, led_2, led_3, led_4, useled_1, useled_2, useled_3, useled_4 };
@@ -58,7 +67,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="offset"></param>
         /// <param name="dataBytes"></param>
         /// <returns> True or False </returns>
-        public static bool TXData(int offset, byte[] dataBytes)
+        public bool TXData(int offset, byte[] dataBytes)
         {
             byte[] request = new byte[dataBytes.Length + 2];
             request[0] = 0xB2;
@@ -79,7 +88,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="networkID"></param>
         /// <param name="dataBytes"></param>
         /// <returns> True or False </returns>
-        public static bool TXSend(int networkID, byte[] dataBytes)
+        public bool TXSend(int networkID, byte[] dataBytes)
         {
             byte[] request = new byte[] { 0xB3, 0x60, 0x5B, 0x02 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -97,7 +106,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     This is done automatically whenever an acknowledgment is expected (after a POZYX_TX_SEND operation). 
         /// </summary>
         /// <returns> Requested bytes from the receive buffer </returns>
-        public static List<int> RXData()
+        public List<int> RXData()
         {
             List<int> rxData = new List<int>();
 
@@ -124,7 +133,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// </summary>
         /// <param name="networkID"></param>
         /// <returns> True or False </returns>
-        public static bool DoRanging(int networkID)
+        public bool DoRanging(int networkID)
         {
             byte[] request = new byte[3];
             request[0] = 0xB5;
@@ -141,7 +150,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// The result is stored in the positioning registers starting from POZYX_POS_X
         /// </summary>
         /// <returns> True or False </returns>
-        public static bool DoPositioning()
+        public bool DoPositioning()
         {
             byte[] request = { 0xB6 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -161,7 +170,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// </summary>
         /// <param name="networkIds"></param>
         /// <returns> True or False </returns>
-        public static bool PosSetAnchorIds(int[] networkIds)
+        public bool PosSetAnchorIds(int[] networkIds)
         {
             byte[] request = new byte[networkIds.Length * 2 + 1];
             request[0] = 0xB7;
@@ -180,7 +189,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     When the positioning algorithm is set to the automatic anchor selection mode in (POZYX_POS_NUM_ANCHORS), this list will be filled automatically with the anchors chosen by the anchor selection algorithm.
         /// </summary>
         /// <returns> Anchor IDs that are used for the positioning algorithm. </returns>
-        public static List<int> PosGetAnchorIds()
+        public List<int> PosGetAnchorIds()
         {
             byte[] request = { 0xB8 };
             byte[] data = Connection.ReadWrite(request, 33);
@@ -209,7 +218,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Clearing data from the flash memory may take some time.
         /// </summary>
         /// <returns> True or False </returns>
-        public static bool FlashReset()
+        public bool FlashReset()
         {
             byte[] request = { 0xB9 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -226,7 +235,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="dataTypes"></param>
         /// <param name="regData"></param>
         /// <returns> True or False </returns>
-        public static bool FlashSave(int dataTypes, int[] regData = null)
+        public bool FlashSave(int dataTypes, int[] regData = null)
         {
             regData = regData ?? new int[0];
 
@@ -248,7 +257,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Returns detailed information about which data registers are stored in flash memory.
         /// </summary>
         /// <returns> 21 bytes of information </returns>
-        public static List<int> FlashDetail()
+        public List<int> FlashDetail()
         {
             List<int> flashDetail = new List<int>();
 

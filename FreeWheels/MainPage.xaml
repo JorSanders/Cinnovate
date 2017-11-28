@@ -14,7 +14,7 @@
         <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="ResetButton_Click" />
 
         <!-- Sidebar -->
-        <Button x:Name="Button1" Content="Start/Stop" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop_Click" />
+        <Button x:Name="Button1" Content="Old" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop_Click" />
         <Button x:Name="Button2" Content="Discover&#xD;&#xA;anchors" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="DiscoverAnchors_Click" />
         <Button x:Name="Button3" Content="Start Posi" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop2_Click" />
         <Button x:Name="Button4" Content="Button" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" />

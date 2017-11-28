@@ -1,20 +1,29 @@
-﻿using System;
+﻿using FreeWheels.PozyxLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class DeviceListFunctions
+    public class DeviceListFunctions
     {
+
+        private IConnection Connection;
+
+        public DeviceListFunctions(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
+
         /// <summary>
         ///     Get all the network IDs's of devices in the device list.
         /// </summary>
         /// <param name="offset">Offset (optional). This function will return network ID's starting from this offset in the list of network ID's. The default value is 0.</param>
         /// <param name="size">	size (optional). Number of network ID's to return, starting from the offset. The default value is (20-offset), i.e., returning the complete list. Possible values are between 1 and 20.</param>
         /// <returns>network IDs of all devices</returns>
-        public static int[] DevicesGetIds(int offset = 0, int size = 20)
+        public int[] DevicesGetIds(int offset = 0, int size = 20)
         {
             byte[] request = { 0xC0, (byte)offset, (byte)size };
             byte[] data = Connection.ReadWrite(request, size * 2 + 1); //2 bytes per device + 1 byte for success/failure
@@ -56,7 +65,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     The default value is 10ms.
         /// </param>
         /// <returns>Success</returns>
-        public static bool DevicesDiscover(int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
+        public bool DevicesDiscover(int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
         {
             byte[] request = { 0xC1, (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -92,7 +101,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     (Network id anchor 3+) (optional) The network id of the fourth anchor is given.
         /// </param>
         /// <returns>Success</returns>
-        public static bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds = null)
+        public bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds = null)
         {
             networkIds = networkIds ?? new int[0];
 
@@ -116,7 +125,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Clear the list of all pozyx devices.
         /// </summary>
         /// <returns>Success</returns>
-        public static bool DevicesClear()
+        public bool DevicesClear()
         {
             byte[] request = { 0xC3 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -134,7 +143,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// <param name="y">y-coordinate of the device</param>
         /// <param name="z">z-coordinate of the device</param>
         /// <returns>Success</returns>
-        public static bool DeviceAdd(int networkID, int flag, int x, int y, int z)
+        public bool DeviceAdd(int networkID, int flag, int x, int y, int z)
         {
             byte[] request = new byte[16];
             request[0] = 0xC4;
@@ -162,7 +171,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     (3) y-coördianate
         ///     (4) z-coördianate
         /// </returns>
-        public static int[] DeviceGetInfo(int networkID)
+        public int[] DeviceGetInfo(int networkID)
         {
             byte[] request = new byte[3];
             request[0] = 0xC5;
@@ -194,7 +203,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     (1) y-coördinate
         ///     (2) z-coördinate
         /// </returns>
-        public static int[] DeviceGetCoords(int networkID)
+        public int[] DeviceGetCoords(int networkID)
         {
             byte[] request = new byte[3];
             request[0] = 0xC6;
@@ -229,7 +238,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     (0) CIR coefficient 0+offset (real value).
         ///     (1) CIR coefficient 0+offset (imaginary value).
         /// </returns>
-        public static int[][] CirData(int offset, int size)
+        public int[][] CirData(int offset, int size)
         {
             //Offset needs to be between 0 - 1015
             //Size needs to be between 1 - 49

@@ -95,32 +95,30 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Device.cs" />
-    <Compile Include="Classes\PozyxApi\ConfigurationRegisters.cs" />
-    <Compile Include="Classes\PozyxApi\Connection.cs" />
-    <Compile Include="Classes\PozyxApi\DeviceListFunctions.cs" />
-    <Compile Include="Classes\PozyxApi\GeneralData.cs" />
-    <Compile Include="Classes\PozyxApi\PositioningData.cs" />
-    <Compile Include="Classes\PozyxApi\RegisterFunctions.cs" />
-    <Compile Include="Classes\PozyxApi\SensorData.cs" />
-    <Compile Include="Classes\PozyxApi\StatusRegisters.cs" />
-    <Compile Include="Classes\Tag.cs" />
-    <Compile Include="Classes\Position.cs" />
-    <Compile Include="Classes\Anchor.cs" />
-    <Compile Include="Classes\Pozyx.cs" />
+    <Compile Include="PozyxLibrary\Classes\Device.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\ConfigurationRegisters.cs" />
+    <Compile Include="PozyxLibrary\Classes\ConnectionI2c.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\DeviceListFunctions.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\GeneralData.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\PositioningData.cs" />
+    <Compile Include="PozyxLibrary\Pozyx.cs" />
+    <Compile Include="PozyxLibrary\Interfaces\IConnection.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\RegisterFunctions.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\SensorData.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\StatusRegisters.cs" />
+    <Compile Include="PozyxLibrary\Classes\Tag.cs" />
+    <Compile Include="PozyxLibrary\Classes\Position.cs" />
+    <Compile Include="PozyxLibrary\Classes\Anchor.cs" />
     <Compile Include="Enums\ErrorCodes.cs" />
-    <Compile Include="Interfaces\IPozyxApi.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\PozyxApiBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="FreeWheels_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\logo-cinnovate.jpg" />
