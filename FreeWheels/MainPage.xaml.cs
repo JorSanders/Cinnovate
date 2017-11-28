@@ -49,7 +49,7 @@ namespace FreeWheels
             this.Init = true;
             this.InitializeComponent();
             dispatcherTimer = new DispatcherTimer();
-            GridCanvas.Invalidate();
+            //GridCanvas.Invalidate();
             StartUp();
         }
 
