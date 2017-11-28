@@ -105,9 +105,11 @@ namespace FreeWheels.Classes
 
         public void setConfiguration()
         {
-            ConfigurationRegisters.PosInterval(400);
-            ConfigurationRegisters.PosAlg(0, 3);
-            ConfigurationRegisters.PosFilter(15, 1);
+            ConfigurationRegisters.PosInterval(100);
+            ConfigurationRegisters.PosAlg(4, 3);
+            ConfigurationRegisters.PosFilter(0, 0);
+            ConfigurationRegisters.UwbPlen(1024);
+            ConfigurationRegisters.UwbRates(0, 2);
         }
 
         public async Task LetsGo()

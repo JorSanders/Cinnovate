@@ -27,6 +27,9 @@ using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.UI;
 using Microsoft.Graphics.Canvas.Text;
+using System.Xml.Serialization;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -228,6 +231,19 @@ namespace FreeWheels
             Button3.IsEnabled = true;
             Button4.IsEnabled = true;
             Button5.IsEnabled = true;
+        }
+
+        private async void GenerateXML(object sender, RoutedEventArgs e)
+        {
+            StorageFolder tempFolder = ApplicationData.Current.TemporaryFolder;
+            StorageFile file = await tempFolder.CreateFileAsync("Configuration.xml");
+
+            IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.ReadWrite);
+            Configuration config = new Configuration();
+
+            XmlSerializer xs = new XmlSerializer(typeof(Configuration));
+            TextWriter tw = new StreamWriter(stream.AsStream());
+            xs.Serialize(tw, config);
         }
     }
 }

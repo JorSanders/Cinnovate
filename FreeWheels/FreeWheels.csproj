@@ -95,6 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\Configuration.cs" />
     <Compile Include="Classes\Device.cs" />
     <Compile Include="Classes\PozyxApi\ConfigurationRegisters.cs" />
     <Compile Include="Classes\PozyxApi\Connection.cs" />
