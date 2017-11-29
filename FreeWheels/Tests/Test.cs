@@ -31,9 +31,30 @@ namespace FreeWheels.Tests
         public async void Export()
         {
             List<string> ExportData = new List<string>();
-            ExportData.Add("");
+            ExportData.Add("Testcase: " + TestResult.TestCase);
+            ExportData.Add("Category: " + TestResult.Category);
+            ExportData.Add("Datetime: " + TestResult.Datetime);
+            ExportData.Add("Configurations: ");
+            foreach (string configuration in TestResult.Configurations)
+            {
+                ExportData.Add("\t" + configuration);
+            }
+            ExportData.Add("Configurations: " + TestResult.TimeSpan);
+            ExportData.Add("TotalResults: " + TestResult.TotalResults);
+            ExportData.Add("ZeroCount: " + TestResult.ZeroCount);
+            ExportData.Add("Median: " + TestResult.Median);
+            ExportData.Add("Mode: " + TestResult.Mode);
+            ExportData.Add("Average: " + TestResult.Average);
+            ExportData.Add("StandardDeviation: " + TestResult.StandardDeviation);
+
+            ExportData.Add("Results: ");
+            foreach (Position position in TestResult.Results)
+            {
+                ExportData.Add("\t" + "x: " + position.X + "y: " + position.Y + "z: " + position.Z);
+            }
+
             StorageFolder folder = ApplicationData.Current.LocalFolder;
-            StorageFile sample = await folder.CreateFileAsync("dataExport.csv", CreationCollisionOption.ReplaceExisting);
+            StorageFile sample = await folder.CreateFileAsync(TestResult.TestCase + TestResult.Datetime + ".txt", CreationCollisionOption.ReplaceExisting);
 
             await FileIO.WriteLinesAsync(sample, ExportData);
         }
@@ -61,7 +82,7 @@ namespace FreeWheels.Tests
                 await Task.Delay(interval);
             }
             CalculateDeviations();
-            TestResult = GetTestResult();
+            TestResult = UpdateTestResult();
         }
 
         public void CalculateDeviations()
@@ -165,12 +186,13 @@ namespace FreeWheels.Tests
             return str;
         }
 
-        public TestResult GetTestResult()
+        public TestResult UpdateTestResult()
         {
             TestResult testResult = new TestResult(TestCase, Category);
 
+            testResult.Datetime = ""; //TODO fix
             testResult.TimeSpan = TimeSpan;
-            testResult.Configurations = new string[] { };
+            testResult.Configurations = new string[] { }; // TODO fix
 
             testResult.TotalResults = this.PositionsList.Count();
             testResult.ZeroCount = this.ZeroCount;

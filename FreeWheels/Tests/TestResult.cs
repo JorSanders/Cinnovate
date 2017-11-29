@@ -1,5 +1,4 @@
-﻿using FreeWheels.Classes;
-using FreeWheels.PozyxLibrary.Classes;
+﻿using FreeWheels.PozyxLibrary.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

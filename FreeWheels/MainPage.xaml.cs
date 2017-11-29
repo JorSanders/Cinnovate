@@ -219,34 +219,11 @@ namespace FreeWheels
             int timeDelay = Duration + 6000;
             int Interval = 200;
 
-            StandardDeviation standard = new StandardDeviation(_Pozyx);
-            Debug.WriteLine("Test Progress started");
-            TestProgress(timeDelay);
-            Debug.WriteLine("Getting coords started");
-            await (standard.coords(Duration, Interval));
-            Debug.WriteLine("Finished");
+            Test test = new Test(_Pozyx);
 
+            await (test.DoTest(Duration, Interval, "test kaas", "catagory"));
 
-            var testResult = standard.GetTestResult();
-
-        }
-
-        private async void TestProgress(int timeDelay)
-        {
-            int progressLength = 10;
-            int awaitTime = (timeDelay) / 10;
-
-            for (int i = 0; i < progressLength; i++)
-            {
-                X += 1;
-                ProgressBarcontrol.Value = X;
-                if (X >= ProgressBarcontrol.Maximum) X = 0;
-                await Task.Delay(awaitTime);
-            }
-            await Task.Delay(100);
-            Loading.Text = "Finished";
-            ProgressBarcontrol.Visibility = Visibility.Collapsed;
-
+            test.Export();
         }
 
         private async void StartStop2_Click(object sender, RoutedEventArgs e)
