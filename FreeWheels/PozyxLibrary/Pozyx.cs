@@ -120,27 +120,31 @@ namespace FreeWheels.PozyxLibrary
             {
                 DiscoverSuccess = DeviceListFunctions.DevicesDiscover(deviceType, idleSlots, idleSlotDuration);
                 Debug.WriteLine("Discover devices: " + (DiscoverSuccess ? "Success" : "Failed"));
-                await Task.Delay(TimeSpan.FromSeconds(2));
+                await Task.Delay(2000);
                 deviceListSize = GeneralData.GetDeviceListSize();
                 if (deviceListSize >= minDevices)
                 {
                     Debug.WriteLine(deviceListSize + " Devices found in " + (i + 1) + " tries");
                     return deviceListSize;
                 }
+
+                Debug.WriteLine("Not enough devices found: " + deviceListSize + " required: " + minDevices);
+                await Task.Delay(1000);
             }
             return 0;
         }
 
         public async Task SetConfiguration()
         {
-            ConfigurationRegisters.PosInterval(400);
-            ConfigurationRegisters.PosAlg(4, 3);
+            ConfigurationRegisters.PosInterval(100);
+            ConfigurationRegisters.PosAlg(0, 3);
             ConfigurationRegisters.PosFilter(0, 0);
+            //ConfigurationRegisters.UwbPlen(8);
+            //ConfigurationRegisters.UwbRates(0, 2);
+            //await Task.Delay(1000);
+            int[] posAlg = ConfigurationRegisters.PosAlg();
+            Debug.WriteLine("PosAlg: " + posAlg[0] + " + " + posAlg[1]);
 
-            await (Task.Delay(1000));
-
-            int[] PosAlg = ConfigurationRegisters.PosAlg();
-            Debug.WriteLine(PosAlg[0] + "");
         }
 
         public bool AddAnchor(int id, int flag, int x, int y, int z)
@@ -160,9 +164,9 @@ namespace FreeWheels.PozyxLibrary
             int[] info = DeviceListFunctions.DeviceGetInfo(anchor.Id);
             anchor.RefreshInfo(info);
         }
+
         public async Task LetsGo()
         {
-
             Debug.WriteLine("INFO: Flash Reset - " + (RegisterFunctions.FlashReset() ? "SUCCESS" : "FAILURE"));
             await (Task.Delay(5000));
 

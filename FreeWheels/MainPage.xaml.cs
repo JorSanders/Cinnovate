@@ -63,6 +63,11 @@ namespace FreeWheels
             Button5.IsEnabled = false;
             ResetButton.IsEnabled = false;
             await _Pozyx.ConnectI2c();
+            _Pozyx.RegisterFunctions.ResetSys();
+            await (Task.Delay(1000));
+            _Pozyx.RegisterFunctions.FlashReset();
+            await (Task.Delay(1000));
+
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
             Button3.IsEnabled = true;
