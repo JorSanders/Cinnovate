@@ -1,4 +1,5 @@
 ﻿using FreeWheels.Classes;
+using FreeWheels.PozyxLibrary.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace FreeWheels.Tests
         public string TestCase { get; set; }
         public string Category { get; set; }
         public string Datetime { get; set; }
-        public string TimeSpan { get; set; }
+        public int TimeSpan { get; set; }
 
         public string[] Configurations { get; set; }
 

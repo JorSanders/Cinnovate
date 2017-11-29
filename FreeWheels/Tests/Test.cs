@@ -1,5 +1,5 @@
-﻿using FreeWheels.Classes;
-using FreeWheels.Classes.PozyxApi;
+﻿using FreeWheels.PozyxLibrary;
+using FreeWheels.PozyxLibrary.Classes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,110 +11,91 @@ using Windows.UI.Xaml;
 
 namespace FreeWheels.Tests
 {
-    public class StandardDeviation
+    public class Test
     {
-
         private Pozyx _Pozyx;
         private Position position;
         public List<Position> PositionsList;
         public double[] DeviationsList;
         public int ZeroCount;
-        List<string> Export = new List<string>();
+        public int TimeSpan;
+        public string TestCase, Category;
+        TestResult TestResult;
 
-        public StandardDeviation(Pozyx pozyx)
+        public Test(Pozyx pozyx)
         {
             _Pozyx = pozyx;
             this.position = new Position();
         }
-        public async void ExportData(List<string> Export)
-        {
-            //  var Export = new List<string>() { "1; 2; 6", "x;y;z" };
 
+        public async void Export()
+        {
+            List<string> ExportData = new List<string>();
+            ExportData.Add("");
             StorageFolder folder = ApplicationData.Current.LocalFolder;
             StorageFile sample = await folder.CreateFileAsync("dataExport.csv", CreationCollisionOption.ReplaceExisting);
 
-            await FileIO.WriteLinesAsync(sample, Export);
-            string text = await FileIO.ReadTextAsync(sample);
-
+            await FileIO.WriteLinesAsync(sample, ExportData);
         }
 
-
-        // public async Task<List<int>> coords()
-        public async Task coords(int Duration, int Interval)
+        public async Task DoTest(int timeSpan, int interval, string testCase, string catagory)
         {
-          
-            Export.Add("Location X; Location Y; Location Z");
+            this.TestCase = testCase;
+            this.TimeSpan = timeSpan;
 
-            RegisterFunctions.ResetSys();
-            await Task.Delay(2000);
-            RegisterFunctions.FlashReset();
-            await Task.Delay(2000);
-            _Pozyx.LetsGo();
-            await Task.Delay(2000);
+            DateTime stopTime = DateTime.Now.AddMilliseconds(timeSpan);
+            ZeroCount = 0;
 
-            DateTime dt = DateTime.Now.AddMilliseconds(Duration);
-
-            List<Position> PosList = new List<Position>();
-            this.ZeroCount = 0;
-
-            while (dt > DateTime.Now)
+            while (DateTime.Now < stopTime)
             {
-                int x = PositioningData.PosX();
-                int y = PositioningData.PosY();
-                int z = PositioningData.PosZ();
+                int x = _Pozyx.PositioningData.PosX();
+                int y = _Pozyx.PositioningData.PosY();
+                int z = _Pozyx.PositioningData.PosZ();
 
-
-
-                if(x == 0 && y == 0 && z == 0)
+                if (x == 0 && y == 0 && z == 0)
                 {
-                    this.ZeroCount += 1;
+                    ZeroCount++;
                 }
 
-                PosList.Add(new Position(x, y, z));
-                Export.Add(x + ";" + y + ";" + z);
-                await Task.Delay(Interval);
+                PositionsList.Add(new Position(x, y, z));
+                await Task.Delay(interval);
             }
-
-            this.PositionsList = PosList;
-            this.DeviationsList = GetDeviations(PosList);
+            CalculateDeviations();
+            TestResult = GetTestResult();
         }
 
-        public double[] GetDeviations(List<Position> data)
+        public void CalculateDeviations()
         {
-            double[] deviations = new double[data.Count];
+            double[] deviations = new double[PositionsList.Count];
 
-            for (int i = 0; i < data.Count; i ++)
+            for (int i = 0; i < PositionsList.Count; i++)
             {
                 // D² = A² + B² + C²
-                deviations[i] = Math.Sqrt(Math.Pow(data[i].X, 2) + Math.Pow(data[i].Y, 2) + Math.Pow(data[i].Z, 2));
+                deviations[i] = Math.Sqrt(Math.Pow(PositionsList[i].X, 2) + Math.Pow(PositionsList[i].Y, 2) + Math.Pow(PositionsList[i].Z, 2));
             }
 
-            return deviations;
+            this.DeviationsList = deviations;
         }
 
         public double GetStandardDeviation()
         {
-            //Convert Positions List
-            double[] data = this.DeviationsList;
-
-            int size = data.Length;
-            double total = data.Sum();
+            int size = DeviationsList.Length;
+            double total = DeviationsList.Sum();
             double average = total / size;
 
             double[] deviations = new double[size];
 
             // Calc Deviation on Average
-            for(int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
-                deviations[i] = Math.Pow(data[i] - average, 2);
+                deviations[i] = Math.Pow(DeviationsList[i] - average, 2);
             }
 
             double deviationsTotal = deviations.Sum();
             double averageDeviation = deviationsTotal / size;
             double standardDeviation = Math.Sqrt(averageDeviation);
 
-            return Math.Round(standardDeviation,2);
-
+            return Math.Round(standardDeviation, 2);
         }
 
         public double GetAverage()
@@ -127,7 +108,7 @@ namespace FreeWheels.Tests
             double[] deviations = this.DeviationsList;
             Array.Sort(deviations);
 
-            if(deviations.Length % 2 == 0)
+            if (deviations.Length % 2 == 0)
             {
                 int index = deviations.Length / 2;
                 return (deviations[index - 1] + deviations[index]) / 2;
@@ -143,7 +124,7 @@ namespace FreeWheels.Tests
         {
             Dictionary<double, int> counts = new Dictionary<double, int>();
 
-            foreach(double deviation in this.DeviationsList)
+            foreach (double deviation in this.DeviationsList)
             {
                 if (counts.ContainsKey(deviation))
                 {
@@ -157,7 +138,7 @@ namespace FreeWheels.Tests
 
             Dictionary<double, int> mode = new Dictionary<double, int>();
 
-            foreach(double key in counts.Keys)
+            foreach (double key in counts.Keys)
             {
                 if (mode.Count == 0)
                 {
@@ -186,30 +167,20 @@ namespace FreeWheels.Tests
 
         public TestResult GetTestResult()
         {
-            double median = GetMedian();
-            string mode = GetMode();
-            double average = GetAverage();
-            double standardDeviation = GetStandardDeviation();
+            TestResult testResult = new TestResult(TestCase, Category);
 
-            TestResult testResult = new TestResult("TestCase", "Category");
+            testResult.TimeSpan = TimeSpan;
+            testResult.Configurations = new string[] { };
 
-            testResult.TotalResults = this.DeviationsList.Count();
+            testResult.TotalResults = this.PositionsList.Count();
             testResult.ZeroCount = this.ZeroCount;
-            testResult.TimeSpan = "200";
+            testResult.Results = this.PositionsList.ToArray();
 
-            testResult.Median = median;
-            testResult.Mode = mode;
-            testResult.Average = average;
-            testResult.StandardDeviation = standardDeviation;
-
-            Export.Add(testResult.TotalResults + " x,y,z results");
-            Export.Add("Average ;" + average.ToString());
-            Export.Add("Standard Deviation ;" + standardDeviation.ToString());
-            
-            ExportData(Export);
-            
+            testResult.Median = GetMedian();
+            testResult.Mode = GetMode(); ;
+            testResult.Average = GetAverage();
+            testResult.StandardDeviation = GetStandardDeviation();
             return testResult;
         }
-
     }
 }

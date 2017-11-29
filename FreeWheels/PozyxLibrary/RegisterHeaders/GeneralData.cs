@@ -1,18 +1,27 @@
-﻿using System;
+﻿using FreeWheels.PozyxLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class GeneralData
+    public class GeneralData
     {
+
+        private IConnection Connection;
+
+        public GeneralData(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
+
         /// <summary>
         ///     Returns the number of devices stored internally
         /// </summary>
         /// <returns></returns>
-        public static int GetDeviceListSize()
+        public int GetDeviceListSize()
         {
             byte[] request = { 0x81 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -29,7 +38,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Places the network id of device A in POZYX_RX_NETWORK_ID
         /// </summary>
         /// <returns>Network id of the latest received message</returns>
-        public static int RxNetworkId()
+        public int RxNetworkId()
         {
             byte[] request = { 0x82 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -43,7 +52,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Places the length of the received data in the register
         /// </summary>
         /// <returns>The length of the latest received message</returns>
-        public static int RxDataLen()
+        public int RxDataLen()
         {
             byte[] request = { 0x84 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -61,7 +70,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// </summary>
         /// 
         /// <returns>Value of the GPIO pin 1</returns>
-        public static int Gpio1()
+        public int Gpio1()
         {
             byte[] request = { 0x85 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -79,7 +88,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// </summary>
         /// <returns>Value of the GPIO pin 2</returns>
         /// 
-        public static int Gpio2()
+        public int Gpio2()
         {
             byte[] request = { 0x86 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -96,7 +105,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 3</returns>
-        public static int Gpio3()
+        public int Gpio3()
         {
             byte[] request = { 0x87 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -113,7 +122,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 4</returns>
-        public static int Gpio4()
+        public int Gpio4()
         {
             byte[] request = { 0x88 };
             byte[] data = Connection.ReadWrite(request, 1);
