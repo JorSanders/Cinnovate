@@ -56,7 +56,7 @@ namespace FreeWheels.PozyxLibrary.Classes
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error during readwriting to Poyxyz for register: " + request[0].ToString("x2"));
+                Debug.WriteLine("Error during readwriting to Poyxyz for register: 0x" + request[0].ToString("X2"));
                 Debug.WriteLine("Exception: " + ex.Message);
                 return new byte[length];
             }
@@ -74,7 +74,7 @@ namespace FreeWheels.PozyxLibrary.Classes
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error during writing to Poyxyz for register: " + request[0].ToString("x2"));
+                Debug.WriteLine("Error during writing to Poyxyz for register: 0x" + request[0].ToString("X2"));
                 Debug.WriteLine("Exception: " + ex.Message);
             }
         }

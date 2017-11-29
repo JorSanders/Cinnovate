@@ -84,7 +84,7 @@ namespace FreeWheels.PozyxLibrary
 
             // Calibrate the anchors
             await Task.Delay(TimeSpan.FromSeconds(1));
-            DeviceListFunctions.CalibrateDevices(1, 10, deviceIds);
+            DeviceListFunctions.CalibrateDevices(1, 30, deviceIds);
             Debug.WriteLine("Calibrating... ");
             await Task.Delay(TimeSpan.FromSeconds(4));
 
@@ -136,14 +136,26 @@ namespace FreeWheels.PozyxLibrary
 
         public async Task SetConfiguration()
         {
-            ConfigurationRegisters.PosInterval(100);
-            ConfigurationRegisters.PosAlg(0, 3);
-            ConfigurationRegisters.PosFilter(0, 0);
+            ConfigurationRegisters.PosInterval(50);
+            await Task.Delay(200);
+            ConfigurationRegisters.PosAlg(4, 3);
+            await Task.Delay(200);
+            ConfigurationRegisters.PosFilter(5, 3);
+            await Task.Delay(200);
+            ConfigurationRegisters.RangeProtocol(1);
+            await Task.Delay(200);
             //ConfigurationRegisters.UwbPlen(8);
             //ConfigurationRegisters.UwbRates(0, 2);
             //await Task.Delay(1000);
             int[] posAlg = ConfigurationRegisters.PosAlg();
             Debug.WriteLine("PosAlg: " + posAlg[0] + " + " + posAlg[1]);
+
+            string err = StatusRegisters.ErrorCode();
+            if (err != "0x00 - Success")
+            {
+                Debug.WriteLine("ERROR: " + err);
+            }
+
 
         }
 

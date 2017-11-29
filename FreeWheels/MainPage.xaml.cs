@@ -63,6 +63,7 @@ namespace FreeWheels
             Button5.IsEnabled = false;
             ResetButton.IsEnabled = false;
             await _Pozyx.ConnectI2c();
+
             _Pozyx.RegisterFunctions.ResetSys();
             await (Task.Delay(1000));
             _Pozyx.RegisterFunctions.FlashReset();
@@ -194,7 +195,7 @@ namespace FreeWheels
                     await _Pozyx.LetsGo();
 
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
-                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+                    dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
 
                     GridCanvas.Visibility = Visibility.Visible;
                 }
@@ -224,7 +225,7 @@ namespace FreeWheels
             {
                 await _Pozyx.SetConfiguration();
                 dispatcherTimer.Tick += dispatcherTimer_Tick;
-                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
                 dispatcherTimer.Start();
                 GridCanvas.Visibility = Visibility.Visible; 
                 Button2.IsEnabled = false;
