@@ -193,7 +193,7 @@ namespace FreeWheels
                 if (this.Init)
                 {
                     this.Init = false;
-                    await _Pozyx.LetsGo();
+                    await _Pozyx.ManualAnchorsSetup();
 
                     dispatcherTimer.Tick += dispatcherTimer_Tick;
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);

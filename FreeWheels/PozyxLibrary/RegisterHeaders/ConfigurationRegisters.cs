@@ -373,7 +373,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void UwbRates(int bitrate, int prf)
         {
-            byte parameters = (byte)prf;
+            byte parameters = (byte)bitrate;
             parameters |= (byte)(prf << 6);
 
             byte[] request = { 0x1D, parameters };
