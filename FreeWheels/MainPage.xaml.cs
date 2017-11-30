@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Diagnostics;
 using System.Text;
+using FreeWheels.Tests;
 using Windows.Graphics.Imaging;
 using Windows.UI.ViewManagement;
 using Windows.Graphics.Display;
@@ -38,6 +39,7 @@ namespace FreeWheels
     public sealed partial class MainPage : Page
     {
         private Pozyx _Pozyx;
+
         private Position _MyPosition;
 
         private DispatcherTimer dispatcherTimer;
@@ -51,6 +53,7 @@ namespace FreeWheels
             dispatcherTimer = new DispatcherTimer();
             _MyPosition = new Position();
             //GridCanvas.Invalidate();
+
             StartUp();
         }
 
@@ -76,6 +79,7 @@ namespace FreeWheels
             Button5.IsEnabled = true;
             ResetButton.IsEnabled = true;
         }
+
 
         void dispatcherTimer_Tick(object sender, object e)
         {
@@ -171,10 +175,25 @@ namespace FreeWheels
 
         }
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private async void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            dispatcherTimer.Stop();
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
+
             _Pozyx.RegisterFunctions.ResetSys();
+            await (Task.Delay(1000));
             _Pozyx.RegisterFunctions.FlashReset();
+            await (Task.Delay(1000));
+
+            Button1.IsEnabled = true;
+            Button2.IsEnabled = true;
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
         }
 
         private async void StartStop_Click(object sender, RoutedEventArgs e)
@@ -211,6 +230,24 @@ namespace FreeWheels
 
         }
 
+        private async void Test_Click(object sender, RoutedEventArgs e)
+        {
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
+
+            Testcase testcase = new Testcase(_Pozyx);
+            await testcase.DoTest(1000, 200, "test kaas", "catagory", new string[] { "Test van de test"});
+
+            Button1.IsEnabled = true;
+            Button2.IsEnabled = true;
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+        }
+
         private async void StartStop2_Click(object sender, RoutedEventArgs e)
         {
             if (dispatcherTimer.IsEnabled)
@@ -245,6 +282,7 @@ namespace FreeWheels
             Button4.IsEnabled = false;
             Button5.IsEnabled = false;
             await _Pozyx.SetAnchors();
+            this.GridCanvas.Invalidate();
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
             Button3.IsEnabled = true;
