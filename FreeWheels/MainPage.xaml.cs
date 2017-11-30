@@ -168,6 +168,7 @@ namespace FreeWheels
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             _Pozyx.RegisterFunctions.ResetSys();
+            _Pozyx.RegisterFunctions.FlashReset();
         }
 
         private async void StartStop_Click(object sender, RoutedEventArgs e)
@@ -221,12 +222,12 @@ namespace FreeWheels
                 dispatcherTimer.Tick += dispatcherTimer_Tick;
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
                 dispatcherTimer.Start();
-                GridCanvas.Visibility = Visibility.Visible; 
+                GridCanvas.Visibility = Visibility.Visible;
                 Button2.IsEnabled = false;
                 Button3.Content = "Stop";
                 Button4.IsEnabled = false;
                 Button5.IsEnabled = false;
-            } 
+            }
         }
 
         private async void DiscoverAnchors_Click(object sender, RoutedEventArgs e)
@@ -244,5 +245,6 @@ namespace FreeWheels
             Button4.IsEnabled = true;
             Button5.IsEnabled = true;
         }
+
     }
 }
