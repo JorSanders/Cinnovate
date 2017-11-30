@@ -34,10 +34,10 @@ Codebase for a Windows unival app that uses [Pozyx](www.pozyx.io) for indoor pos
     - Set target device to "Remove machine" 
     - Set the remote machine to the IP address
     - Set Authentication mode to "Universal (Unencrypted Protocol)
-- Note: Our network didn't allow for a wifi connection to our Raspberry Pi. So we setup one of our laptops to host a hotspot and connected the Raspberry Pi to it.
 
 # Tips and tricks
 - Open a webbrowser and go to the ipaddress of your Windows Iot device and port 8080 example ```192.168.0.2:8080``` To access more settings and the files explorer of your device.
 - Setting ```Pozyx.ConfigurationsRegisters.PosNumAnchors()``` seems to result in Pozyx always raising the error "POZYX_ERROR_NOT_ENOUGH_ANCHORS"
 - Setting ```Pozyx.ConfigurationsRegisters.PosAlg()``` to tracking seems to set the algorithm to tracking although when requested it returns "UWB-only" is the set algorithm
+- Our network didn't allow for a wifi connection to our Raspberry Pi. So we setup one of our laptops to host a hotspot and connected the Raspberry Pi to that network.
 
