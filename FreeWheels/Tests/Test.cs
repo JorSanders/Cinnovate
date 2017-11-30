@@ -11,7 +11,7 @@ using Windows.UI.Xaml;
 
 namespace FreeWheels.Tests
 {
-    public class Test
+    public class Testcase
     {
         private Pozyx _Pozyx;
         private Position position;
@@ -21,46 +21,73 @@ namespace FreeWheels.Tests
         public int TimeSpan;
         public string TestCase, Category;
         TestResult TestResult;
-
-        public Test(Pozyx pozyx)
+        DateTime startTime;
+        
+        /// <summary>
+        ///     Creates a Testcase class. Call dotest to perform one
+        /// </summary>
+        /// <param name="pozyx">Pozyx object</param>
+        public Testcase(Pozyx pozyx)
         {
             _Pozyx = pozyx;
             this.position = new Position();
+            startTime = DateTime.Now;
         }
 
-        public async void Export()
+        /// <summary>
+        ///     Export to csv
+        /// </summary>
+        /// <returns></returns>
+        public async Task Export()
         {
             List<string> ExportData = new List<string>();
-            ExportData.Add("Testcase: " + TestResult.TestCase);
-            ExportData.Add("Category: " + TestResult.Category);
-            ExportData.Add("Datetime: " + TestResult.Datetime);
-            ExportData.Add("Configurations: ");
+            ExportData.Add("sep=;");
+            ExportData.Add("Testcase;" + TestResult.TestCase);
+            ExportData.Add("Category;" + TestResult.Category);
+            ExportData.Add("Datetime;" + TestResult.Datetime);
+            ExportData.Add("Configurations:; ");
             foreach (string configuration in TestResult.Configurations)
             {
-                ExportData.Add("\t" + configuration);
+                ExportData.Add(";" + configuration + ";");
             }
-            ExportData.Add("Configurations: " + TestResult.TimeSpan);
-            ExportData.Add("TotalResults: " + TestResult.TotalResults);
-            ExportData.Add("ZeroCount: " + TestResult.ZeroCount);
-            ExportData.Add("Median: " + TestResult.Median);
-            ExportData.Add("Mode: " + TestResult.Mode);
-            ExportData.Add("Average: " + TestResult.Average);
-            ExportData.Add("StandardDeviation: " + TestResult.StandardDeviation);
-
-            ExportData.Add("Results: ");
+            ExportData.Add("TimeSpan;" + TestResult.TimeSpan);
+            ExportData.Add("TotalResults;" + TestResult.TotalResults);
+            ExportData.Add("ZeroCount;" + TestResult.ZeroCount);
+            ExportData.Add("Median;" + TestResult.Median);
+            ExportData.Add("Mode;" + TestResult.Mode);
+            ExportData.Add("Average;" + TestResult.Average);
+            ExportData.Add("StandardDeviation;" + TestResult.StandardDeviation);
+            ExportData.Add("Results:; ");
+            ExportData.Add(";X;Y;Z");
             foreach (Position position in TestResult.Results)
             {
-                ExportData.Add("\t" + "x: " + position.X + "y: " + position.Y + "z: " + position.Z);
+                ExportData.Add(";" + position.X + ";" + position.Y + ";" + position.Z);
+            }
+            ExportData.Add("Deviations:; ");
+            foreach (double deviation in TestResult.Deviations)
+            {
+                ExportData.Add(";" + deviation);
             }
 
             StorageFolder folder = ApplicationData.Current.LocalFolder;
-            StorageFile sample = await folder.CreateFileAsync(TestResult.TestCase + TestResult.Datetime + ".txt", CreationCollisionOption.ReplaceExisting);
+            string unsaveFileName = TestResult.TestCase + "-" + TestResult.Datetime.ToString() + ".csv";
+            string saveFileName = unsaveFileName.Replace(":", "-").Replace("/", "-");
+            StorageFile sample = await folder.CreateFileAsync(saveFileName, CreationCollisionOption.ReplaceExisting);
 
             await FileIO.WriteLinesAsync(sample, ExportData);
         }
 
+        /// <summary>
+        ///     Perform the test. Automatically exports to pdf
+        /// </summary>
+        /// <param name="timeSpan">Timespan in ms the test will run</param>
+        /// <param name="interval">Update interval</param>
+        /// <param name="testCase">Name of testcase</param>
+        /// <param name="catagory">catagory of the testcase</param>
+        /// <returns></returns>
         public async Task DoTest(int timeSpan, int interval, string testCase, string catagory)
         {
+            this.PositionsList = new List<Position>();
             this.TestCase = testCase;
             this.TimeSpan = timeSpan;
 
@@ -83,8 +110,13 @@ namespace FreeWheels.Tests
             }
             CalculateDeviations();
             TestResult = UpdateTestResult();
+
+            await this.Export();
         }
 
+        /// <summary>
+        ///     Calculates the devations of the test
+        /// </summary>
         public void CalculateDeviations()
         {
             double[] deviations = new double[PositionsList.Count];
@@ -98,6 +130,10 @@ namespace FreeWheels.Tests
             this.DeviationsList = deviations;
         }
 
+        /// <summary>
+        ///     Returns the standardevation of the test
+        /// </summary>
+        /// <returns></returns>
         public double GetStandardDeviation()
         {
             int size = DeviationsList.Length;
@@ -119,11 +155,19 @@ namespace FreeWheels.Tests
             return Math.Round(standardDeviation, 2);
         }
 
+        /// <summary>
+        ///     Returns the average of the test
+        /// </summary>
+        /// <returns></returns>
         public double GetAverage()
         {
             return Math.Round(this.DeviationsList.Sum() / this.DeviationsList.Length, 2);
         }
 
+        /// <summary>
+        ///     Returns the median of the test
+        /// </summary>
+        /// <returns></returns>
         public double GetMedian()
         {
             double[] deviations = this.DeviationsList;
@@ -141,6 +185,10 @@ namespace FreeWheels.Tests
             }
         }
 
+        /// <summary>
+        ///     Returns the mode of the test
+        /// </summary>
+        /// <returns></returns>
         public string GetMode()
         {
             Dictionary<double, int> counts = new Dictionary<double, int>();
@@ -186,17 +234,23 @@ namespace FreeWheels.Tests
             return str;
         }
 
+        /// <summary>
+        ///     Sets the values in the testresult object
+        /// </summary>
+        /// <returns></returns>
         public TestResult UpdateTestResult()
         {
             TestResult testResult = new TestResult(TestCase, Category);
 
-            testResult.Datetime = ""; //TODO fix
+            testResult.Datetime = this.startTime.ToLocalTime();
             testResult.TimeSpan = TimeSpan;
-            testResult.Configurations = new string[] { }; // TODO fix
+            testResult.Configurations = new string[] { "Test=true"}; // TODO fix
 
             testResult.TotalResults = this.PositionsList.Count();
             testResult.ZeroCount = this.ZeroCount;
+
             testResult.Results = this.PositionsList.ToArray();
+            testResult.Deviations = this.DeviationsList;
 
             testResult.Median = GetMedian();
             testResult.Mode = GetMode(); ;
