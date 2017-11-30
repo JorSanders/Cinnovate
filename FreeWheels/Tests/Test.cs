@@ -1,0 +1,262 @@
+﻿using FreeWheels.PozyxLibrary;
+using FreeWheels.PozyxLibrary.Classes;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.UI.Xaml;
+
+namespace FreeWheels.Tests
+{
+    public class Testcase
+    {
+        private Pozyx _Pozyx;
+        private Position position;
+        public List<Position> PositionsList;
+        public double[] DeviationsList;
+        public int ZeroCount;
+        public int TimeSpan;
+        public string TestCase, Category;
+        TestResult TestResult;
+        DateTime startTime;
+        
+        /// <summary>
+        ///     Creates a Testcase class. Call dotest to perform one
+        /// </summary>
+        /// <param name="pozyx">Pozyx object</param>
+        public Testcase(Pozyx pozyx)
+        {
+            _Pozyx = pozyx;
+            this.position = new Position();
+            startTime = DateTime.Now;
+        }
+
+        /// <summary>
+        ///     Export to csv
+        /// </summary>
+        /// <returns></returns>
+        public async Task Export()
+        {
+            List<string> ExportData = new List<string>();
+            ExportData.Add("sep=;");
+            ExportData.Add("Testcase;" + TestResult.TestCase);
+            ExportData.Add("Category;" + TestResult.Category);
+            ExportData.Add("Datetime;" + TestResult.Datetime);
+            ExportData.Add("Configurations:; ");
+            foreach (string configuration in TestResult.Configurations)
+            {
+                ExportData.Add(";" + configuration + ";");
+            }
+            ExportData.Add("TimeSpan;" + TestResult.TimeSpan);
+            ExportData.Add("TotalResults;" + TestResult.TotalResults);
+            ExportData.Add("ZeroCount;" + TestResult.ZeroCount);
+            ExportData.Add("Median;" + TestResult.Median);
+            ExportData.Add("Mode;" + TestResult.Mode);
+            ExportData.Add("Average;" + TestResult.Average);
+            ExportData.Add("StandardDeviation;" + TestResult.StandardDeviation);
+            ExportData.Add("Results:; ");
+            ExportData.Add(";X;Y;Z");
+            foreach (Position position in TestResult.Results)
+            {
+                ExportData.Add(";" + position.X + ";" + position.Y + ";" + position.Z);
+            }
+            ExportData.Add("Deviations:; ");
+            foreach (double deviation in TestResult.Deviations)
+            {
+                ExportData.Add(";" + deviation);
+            }
+
+            StorageFolder folder = ApplicationData.Current.LocalFolder;
+            string unsaveFileName = TestResult.TestCase + "-" + TestResult.Datetime.ToString() + ".csv";
+            string saveFileName = unsaveFileName.Replace(":", "-").Replace("/", "-");
+            StorageFile sample = await folder.CreateFileAsync(saveFileName, CreationCollisionOption.ReplaceExisting);
+
+            await FileIO.WriteLinesAsync(sample, ExportData);
+        }
+
+        /// <summary>
+        ///     Perform the test. Automatically exports to pdf
+        /// </summary>
+        /// <param name="timeSpan">Timespan in ms the test will run</param>
+        /// <param name="interval">Update interval</param>
+        /// <param name="testCase">Name of testcase</param>
+        /// <param name="catagory">catagory of the testcase</param>
+        /// <returns></returns>
+        public async Task DoTest(int timeSpan, int interval, string testCase, string catagory)
+        {
+            this.PositionsList = new List<Position>();
+            this.TestCase = testCase;
+            this.TimeSpan = timeSpan;
+
+            DateTime stopTime = DateTime.Now.AddMilliseconds(timeSpan);
+            ZeroCount = 0;
+
+            while (DateTime.Now < stopTime)
+            {
+                int x = _Pozyx.PositioningData.PosX();
+                int y = _Pozyx.PositioningData.PosY();
+                int z = _Pozyx.PositioningData.PosZ();
+
+                if (x == 0 && y == 0 && z == 0)
+                {
+                    ZeroCount++;
+                }
+
+                PositionsList.Add(new Position(x, y, z));
+                await Task.Delay(interval);
+            }
+            CalculateDeviations();
+            TestResult = UpdateTestResult();
+
+            await this.Export();
+        }
+
+        /// <summary>
+        ///     Calculates the devations of the test
+        /// </summary>
+        public void CalculateDeviations()
+        {
+            double[] deviations = new double[PositionsList.Count];
+
+            for (int i = 0; i < PositionsList.Count; i++)
+            {
+                // D² = A² + B² + C²
+                deviations[i] = Math.Sqrt(Math.Pow(PositionsList[i].X, 2) + Math.Pow(PositionsList[i].Y, 2) + Math.Pow(PositionsList[i].Z, 2));
+            }
+
+            this.DeviationsList = deviations;
+        }
+
+        /// <summary>
+        ///     Returns the standardevation of the test
+        /// </summary>
+        /// <returns></returns>
+        public double GetStandardDeviation()
+        {
+            int size = DeviationsList.Length;
+            double total = DeviationsList.Sum();
+            double average = total / size;
+
+            double[] deviations = new double[size];
+
+            // Calc Deviation on Average
+            for (int i = 0; i < size; i++)
+            {
+                deviations[i] = Math.Pow(DeviationsList[i] - average, 2);
+            }
+
+            double deviationsTotal = deviations.Sum();
+            double averageDeviation = deviationsTotal / size;
+            double standardDeviation = Math.Sqrt(averageDeviation);
+
+            return Math.Round(standardDeviation, 2);
+        }
+
+        /// <summary>
+        ///     Returns the average of the test
+        /// </summary>
+        /// <returns></returns>
+        public double GetAverage()
+        {
+            return Math.Round(this.DeviationsList.Sum() / this.DeviationsList.Length, 2);
+        }
+
+        /// <summary>
+        ///     Returns the median of the test
+        /// </summary>
+        /// <returns></returns>
+        public double GetMedian()
+        {
+            double[] deviations = this.DeviationsList;
+            Array.Sort(deviations);
+
+            if (deviations.Length % 2 == 0)
+            {
+                int index = deviations.Length / 2;
+                return (deviations[index - 1] + deviations[index]) / 2;
+            }
+            else
+            {
+                int index = (int)((deviations.Length / 2) - 0.5);
+                return deviations[index];
+            }
+        }
+
+        /// <summary>
+        ///     Returns the mode of the test
+        /// </summary>
+        /// <returns></returns>
+        public string GetMode()
+        {
+            Dictionary<double, int> counts = new Dictionary<double, int>();
+
+            foreach (double deviation in this.DeviationsList)
+            {
+                if (counts.ContainsKey(deviation))
+                {
+                    counts[deviation] += 1;
+                }
+                else
+                {
+                    counts.Add(deviation, 1);
+                }
+            }
+
+            Dictionary<double, int> mode = new Dictionary<double, int>();
+
+            foreach (double key in counts.Keys)
+            {
+                if (mode.Count == 0)
+                {
+                    mode.Add(key, counts[key]);
+                }
+                else if (counts[key] == mode.First().Value)
+                {
+                    mode.Add(key, counts[key]);
+                }
+                else if (counts[key] > mode.First().Value)
+                {
+                    mode = new Dictionary<double, int>();
+                    mode.Add(key, counts[key]);
+                }
+            }
+
+            string str = "";
+
+            foreach (double key in mode.Keys)
+            {
+                str += key + ", x" + mode[key];
+            }
+
+            return str;
+        }
+
+        /// <summary>
+        ///     Sets the values in the testresult object
+        /// </summary>
+        /// <returns></returns>
+        public TestResult UpdateTestResult()
+        {
+            TestResult testResult = new TestResult(TestCase, Category);
+
+            testResult.Datetime = this.startTime.ToLocalTime();
+            testResult.TimeSpan = TimeSpan;
+            testResult.Configurations = new string[] { "Test=true"}; // TODO fix
+
+            testResult.TotalResults = this.PositionsList.Count();
+            testResult.ZeroCount = this.ZeroCount;
+
+            testResult.Results = this.PositionsList.ToArray();
+            testResult.Deviations = this.DeviationsList;
+
+            testResult.Median = GetMedian();
+            testResult.Mode = GetMode(); ;
+            testResult.Average = GetAverage();
+            testResult.StandardDeviation = GetStandardDeviation();
+            return testResult;
+        }
+    }
+}

@@ -59,7 +59,7 @@ namespace FreeWheels.PozyxLibrary
             // Clear the anchors
             Anchors = new List<Anchor>();
             succes = DeviceListFunctions.DevicesClear();
-            Debug.WriteLine("Devicelist clear: " + (succes ? "succes" : "failed"));
+            Debug.WriteLine("Devicelist clear: " + (succes ? "Success" : "Failed"));
 
             // Check the devicelist size
             int deviceListSize = await DiscoverDevices(10, 4, 0);
