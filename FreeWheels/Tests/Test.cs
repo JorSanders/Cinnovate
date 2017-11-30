@@ -16,6 +16,7 @@ namespace FreeWheels.Tests
         private Pozyx _Pozyx;
         private Position position;
         public List<Position> PositionsList;
+        public string[] Description;
         public double[] DeviationsList;
         public int ZeroCount;
         public int TimeSpan;
@@ -46,9 +47,9 @@ namespace FreeWheels.Tests
             ExportData.Add("Category;" + TestResult.Category);
             ExportData.Add("Datetime;" + TestResult.Datetime);
             ExportData.Add("Configurations:; ");
-            foreach (string configuration in TestResult.Configurations)
+            foreach (string descritpionLine in TestResult.Description)
             {
-                ExportData.Add(";" + configuration + ";");
+                ExportData.Add(";" + descritpionLine + ";");
             }
             ExportData.Add("TimeSpan;" + TestResult.TimeSpan);
             ExportData.Add("TotalResults;" + TestResult.TotalResults);
@@ -85,11 +86,12 @@ namespace FreeWheels.Tests
         /// <param name="testCase">Name of testcase</param>
         /// <param name="catagory">catagory of the testcase</param>
         /// <returns></returns>
-        public async Task DoTest(int timeSpan, int interval, string testCase, string catagory)
+        public async Task DoTest(int timeSpan, int interval, string testCase, string catagory, string[] description)
         {
             this.PositionsList = new List<Position>();
             this.TestCase = testCase;
             this.TimeSpan = timeSpan;
+            this.Description = description;
 
             DateTime stopTime = DateTime.Now.AddMilliseconds(timeSpan);
             ZeroCount = 0;
@@ -244,7 +246,7 @@ namespace FreeWheels.Tests
 
             testResult.Datetime = this.startTime.ToLocalTime();
             testResult.TimeSpan = TimeSpan;
-            testResult.Configurations = new string[] { "Test=true"}; // TODO fix
+            testResult.Description = this.Description; 
 
             testResult.TotalResults = this.PositionsList.Count();
             testResult.ZeroCount = this.ZeroCount;

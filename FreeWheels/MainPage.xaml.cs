@@ -239,7 +239,7 @@ namespace FreeWheels
             Button5.IsEnabled = false;
 
             Testcase testcase = new Testcase(_Pozyx);
-            await (testcase.DoTest(1000, 200, "test kaas", "catagory"));
+            await testcase.DoTest(1000, 200, "test kaas", "catagory", new string[] { "Test van de test"});
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;

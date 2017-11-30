@@ -15,7 +15,7 @@ namespace FreeWheels.Tests
         public DateTime Datetime { get; set; }
         public int TimeSpan { get; set; }
 
-        public string[] Configurations { get; set; }
+        public string[] Description { get; set; }
 
         public int TotalResults { get; set; }
         public int ZeroCount { get; set; }
