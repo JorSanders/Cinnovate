@@ -14,7 +14,7 @@ namespace FreeWheels.Tests
     public class Testcase
     {
         private Pozyx _Pozyx;
-        private Position position;
+        private Position MyPosition;
         public List<Position> PositionsList;
         public string[] Description;
         public double[] DeviationsList;
@@ -31,7 +31,7 @@ namespace FreeWheels.Tests
         public Testcase(Pozyx pozyx)
         {
             _Pozyx = pozyx;
-            this.position = new Position();
+            this.MyPosition = new Position(2985, 1980, 55);
             startTime = DateTime.Now;
         }
 
@@ -125,8 +125,15 @@ namespace FreeWheels.Tests
 
             for (int i = 0; i < PositionsList.Count; i++)
             {
+                double lineX = this.MyPosition.X - PositionsList[i].X;
+                double lineY = this.MyPosition.Y - PositionsList[i].Y;
+                double lineZ = this.MyPosition.Z - PositionsList[i].Z;
+
                 // D² = A² + B² + C²
-                deviations[i] = Math.Sqrt(Math.Pow(PositionsList[i].X, 2) + Math.Pow(PositionsList[i].Y, 2) + Math.Pow(PositionsList[i].Z, 2));
+                //deviations[i] = Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2) + Math.Pow(lineZ, 2));
+
+                // C² = A² + B²
+                deviations[i] = Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2));
             }
 
             this.DeviationsList = deviations;

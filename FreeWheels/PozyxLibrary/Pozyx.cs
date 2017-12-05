@@ -62,7 +62,7 @@ namespace FreeWheels.PozyxLibrary
             // Clear the anchors
             Anchors = new List<Anchor>();
             succes = DeviceListFunctions.DevicesClear();
-            Debug.WriteLine("Devicelist clear: " + (succes ? "Success" : "Failed"));
+            Debug.WriteLine("Devicelist clear: " + (succes ? "succes" : "failed"));
 
             // Check the devicelist size
             int deviceListSize = await DiscoverDevices(10, 4, 0);
@@ -87,7 +87,7 @@ namespace FreeWheels.PozyxLibrary
 
             // Calibrate the anchors
             await Task.Delay(TimeSpan.FromSeconds(1));
-            DeviceListFunctions.CalibrateDevices(1, 10, deviceIds);
+            DeviceListFunctions.CalibrateDevices(1, 30, deviceIds);
             Debug.WriteLine("Calibrating... ");
             await Task.Delay(TimeSpan.FromSeconds(4));
 
@@ -95,7 +95,7 @@ namespace FreeWheels.PozyxLibrary
             foreach (Anchor anchor in Anchors)
             {
                 RefreshAnchorInfo(anchor);
-                Debug.Write("Id: " + anchor.Id.ToString("X2") + "\t x:" + anchor.X + "\t y:" + anchor.Y + "\t z:" + anchor.Z + "\n");
+                Debug.Write("Id: " + anchor.Id + "\t x:" + anchor.X + "\t y:" + anchor.Y + "\t z:" + anchor.Z + "\n");
             }
 
             RegisterFunctions.PosSetAnchorIds(deviceIds);
@@ -139,16 +139,19 @@ namespace FreeWheels.PozyxLibrary
 
         public async Task SetConfiguration()
         {
-            ConfigurationRegisters.PosInterval(500);
+            ConfigurationRegisters.PosInterval(50);
             await Task.Delay(200);
             ConfigurationRegisters.PosAlg(4, 3);
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(5, 1);
+            ConfigurationRegisters.PosFilter(5, 3);
             await Task.Delay(200);
-            //ConfigurationRegisters.RangeProtocol(1);
+            ConfigurationRegisters.RangeProtocol(1);
             await Task.Delay(200);
             //ConfigurationRegisters.UwbPlen(8);
             //ConfigurationRegisters.UwbRates(0, 2);
+            //await Task.Delay(1000);
+            int[] posAlg = ConfigurationRegisters.PosAlg();
+            Debug.WriteLine("PosAlg: " + posAlg[0] + " + " + posAlg[1]);
 
             string err = StatusRegisters.ErrorCode();
             if (err != "0x00 - Success")
@@ -178,16 +181,29 @@ namespace FreeWheels.PozyxLibrary
 
         public async Task ManualAnchorsSetup()
         {
-            DeviceListFunctions.DeviceAdd(24632, 1, 0, 0, 1800);
-            DeviceListFunctions.DeviceAdd(24667, 1, 0, 2580, 1800);
-            DeviceListFunctions.DeviceAdd(24617, 1, 8260, 0, 1800);
-            DeviceListFunctions.DeviceAdd(24647, 1, 8260, 2600, 1800);
+            //DeviceListFunctions.DeviceAdd(0x605B, 1, 0, 0, 500);
+            //await Task.Delay(200);
+            //DeviceListFunctions.DeviceAdd(0x6038, 1, 7000, 0, 2000);
+            //await Task.Delay(200);
+            //DeviceListFunctions.DeviceAdd(0x6029, 1, 0, 5100, 500);
+            //await Task.Delay(200);
+            //DeviceListFunctions.DeviceAdd(0x6047, 1, 6750, 5100, 10);
+            //await Task.Delay(200);
+
+            AddAnchor(0x605B, 1, 0, 0, 500);
+            await Task.Delay(200);
+            AddAnchor(0x6038, 1, 7000, 0, 2000);
+            await Task.Delay(200);
+            AddAnchor(0x6029, 1, 0, 5100, 500);
+            await Task.Delay(200);
+            AddAnchor(0x6047, 1, 6750, 5100, 10);
+            await Task.Delay(200);
 
             ConfigurationRegisters.PosInterval(50);
             await Task.Delay(200);
             ConfigurationRegisters.PosAlg(4, 3);
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(5, 3);
+            ConfigurationRegisters.PosFilter(10, 4);
             await Task.Delay(200);
             ConfigurationRegisters.RangeProtocol(1);
             await Task.Delay(200);
@@ -197,6 +213,8 @@ namespace FreeWheels.PozyxLibrary
             await Task.Delay(200);
 
         }
+
+
 
     }
 }

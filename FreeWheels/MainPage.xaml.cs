@@ -116,7 +116,7 @@ namespace FreeWheels
             double height = size.Height - 180;
 
             //Calculate Seperator
-            double scale = 5;
+            double scale = 7;
             double space = height / scale;
             double pixelSize = height / (scale * 1000);
 
@@ -147,31 +147,34 @@ namespace FreeWheels
 
 
             //Draw Anchors
-            /*
+            
             foreach (Anchor anchor in _Pozyx.Anchors)
             {
                 args.DrawingSession.DrawEllipse((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, 5, Colors.Blue);
                 args.DrawingSession.FillCircle((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, Colors.Blue);
-                args.DrawingSession.DrawText("ID: " + anchor.Id.ToString(), (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
+                args.DrawingSession.DrawText("ID: 0X" + anchor.Id.ToString("X4"), (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
                 args.DrawingSession.DrawText(anchor.X + "," + anchor.Y + "," + anchor.Z, (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 20), Colors.DarkGray, textFormat);
             }
-            */
-            foreach (Anchor anchor in _Pozyx.Anchors)
+
+            /*foreach (Anchor anchor in _Pozyx.Anchors)
             {
                 args.DrawingSession.DrawEllipse((float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space), 5, 5, Colors.Blue);
                 args.DrawingSession.FillCircle((float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space), 5, Colors.Blue);
                 args.DrawingSession.DrawText("ID: " + anchor.Id.ToString("x4"), (float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
                 args.DrawingSession.DrawText(anchor.X + "," + anchor.Y + "," + anchor.Z, (float)(anchor.Y * pixelSize + space), (float)(anchor.X * pixelSize + space + 20), Colors.DarkGray, textFormat);
-            }
+            }*/
+
+            args.DrawingSession.DrawRectangle((float)(1980 * pixelSize + space), (float)(2000 * pixelSize + space), (float)(3600 * pixelSize), (float)(1200 * pixelSize), Colors.Cyan, 5);
 
             //Draw Tag
-            /*
-            args.DrawingSession.DrawEllipse((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, 5, Colors.Green);
-            args.DrawingSession.FillCircle((float)(this.Tag.X * pixelSize + space), (float)(this.Tag.Y * pixelSize + space), 5, Colors.Green);
-            */
 
+            args.DrawingSession.DrawEllipse((float)(this._MyPosition.X * pixelSize + space), (float)(this._MyPosition.Y * pixelSize + space), 5, 5, Colors.Green);
+            args.DrawingSession.FillCircle((float)(this._MyPosition.X * pixelSize + space), (float)(this._MyPosition.Y * pixelSize + space), 5, Colors.Green);
+
+            /*
             args.DrawingSession.DrawEllipse((float)(_MyPosition.Y * pixelSize + space), (float)(_MyPosition.X * pixelSize + space), 5, 5, Colors.Green);
             args.DrawingSession.FillCircle((float)(_MyPosition.Y * pixelSize + space), (float)(_MyPosition.X * pixelSize + space), 5, Colors.Green);
+            */
 
         }
 
@@ -238,8 +241,11 @@ namespace FreeWheels
             Button4.IsEnabled = false;
             Button5.IsEnabled = false;
 
+            _Pozyx.ManualAnchorsSetup();
+
             Testcase testcase = new Testcase(_Pozyx);
-            await testcase.DoTest(1000, 200, "test kaas", "catagory", new string[] { "Test van de test"});
+            await testcase.DoTest((1000 * 60 * 15), 50, "test kaas", "catagory", new string[] { "Test van de test"});
+            //await testcase.DoTest(5000, 50, "test kaas", "catagory", new string[] { "Test van de test"});
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
