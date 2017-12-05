@@ -190,13 +190,24 @@ namespace FreeWheels.PozyxLibrary
             //DeviceListFunctions.DeviceAdd(0x6047, 1, 6750, 5100, 10);
             //await Task.Delay(200);
 
-            AddAnchor(0x605B, 1, 0, 0, 500);
+            //// Grote vergader ruimte
+            //AddAnchor(0x605B, 1, 0, 0, 500);
+            //await Task.Delay(200);
+            //AddAnchor(0x6038, 1, 7000, 0, 2000);
+            //await Task.Delay(200);
+            //AddAnchor(0x6029, 1, 0, 5100, 500);
+            //await Task.Delay(200);
+            //AddAnchor(0x6047, 1, 6750, 5100, 10);
+            //await Task.Delay(200);
+
+            // Onze kamer
+            AddAnchor(0x697D, 1, 0, 45, 2000);
             await Task.Delay(200);
-            AddAnchor(0x6038, 1, 7000, 0, 2000);
+            AddAnchor(0x6956, 1, 45, 3580, 500);
             await Task.Delay(200);
-            AddAnchor(0x6029, 1, 0, 5100, 500);
+            AddAnchor(0x6957, 1, 3590, 3535, 2000);
             await Task.Delay(200);
-            AddAnchor(0x6047, 1, 6750, 5100, 10);
+            AddAnchor(0x697C, 1, 3545, 0, 500);
             await Task.Delay(200);
 
             ConfigurationRegisters.PosInterval(50);
