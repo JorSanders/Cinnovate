@@ -21,13 +21,13 @@ namespace FreeWheels.Tests
 
         public Position[] Results { get; set; }
 
-        public double[] Deviations2d { get; set; }
+        public int[] Deviations2d { get; set; }
         public double Median2d { get; set; }
         public string Mode2d { get; set; }
         public double Average2d { get; set; }
         public double StandardDeviation2d { get; set; }
 
-        public double[] Deviations3d { get; set; }
+        public int[] Deviations3d { get; set; }
         public double Median3d { get; set; }
         public string Mode3d { get; set; }
         public double Average3d { get; set; }

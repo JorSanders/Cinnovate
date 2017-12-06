@@ -17,8 +17,8 @@ namespace FreeWheels.Tests
         private Position MyPosition;
         public List<Position> PositionsList;
         public string[] Description;
-        public double[] Deviations3d;
-        public double[] Deviations2d;
+        public int[] Deviations3d;
+        public int[] Deviations2d;
         public int ZeroCount;
         public int TimeSpan;
         public string TestCase, Category;
@@ -128,8 +128,8 @@ namespace FreeWheels.Tests
         /// </summary>
         public void CalculateDeviations()
         {
-            double[] deviations3d = new double[PositionsList.Count];
-            double[] deviations2d = new double[PositionsList.Count];
+            int[] deviations3d = new int[PositionsList.Count];
+            int[] deviations2d = new int[PositionsList.Count];
 
             for (int i = 0; i < PositionsList.Count; i++)
             {
@@ -138,10 +138,10 @@ namespace FreeWheels.Tests
                 double lineZ = this.MyPosition.Z - PositionsList[i].Z;
 
                 // D² = A² + B² + C²
-                deviations3d[i] = Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2) + Math.Pow(lineZ, 2));
+                deviations3d[i] = (int)Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2) + Math.Pow(lineZ, 2));
 
                 // C² = A² + B²
-                deviations2d[i] = Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2));
+                deviations2d[i] = (int)Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2));
             }
 
             this.Deviations3d = deviations3d;
@@ -194,12 +194,15 @@ namespace FreeWheels.Tests
         /// <returns></returns>
         public double GetAverage(int dimension)
         {
+            double average;
             switch (dimension)
             {
                 case 2:
-                    return Math.Round(this.Deviations2d.Sum() / this.Deviations2d.Length, 2);
+                    average = this.Deviations2d.Sum() / this.Deviations2d.Length;
+                    return Math.Round(average, 2);
                 case 3:
-                    return Math.Round(this.Deviations3d.Sum() / this.Deviations3d.Length, 2);
+                    average = this.Deviations3d.Sum() / this.Deviations3d.Length;
+                    return Math.Round(average, 2);
                 default:
                     return -1;
             }
@@ -211,7 +214,7 @@ namespace FreeWheels.Tests
         /// <returns></returns>
         public double GetMedian(int dimension)
         {
-            double[] deviations;
+            int[] deviations;
 
             switch (dimension)
             {
@@ -247,7 +250,7 @@ namespace FreeWheels.Tests
         {
             Dictionary<double, int> counts = new Dictionary<double, int>();
 
-            double[] deviations;
+            int[] deviations;
 
             switch (dimension)
             {
