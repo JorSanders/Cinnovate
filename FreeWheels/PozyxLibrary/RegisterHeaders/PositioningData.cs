@@ -1,4 +1,5 @@
-﻿using FreeWheels.PozyxLibrary.Interfaces;
+﻿using FreeWheels.PozyxLibrary.Classes;
+using FreeWheels.PozyxLibrary.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,14 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte[] data = Connection.ReadWrite(request, 4);
 
             return BitConverter.ToInt32(data, 0);
+        }
+
+        public Position Pos()
+        {
+            byte[] request = { 0x30 };
+            byte[] data = Connection.ReadWrite(request, 12);
+
+            return new Position(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToInt32(data, 8));
         }
 
         /// <summary>

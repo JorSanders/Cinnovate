@@ -52,7 +52,6 @@ namespace FreeWheels
             this.InitializeComponent();
             dispatcherTimer = new DispatcherTimer();
             _MyPosition = new Position();
-            //GridCanvas.Invalidate();
 
             StartUp();
         }
@@ -83,11 +82,9 @@ namespace FreeWheels
 
         void dispatcherTimer_Tick(object sender, object e)
         {
-            _MyPosition = new Position(
-                _Pozyx.PositioningData.PosX(),
-                _Pozyx.PositioningData.PosY(),
-                _Pozyx.PositioningData.PosZ()
-                );
+            _Pozyx.RegisterFunctions.DoPositioning();
+
+            _MyPosition = _Pozyx.PositioningData.Pos();
 
             this.Output.Text = "x: " + _MyPosition.X + "\t y: " + _MyPosition.Y + "\t z: " + _MyPosition.Z;
 
@@ -147,7 +144,7 @@ namespace FreeWheels
 
 
             //Draw Anchors
-            
+
             foreach (Anchor anchor in _Pozyx.Anchors)
             {
                 args.DrawingSession.DrawEllipse((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, 5, Colors.Blue);
@@ -199,7 +196,7 @@ namespace FreeWheels
             Button5.IsEnabled = true;
         }
 
-        private async void StartStop_Click(object sender, RoutedEventArgs e)
+        private async void StartStopOld_Click(object sender, RoutedEventArgs e)
         {
             if (dispatcherTimer.IsEnabled)
             {
@@ -241,11 +238,26 @@ namespace FreeWheels
             Button4.IsEnabled = false;
             Button5.IsEnabled = false;
 
-            _Pozyx.ManualAnchorsSetup();
+            await _Pozyx.SetConfiguration();
 
             Testcase testcase = new Testcase(_Pozyx);
-            await testcase.DoTest((1000 * 60 * 15), 50, "test kaas", "catagory", new string[] { "Test van de test"});
-            //await testcase.DoTest(5000, 50, "test kaas", "catagory", new string[] { "Test van de test"});
+
+            int timespan = 1000 * 60 * 15;
+            int interval = 50;
+            string testCase = "Tracking 3D";
+            string catagory = "Static test";
+            string[] description = {
+                "Posinterval: 50",
+                "Algorithm: Tracking",
+                "Dimension: 3D",
+                "Filter: None",
+                "Range protocol: Fast",
+                "UWB plen: 1024",
+                "UWB bitrate: 110kbs",
+                "UWB prf: 64MHz",
+            };
+
+            await testcase.DoTest(timespan, interval, testCase, catagory, description);
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
@@ -254,14 +266,15 @@ namespace FreeWheels
             Button5.IsEnabled = true;
         }
 
-        private async void StartStop2_Click(object sender, RoutedEventArgs e)
+        private async void StartStop_Click(object sender, RoutedEventArgs e)
         {
             if (dispatcherTimer.IsEnabled)
             {
                 dispatcherTimer.Stop();
+                Button1.IsEnabled = true;
                 Button2.IsEnabled = true;
-                Button3.Content = "Start";
                 Button3.IsEnabled = true;
+                Button4.Content = "Start";
                 Button4.IsEnabled = true;
                 Button5.IsEnabled = true;
             }
@@ -272,9 +285,10 @@ namespace FreeWheels
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
                 dispatcherTimer.Start();
                 GridCanvas.Visibility = Visibility.Visible;
+                Button1.IsEnabled = false;
                 Button2.IsEnabled = false;
-                Button3.Content = "Stop";
-                Button4.IsEnabled = false;
+                Button3.IsEnabled = false;
+                Button4.Content = "Stop";
                 Button5.IsEnabled = false;
             }
         }
@@ -287,8 +301,7 @@ namespace FreeWheels
             Button3.IsEnabled = false;
             Button4.IsEnabled = false;
             Button5.IsEnabled = false;
-            await _Pozyx.SetAnchors();
-            this.GridCanvas.Invalidate();
+            await _Pozyx.DoAnchorDiscovery();
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
             Button3.IsEnabled = true;
@@ -296,5 +309,62 @@ namespace FreeWheels
             Button5.IsEnabled = true;
         }
 
+        private async void SmallRoom_Click(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Stop();
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
+
+            _Pozyx.ClearDevices();
+            await Task.Delay(500);
+
+            // Onze kamer
+            _Pozyx.AddAnchor(0x697D, 1, 0, 45, 2000);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6956, 1, 45, 3580, 500);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6957, 1, 3590, 3535, 2000);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x697C, 1, 3545, 0, 500);
+            await Task.Delay(200);
+
+            Button1.IsEnabled = true;
+            Button2.IsEnabled = true;
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+        }
+
+        private async void BigRoom_Click(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Stop();
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
+
+            _Pozyx.ClearDevices();
+            await Task.Delay(500);
+
+            // Grote vergader ruimte
+            _Pozyx.AddAnchor(0x605B, 1, 0, 0, 500);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6038, 1, 7000, 0, 2000);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 500);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 10);
+            await Task.Delay(200);
+
+            Button1.IsEnabled = true;
+            Button2.IsEnabled = true;
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+        }
     }
 }

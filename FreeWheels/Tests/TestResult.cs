@@ -9,7 +9,6 @@ namespace FreeWheels.Tests
 {
     public class TestResult
     {
-
         public string TestCase { get; set; }
         public string Category { get; set; }
         public DateTime Datetime { get; set; }
@@ -21,12 +20,18 @@ namespace FreeWheels.Tests
         public int ZeroCount { get; set; }
 
         public Position[] Results { get; set; }
-        public double[] Deviations { get; set; }
 
-        public double Median { get; set; }
-        public string Mode { get; set; }
-        public double Average { get; set; }
-        public double StandardDeviation { get; set; }
+        public double[] Deviations2d { get; set; }
+        public double Median2d { get; set; }
+        public string Mode2d { get; set; }
+        public double Average2d { get; set; }
+        public double StandardDeviation2d { get; set; }
+
+        public double[] Deviations3d { get; set; }
+        public double Median3d { get; set; }
+        public string Mode3d { get; set; }
+        public double Average3d { get; set; }
+        public double StandardDeviation3d { get; set; }
 
         public TestResult(string testCase, string category)
         {

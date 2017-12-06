@@ -54,15 +54,14 @@ namespace FreeWheels.PozyxLibrary
         /// </summary>
         /// <param name="minAnchors"></param>
         /// <returns>False if not enough anchors are found. True on succes</returns>
-        public async Task<bool> SetAnchors(int minAnchors = 4)
+        public async Task<bool> DoAnchorDiscovery(int minAnchors = 4)
         {
             bool succes;
             int nAnchors = 6; // TODO implement this. Maybe idleslots// Pozyx can calibrate up to 6 anchors
 
             // Clear the anchors
-            Anchors = new List<Anchor>();
-            succes = DeviceListFunctions.DevicesClear();
-            Debug.WriteLine("Devicelist clear: " + (succes ? "succes" : "failed"));
+            succes = ClearDevices();
+            Debug.WriteLine("Devicelist clear: " + (succes ? "Succes" : "Failed"));
 
             // Check the devicelist size
             int deviceListSize = await DiscoverDevices(10, 4, 0);
@@ -87,9 +86,9 @@ namespace FreeWheels.PozyxLibrary
 
             // Calibrate the anchors
             await Task.Delay(TimeSpan.FromSeconds(1));
-            DeviceListFunctions.CalibrateDevices(1, 30, deviceIds);
+            DeviceListFunctions.CalibrateDevices(1, 10, deviceIds);
             Debug.WriteLine("Calibrating... ");
-            await Task.Delay(TimeSpan.FromSeconds(4));
+            await Task.Delay(TimeSpan.FromSeconds(10));
 
             // Refresh the anchor update and print the positions
             foreach (Anchor anchor in Anchors)
@@ -143,15 +142,14 @@ namespace FreeWheels.PozyxLibrary
             await Task.Delay(200);
             ConfigurationRegisters.PosAlg(4, 3);
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(5, 3);
+            ConfigurationRegisters.PosFilter(0, 0);
             await Task.Delay(200);
-            ConfigurationRegisters.RangeProtocol(1);
+            ConfigurationRegisters.RangeProtocol(0);
             await Task.Delay(200);
-            //ConfigurationRegisters.UwbPlen(8);
-            //ConfigurationRegisters.UwbRates(0, 2);
-            //await Task.Delay(1000);
-            int[] posAlg = ConfigurationRegisters.PosAlg();
-            Debug.WriteLine("PosAlg: " + posAlg[0] + " + " + posAlg[1]);
+            ConfigurationRegisters.UwbPlen(8);
+            await Task.Delay(200);
+            ConfigurationRegisters.UwbRates(0, 2);
+            await Task.Delay(200);
 
             string err = StatusRegisters.ErrorCode();
             if (err != "0x00 - Success")
@@ -225,7 +223,17 @@ namespace FreeWheels.PozyxLibrary
 
         }
 
+        public bool ClearDevices()
+        {
+            bool success = DeviceListFunctions.DevicesClear();
 
+            if (success)
+            {
+                this.Anchors = new List<Anchor>();
+            }
+
+            return success;
+        }
 
     }
 }
