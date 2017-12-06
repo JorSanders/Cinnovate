@@ -15,15 +15,16 @@ namespace FreeWheels.Tests
     {
         private Pozyx _Pozyx;
         private Position MyPosition;
-        public List<Position> PositionsList;
-        public string[] Description;
-        public int[] Deviations3d;
-        public int[] Deviations2d;
-        public int ZeroCount;
-        public int TimeSpan;
-        public string TestCase, Category;
-        TestResult TestResult;
-        DateTime startTime;
+        private List<Position> PositionsList;
+        private string[] Description;
+        private int[] Deviations3d;
+        private int[] Deviations2d;
+        private int ZeroCount;
+        private int TimeSpan;
+        private string TestCase, Category;
+        private TestResult TestResult;
+        private DateTime startTime;
+        public string Status;
 
         /// <summary>
         ///     Creates a Testcase class. Call dotest to perform one
@@ -78,7 +79,7 @@ namespace FreeWheels.Tests
             }
 
             StorageFolder folder = ApplicationData.Current.LocalFolder;
-            string fileName = TestResult.TestCase + "-" + TestResult.Datetime.ToString("dd-MMMM-yy H-mm") + ".csv";
+            string fileName = TestResult.TestCase + " " + TestResult.Datetime.ToString("dd-MMMM-yy H-mm") + ".csv";
             StorageFile sample = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
             await FileIO.WriteLinesAsync(sample, ExportData);
@@ -94,6 +95,10 @@ namespace FreeWheels.Tests
         /// <returns></returns>
         public async Task DoTest(int timeSpan, int interval, string testCase, string catagory, string[] description)
         {
+            this.Status = "Setting configurations";
+
+            await _Pozyx.SetConfiguration();
+
             this.MyPosition = new Position(2080, 340, 84);
             startTime = DateTime.Now;
             this.PositionsList = new List<Position>();
@@ -102,12 +107,16 @@ namespace FreeWheels.Tests
             this.Description = description;
 
             DateTime stopTime = DateTime.Now.AddMilliseconds(timeSpan);
+            TimeSpan difference;
+
             ZeroCount = 0;
 
             Position position;
 
             while (DateTime.Now < stopTime)
             {
+                difference = (stopTime - DateTime.Now);
+                this.Status = difference.Minutes + ":" + difference.Seconds;
                 position = _Pozyx.PositioningData.Pos();
 
                 if (position.X == 0 && position.Y == 0 && position.Z == 0)
@@ -118,9 +127,13 @@ namespace FreeWheels.Tests
                 PositionsList.Add(position);
                 await Task.Delay(interval);
             }
-            TestResult = UpdateTestResult();
+            this.Status = "Post test maths";
 
+            TestResult = UpdateTestResult();
             await this.Export();
+
+            this.Status = "Finished";
+
         }
 
         /// <summary>
@@ -138,10 +151,10 @@ namespace FreeWheels.Tests
                 double lineZ = this.MyPosition.Z - PositionsList[i].Z;
 
                 // D² = A² + B² + C²
-                deviations3d[i] = (int)Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2) + Math.Pow(lineZ, 2));
+                deviations3d[i] = (int)Math.Round(Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2) + Math.Pow(lineZ, 2)));
 
                 // C² = A² + B²
-                deviations2d[i] = (int)Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2));
+                deviations2d[i] = (int)Math.Round(Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2)));
             }
 
             this.Deviations3d = deviations3d;
@@ -228,17 +241,21 @@ namespace FreeWheels.Tests
                     return -1;
             }
 
-            Array.Sort(deviations);
+            // I hope nobody ever finds out I did this. But sorting the deviations ruined the export. 
+            // So I made a list with deviations then sorted that otherwise the original still got sorted.
+            List<int> devationsList = deviations.ToList();
+            int[] devationsSorted = deviations.ToArray();
+            Array.Sort(devationsSorted);
 
-            if (deviations.Length % 2 == 0)
+            if (devationsSorted.Length % 2 == 0)
             {
-                int index = deviations.Length / 2;
-                return (deviations[index - 1] + deviations[index]) / 2;
+                int index = devationsSorted.Length / 2;
+                return (devationsSorted[index - 1] + devationsSorted[index]) / 2;
             }
             else
             {
-                int index = (int)((deviations.Length / 2) - 0.5);
-                return deviations[index];
+                int index = (int)Math.Round((devationsSorted.Length / 2) - 0.5);
+                return devationsSorted[index];
             }
         }
 
