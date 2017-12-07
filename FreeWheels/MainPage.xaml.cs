@@ -28,6 +28,7 @@ using Windows.UI;
 using Microsoft.Graphics.Canvas.Text;
 using FreeWheels.PozyxLibrary;
 using FreeWheels.PozyxLibrary.Classes;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -44,6 +45,15 @@ namespace FreeWheels
 
         private DispatcherTimer dispatcherTimer;
         private bool Init;
+
+        private List<double> posX = new List<double>();
+        private List<double> posY = new List<double>();
+
+
+        private double startingPositionX = 0;
+        private double startingPositionY = 0;
+
+        private int i = 0;
 
         public MainPage()
         {
@@ -173,6 +183,45 @@ namespace FreeWheels
             args.DrawingSession.FillCircle((float)(_MyPosition.Y * pixelSize + space), (float)(_MyPosition.X * pixelSize + space), 5, Colors.Green);
             */
 
+            //lines 
+            //var lastPosition = this._MyPosition.X * pixelSize + space;
+
+            //positions.Add(this._MyPosition.X * pixelSize + space);
+
+            //args.DrawingSession.DrawLine((float)lastPosition + 100, (float)currentPosition + 5, (float)lastPosition + 100, (float)currentPosition + 5, Colors.Yellow);
+
+            var currentPositionX = this._MyPosition.X * pixelSize + space;
+            var currentPositionY = this._MyPosition.Y * pixelSize + space;
+
+            var polyline1 = new Polyline();
+            polyline1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
+            polyline1.StrokeThickness = 4;
+
+            startingPositionX = currentPositionX;
+            startingPositionY = currentPositionY;
+
+            posX.Add(currentPositionX);
+            posY.Add(currentPositionY);
+
+
+            var points = new PointCollection();
+            points.Add(new Windows.Foundation.Point(posX[i], posY[i]));
+            points.Add(new Windows.Foundation.Point(posX[i], posY[i]));
+            polyline1.Points = points;
+
+            for (int i = 0; i < posY.Count; i++) {
+
+                this.Output.Text = posY[i].ToString();
+
+            }
+
+            //_MyPosition = _Pozyx.PositioningData.Pos();
+            //_MyPosition.X.ToString();
+            
+            layoutRoot.Children.Add(polyline1);
+
+
+
         }
 
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -218,6 +267,7 @@ namespace FreeWheels
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
 
                     GridCanvas.Visibility = Visibility.Visible;
+                   
                 }
 
                 dispatcherTimer.Start();
@@ -232,6 +282,12 @@ namespace FreeWheels
 
         private async void Test_Click(object sender, RoutedEventArgs e)
         {
+            //draw line
+
+
+
+            //
+
             Button1.IsEnabled = false;
             Button2.IsEnabled = false;
             Button3.IsEnabled = false;
@@ -365,6 +421,24 @@ namespace FreeWheels
             Button3.IsEnabled = true;
             Button4.IsEnabled = true;
             Button5.IsEnabled = true;
+        }
+
+        private void TestLine_Click(object sender, RoutedEventArgs e)
+        {
+            var polyline1 = new Polyline();
+            polyline1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
+            polyline1.StrokeThickness = 4;
+
+            var points = new PointCollection();
+            points.Add(new Windows.Foundation.Point(1,10));
+            points.Add(new Windows.Foundation.Point(200, 500));
+            polyline1.Points = points;
+
+            //_MyPosition = _Pozyx.PositioningData.Pos();
+            //_MyPosition.X.ToString();
+
+            layoutRoot.Children.Add(polyline1);
+
         }
     }
 }

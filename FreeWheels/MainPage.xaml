@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,0,0">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,0,0" x:Name="layoutRoot">
 
         <TextBlock x:Name="Output" HorizontalAlignment="Left" Margin="160,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontFamily="Tahoma" FontSize="36"/>
         <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="ResetButton_Click" />
@@ -27,6 +27,8 @@
         
         <!-- Grid Raster -->
         <canvas:CanvasControl x:Name="GridCanvas" Draw="CanvasControl_Draw" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="170,100,0,0" Width="100" Height="100" Visibility="Collapsed" />
-        
+
+        <!-- Line Draw -->
+        <Button x:Name="Button6" Content="Test Drawline" HorizontalAlignment="Center" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="TestLine_Click" HorizontalContentAlignment="Left" />
     </Grid>
 </Page>
