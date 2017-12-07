@@ -28,6 +28,7 @@ using Windows.UI;
 using Microsoft.Graphics.Canvas.Text;
 using FreeWheels.PozyxLibrary;
 using FreeWheels.PozyxLibrary.Classes;
+using Windows.UI.Xaml.Shapes;
 using System.ComponentModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -46,6 +47,15 @@ namespace FreeWheels
         private DispatcherTimer dispatcherTimer;
         private bool Init;
         private Testcase testcase;
+
+        private List<double> posX = new List<double>();
+        private List<double> posY = new List<double>();
+
+
+        private double startingPositionX = 0;
+        private double startingPositionY = 0;
+
+        private int i = 0;
 
         public MainPage()
         {
@@ -175,6 +185,17 @@ namespace FreeWheels
             args.DrawingSession.FillCircle((float)(_MyPosition.Y * pixelSize + space), (float)(_MyPosition.X * pixelSize + space), 5, Colors.Green);
             */
 
+            //Adds the route walked to the map
+
+            posX.Add(this._MyPosition.X * pixelSize + space);
+            posY.Add(this._MyPosition.Y * pixelSize + space);
+
+            for (int i = 0; i < posX.Count - 1; i++)
+            {
+                args.DrawingSession.DrawLine((float)posX[i], (float)posY[i], (float)posX[i + 1], (float)posY[i + 1], Windows.UI.Colors.Red, 1);
+            }
+
+
         }
 
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -220,6 +241,7 @@ namespace FreeWheels
                     dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
 
                     GridCanvas.Visibility = Visibility.Visible;
+
                 }
 
                 dispatcherTimer.Start();
@@ -234,6 +256,7 @@ namespace FreeWheels
 
         private async void Test_Click(object sender, RoutedEventArgs e)
         {
+
             Button1.IsEnabled = false;
             Button2.IsEnabled = false;
             Button3.IsEnabled = false;

@@ -27,6 +27,5 @@
         
         <!-- Grid Raster -->
         <canvas:CanvasControl x:Name="GridCanvas" Draw="CanvasControl_Draw" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="170,100,0,0" Width="100" Height="100" Visibility="Collapsed" />
-        
     </Grid>
 </Page>
