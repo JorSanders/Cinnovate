@@ -96,7 +96,7 @@ namespace FreeWheels.Tests
 
             await _Pozyx.SetConfiguration();
 
-            this.MyPosition = new Position(2080, 340, 84);
+            this.MyPosition = new Position(2030, 360, 840);
             startTime = DateTime.Now;
             this.PositionsList = new List<Position>();
             this.TestCase = testCase;
