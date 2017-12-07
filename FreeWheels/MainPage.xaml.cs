@@ -270,7 +270,7 @@ namespace FreeWheels
 
             int timespan = 10 * 60 * 1000;
             int interval = 50;
-            string testCase = "Tracking 3D";
+            string testCase = "Middle of room";
             string catagory = "Static test";
             string[] description = {
                 "Posinterval: 50",
