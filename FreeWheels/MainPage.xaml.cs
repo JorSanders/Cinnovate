@@ -29,6 +29,7 @@ using Microsoft.Graphics.Canvas.Text;
 using FreeWheels.PozyxLibrary;
 using FreeWheels.PozyxLibrary.Classes;
 using Windows.UI.Xaml.Shapes;
+using System.ComponentModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -45,6 +46,7 @@ namespace FreeWheels
 
         private DispatcherTimer dispatcherTimer;
         private bool Init;
+        private Testcase testcase;
 
         private List<double> posX = new List<double>();
         private List<double> posY = new List<double>();
@@ -62,6 +64,7 @@ namespace FreeWheels
             this.InitializeComponent();
             dispatcherTimer = new DispatcherTimer();
             _MyPosition = new Position();
+            testcase = new Testcase(_Pozyx);
 
             StartUp();
         }
@@ -254,11 +257,6 @@ namespace FreeWheels
 
         private async void Test_Click(object sender, RoutedEventArgs e)
         {
-            //draw line
-
-
-
-            //
 
             Button1.IsEnabled = false;
             Button2.IsEnabled = false;
@@ -266,11 +264,13 @@ namespace FreeWheels
             Button4.IsEnabled = false;
             Button5.IsEnabled = false;
 
-            await _Pozyx.SetConfiguration();
+            DispatcherTimer progress = new DispatcherTimer();
+            progress.Tick += progress_Tick;
+            progress.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            progress.Start();
 
-            Testcase testcase = new Testcase(_Pozyx);
-
-            int timespan = 1000 * 60 * 15;
+            int timespan = 10 * 60 * 1000;
+            //timespan = 5000;
             int interval = 50;
             string testCase = "Tracking 3D";
             string catagory = "Static test";
@@ -287,6 +287,8 @@ namespace FreeWheels
 
             await testcase.DoTest(timespan, interval, testCase, catagory, description);
 
+            progress.Stop();
+
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
             Button3.IsEnabled = true;
@@ -302,9 +304,10 @@ namespace FreeWheels
                 Button1.IsEnabled = true;
                 Button2.IsEnabled = true;
                 Button3.IsEnabled = true;
-                Button4.Content = "Start";
                 Button4.IsEnabled = true;
                 Button5.IsEnabled = true;
+                GridCanvas.Visibility = Visibility.Collapsed;
+                Button4.Content = "Start";
             }
             else if (_Pozyx.Anchors.Count >= 4)
             {
@@ -312,12 +315,12 @@ namespace FreeWheels
                 dispatcherTimer.Tick += dispatcherTimer_Tick;
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 50);
                 dispatcherTimer.Start();
-                GridCanvas.Visibility = Visibility.Visible;
                 Button1.IsEnabled = false;
                 Button2.IsEnabled = false;
                 Button3.IsEnabled = false;
-                Button4.Content = "Stop";
                 Button5.IsEnabled = false;
+                GridCanvas.Visibility = Visibility.Visible;
+                Button4.Content = "Stop";
             }
         }
 
@@ -395,22 +398,9 @@ namespace FreeWheels
             Button5.IsEnabled = true;
         }
 
-        private void TestLine_Click(object sender, RoutedEventArgs e)
+        void progress_Tick(object sender, object e)
         {
-            var polyline1 = new Polyline();
-            polyline1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-            polyline1.StrokeThickness = 4;
-
-            var points = new PointCollection();
-            points.Add(new Windows.Foundation.Point(1, 10));
-            points.Add(new Windows.Foundation.Point(200, 500));
-            polyline1.Points = points;
-
-            //_MyPosition = _Pozyx.PositioningData.Pos();
-            //_MyPosition.X.ToString();
-
-            layoutRoot.Children.Add(polyline1);
-
+            this.Output.Text = testcase.Status;
         }
     }
 }
