@@ -15,8 +15,8 @@
 
         <!-- Sidebar -->
         <Button x:Name="Button1" Content="Small room" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="SmallRoom_Click" />
-        <Button x:Name="Button2" Content="Big room" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="BigRoom_Click" />
-        <Button x:Name="Button3" Content="Discover" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="DiscoverAnchors_Click" />
+        <Button x:Name="Button2" Content="Big Shaq" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="BigRoom_Click" />
+        <Button x:Name="Button3" Content="Asnee" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="DiscoverAnchors_Click" />
         <Button x:Name="Button4" Content="Start" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop_Click" />
         <Button x:Name="Button5" Content="Run test" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Test_Click" />
         

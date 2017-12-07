@@ -82,7 +82,6 @@ namespace FreeWheels
             ResetButton.IsEnabled = true;
         }
 
-
         void dispatcherTimer_Tick(object sender, object e)
         {
             _Pozyx.RegisterFunctions.DoPositioning();
@@ -243,11 +242,10 @@ namespace FreeWheels
 
             DispatcherTimer progress = new DispatcherTimer();
             progress.Tick += progress_Tick;
-            progress.Interval = new TimeSpan(0, 0, 0, 0, 50);
+            progress.Interval = new TimeSpan(0, 0, 0, 0, 1);
             progress.Start();
 
             int timespan = 10 * 60 * 1000;
-            //timespan = 5000;
             int interval = 50;
             string testCase = "Tracking 3D";
             string catagory = "Static test";
@@ -265,6 +263,7 @@ namespace FreeWheels
             await testcase.DoTest(timespan, interval, testCase, catagory, description);
 
             progress.Stop();
+            this.Output.Text = "Test finished";
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;

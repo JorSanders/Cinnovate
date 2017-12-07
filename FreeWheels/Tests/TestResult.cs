@@ -19,7 +19,22 @@ namespace FreeWheels.Tests
         public int TotalResults { get; set; }
         public int ZeroCount { get; set; }
 
+        public Position realPostion { get; set; }
+        public Position avgPostion { get; set; }
+
         public Position[] Results { get; set; }
+
+        public int[] Distance2d { get; set; }
+        public double MedianDistance2d { get; set; }
+        public string ModeDistance2d { get; set; }
+        public double AverageDistance2d { get; set; }
+        public double StandardDeviationDistance2d { get; set; }
+
+        public int[] Distance3d { get; set; }
+        public double MedianDistance3d { get; set; }
+        public string ModeDistance3d { get; set; }
+        public double AverageDistance3d { get; set; }
+        public double StandardDeviationDistance3d { get; set; }
 
         public int[] Deviations2d { get; set; }
         public double Median2d { get; set; }

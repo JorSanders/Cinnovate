@@ -19,6 +19,8 @@ namespace FreeWheels.Tests
         private string[] Description;
         private int[] Deviations3d;
         private int[] Deviations2d;
+        private int[] Distance2dList;
+        private int[] Distance3dList;
         private int ZeroCount;
         private int TimeSpan;
         private string TestCase, Category;
@@ -54,28 +56,23 @@ namespace FreeWheels.Tests
             ExportData.Add("TimeSpan;" + TestResult.TimeSpan);
             ExportData.Add("TotalResults;" + TestResult.TotalResults);
             ExportData.Add("ZeroCount;" + TestResult.ZeroCount);
+            ExportData.Add(";X;Y;Z");
+            ExportData.Add("Real position;" + TestResult.realPostion.X + ";" + TestResult.realPostion.Y + ";" + TestResult.realPostion.Z);
+            ExportData.Add("Avg position;" + TestResult.avgPostion.X + ";" + TestResult.avgPostion.Y + ";" + TestResult.avgPostion.Z);
             ExportData.Add("");
-            ExportData.Add("Info; 2d; 3d");
-            ExportData.Add("Average;" + TestResult.Average2d + ";" + TestResult.Average3d);
-            ExportData.Add("StandardDeviation;" + TestResult.StandardDeviation2d + ";" + TestResult.StandardDeviation3d);
-            ExportData.Add("Median;" + TestResult.Median2d + ";" + TestResult.Median3d);
-            ExportData.Add("Mode;" + TestResult.Mode2d + ";" + TestResult.Mode3d);
+            ExportData.Add(";deviation to avg 2d;deviation to avg 3d;deviation to real 2d;deviation to real 3d");
+            ExportData.Add("Average;" + TestResult.AverageDistance2d + ";" + TestResult.AverageDistance3d + ";" + TestResult.Average2d + ";" + TestResult.Average3d);
+            ExportData.Add("StandardDeviation;" + TestResult.StandardDeviationDistance2d + ";" + TestResult.StandardDeviationDistance3d + ";" + TestResult.StandardDeviation2d + ";" + TestResult.StandardDeviation3d);
+            ExportData.Add("Median;" + TestResult.MedianDistance2d + ";" + TestResult.MedianDistance3d + ";" + TestResult.Median2d + ";" + TestResult.Median3d);
+            ExportData.Add("Mode;" + TestResult.ModeDistance2d + ";" + TestResult.ModeDistance3d + ";" + TestResult.Mode2d + ";" + TestResult.Mode3d);
             ExportData.Add("");
             ExportData.Add("Results:; ");
-            ExportData.Add(";X;Y;Z");
-            foreach (Position position in TestResult.Results)
+            ExportData.Add(";X;Y;Z;deviation to avg 2d;deviation to avg 3d;deviation to real 2d;deviation to real 3d");
+            for (int i = 0; i < TestResult.Results.Length; i++)
             {
-                ExportData.Add(";" + position.X + ";" + position.Y + ";" + position.Z);
-            }
-            ExportData.Add("Deviations2d:; ");
-            foreach (double deviation in TestResult.Deviations2d)
-            {
-                ExportData.Add(";" + deviation);
-            }
-            ExportData.Add("Deviations3d:; ");
-            foreach (double deviation in TestResult.Deviations3d)
-            {
-                ExportData.Add(";" + deviation);
+                ExportData.Add(";" + TestResult.Results[i].X + ";" + TestResult.Results[i].Y + ";" + TestResult.Results[i].Z
+                    + ";" + Distance2dList[i] + ";" + Distance3dList[i]
+                    + ";" + Deviations2d[i] + ";" + Deviations3d[i]);
             }
 
             StorageFolder folder = ApplicationData.Current.LocalFolder;
@@ -93,7 +90,7 @@ namespace FreeWheels.Tests
         /// <param name="testCase">Name of testcase</param>
         /// <param name="catagory">catagory of the testcase</param>
         /// <returns></returns>
-        public async Task DoTest(int timeSpan, int interval, string testCase, string catagory, string[] description)
+        public async Task DoTest(int timeSpan, int interval, string testCase, string category, string[] description)
         {
             this.Status = "Setting configurations";
 
@@ -105,6 +102,7 @@ namespace FreeWheels.Tests
             this.TestCase = testCase;
             this.TimeSpan = timeSpan;
             this.Description = description;
+            this.Category = category;
 
             DateTime stopTime = DateTime.Now.AddMilliseconds(timeSpan);
             TimeSpan difference;
@@ -127,62 +125,55 @@ namespace FreeWheels.Tests
                 PositionsList.Add(position);
                 await Task.Delay(interval);
             }
-            this.Status = "Post test maths";
+            this.Status = "Exporting";
 
             TestResult = UpdateTestResult();
             await this.Export();
-
-            this.Status = "Finished";
-
         }
 
         /// <summary>
         ///     Calculates the devations of the test
         /// </summary>
-        public void CalculateDeviations()
+        public void CalculateDeviations(Position avgPosition)
         {
-            int[] deviations3d = new int[PositionsList.Count];
-            int[] deviations2d = new int[PositionsList.Count];
+            Deviations3d = new int[PositionsList.Count];
+            Deviations2d = new int[PositionsList.Count];
+            Distance2dList = new int[PositionsList.Count];
+            Distance3dList = new int[PositionsList.Count];
+
+            int realDistance2d = (int)Math.Round(Math.Sqrt(Math.Pow(MyPosition.X, 2) + Math.Pow(MyPosition.Y, 2)));
+            int realDistance3d = (int)Math.Round(Math.Sqrt(Math.Pow(MyPosition.X, 2) + Math.Pow(MyPosition.Y, 2) + Math.Pow(MyPosition.Z, 2)));
+
+
+            int avgDistance2d = (int)Math.Round(Math.Sqrt(Math.Pow(avgPosition.X, 2) + Math.Pow(avgPosition.Y, 2)));
+            int avgDistance3d = (int)Math.Round(Math.Sqrt(Math.Pow(avgPosition.X, 2) + Math.Pow(avgPosition.Y, 2) + Math.Pow(avgPosition.Z, 2)));
 
             for (int i = 0; i < PositionsList.Count; i++)
             {
-                double lineX = this.MyPosition.X - PositionsList[i].X;
-                double lineY = this.MyPosition.Y - PositionsList[i].Y;
-                double lineZ = this.MyPosition.Z - PositionsList[i].Z;
-
-                // D² = A² + B² + C²
-                deviations3d[i] = (int)Math.Round(Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2) + Math.Pow(lineZ, 2)));
-
                 // C² = A² + B²
-                deviations2d[i] = (int)Math.Round(Math.Sqrt(Math.Pow(lineX, 2) + Math.Pow(lineY, 2)));
-            }
+                // D² = A² + B² + C²
 
-            this.Deviations3d = deviations3d;
-            this.Deviations2d = deviations2d;
+                Distance2dList[i] = avgDistance2d - (int)Math.Round(Math.Sqrt(Math.Pow(PositionsList[i].X, 2) + Math.Pow(PositionsList[i].Y, 2)));
+                Distance3dList[i] = avgDistance3d - (int)Math.Round(Math.Sqrt(Math.Pow(PositionsList[i].X, 2) + Math.Pow(PositionsList[i].Y, 2) + Math.Pow(PositionsList[i].Z, 2)));
+
+                Deviations2d[i] = realDistance2d - (int)Math.Round(Math.Sqrt(Math.Pow(Distance2dList[i], 2) + Math.Pow(Distance2dList[i], 2)));
+                Deviations3d[i] = realDistance3d - (int)Math.Round(Math.Sqrt(Math.Pow(Distance2dList[i], 2) + Math.Pow(Distance2dList[i], 2) + Math.Pow(Distance2dList[i], 2)));
+
+                if (Distance2dList[i] < 0) Distance2dList[i] *= -1;
+                if (Distance3dList[i] < 0) Distance3dList[i] *= -1;
+                if (Deviations2d[i] < 0) Deviations2d[i] *= -1;
+                if (Deviations3d[i] < 0) Deviations3d[i] *= -1;
+            }
         }
 
         /// <summary>
         ///     Returns the standardevation of the test
         /// </summary>
         /// <returns></returns>
-        public double GetStandardDeviation(int dimension)
+        public double GetStandardDeviation(int[] list)
         {
-            int size;
-            double total;
-
-            switch (dimension)
-            {
-                case 2:
-                    size = Deviations2d.Length;
-                    total = Deviations2d.Sum();
-                    break;
-                case 3:
-                    size = Deviations3d.Length;
-                    total = Deviations3d.Sum();
-                    break;
-                default:
-                    return -1;
-            }
+            int size = list.Length;
+            double total = list.Sum();
 
             double average = total / size;
 
@@ -191,7 +182,7 @@ namespace FreeWheels.Tests
             // Calc Deviation on Average
             for (int i = 0; i < size; i++)
             {
-                deviations[i] = Math.Pow(Deviations3d[i] - average, 2);
+                deviations[i] = Math.Pow(list[i] - average, 2);
             }
 
             double deviationsTotal = deviations.Sum();
@@ -205,57 +196,32 @@ namespace FreeWheels.Tests
         ///     Returns the average of the test
         /// </summary>
         /// <returns></returns>
-        public double GetAverage(int dimension)
+        public double GetAverage(int[] list)
         {
             double average;
-            switch (dimension)
-            {
-                case 2:
-                    average = this.Deviations2d.Sum() / this.Deviations2d.Length;
-                    return Math.Round(average, 2);
-                case 3:
-                    average = this.Deviations3d.Sum() / this.Deviations3d.Length;
-                    return Math.Round(average, 2);
-                default:
-                    return -1;
-            }
+            average = list.Sum() / list.Length;
+            return Math.Round(average, 2);
         }
 
         /// <summary>
         ///     Returns the median of the test
         /// </summary>
         /// <returns></returns>
-        public double GetMedian(int dimension)
+        public double GetMedian(int[] list)
         {
-            int[] deviations;
+            List<int> listList = list.ToList();
+            int[] sortableList = listList.ToArray();
+            Array.Sort(sortableList);
 
-            switch (dimension)
+            if (sortableList.Length % 2 == 0)
             {
-                case 2:
-                    deviations = this.Deviations2d;
-                    break;
-                case 3:
-                    deviations = this.Deviations3d;
-                    break;
-                default:
-                    return -1;
-            }
-
-            // I hope nobody ever finds out I did this. But sorting the deviations ruined the export. 
-            // So I made a list with deviations then sorted that otherwise the original still got sorted.
-            List<int> devationsList = deviations.ToList();
-            int[] devationsSorted = deviations.ToArray();
-            Array.Sort(devationsSorted);
-
-            if (devationsSorted.Length % 2 == 0)
-            {
-                int index = devationsSorted.Length / 2;
-                return (devationsSorted[index - 1] + devationsSorted[index]) / 2;
+                int index = sortableList.Length / 2;
+                return (sortableList[index - 1] + sortableList[index]) / 2;
             }
             else
             {
-                int index = (int)Math.Round((devationsSorted.Length / 2) - 0.5);
-                return devationsSorted[index];
+                int index = (int)Math.Round((sortableList.Length / 2) - 0.5);
+                return sortableList[index];
             }
         }
 
@@ -263,34 +229,19 @@ namespace FreeWheels.Tests
         ///     Returns the mode of the test
         /// </summary>
         /// <returns></returns>
-        public string GetMode(int dimension)
+        public string GetMode(int[] list)
         {
             Dictionary<double, int> counts = new Dictionary<double, int>();
 
-            int[] deviations;
-
-            switch (dimension)
+            foreach (double item in list)
             {
-                case 2:
-                    deviations = this.Deviations2d;
-                    break;
-                case 3:
-                    deviations = this.Deviations3d;
-                    break;
-                default:
-                    return null;
-            }
-
-
-            foreach (double deviation in deviations)
-            {
-                if (counts.ContainsKey(deviation))
+                if (counts.ContainsKey(item))
                 {
-                    counts[deviation] += 1;
+                    counts[item] += 1;
                 }
                 else
                 {
-                    counts.Add(deviation, 1);
+                    counts.Add(item, 1);
                 }
             }
 
@@ -323,13 +274,30 @@ namespace FreeWheels.Tests
             return str;
         }
 
+        public Position GetAveragePostion(List<Position> positions)
+        {
+            int totalX = 0, totalY = 0, totalZ = 0;
+            int size = positions.Count;
+
+            for (int i = 0; i < size; i++)
+            {
+                totalX += positions[i].X;
+                totalY += positions[i].Y;
+                totalZ += positions[i].Z;
+            }
+
+            return new Position(totalX / size, totalY / size, totalZ / size);
+        }
+
         /// <summary>
         ///     Sets the values in the testresult object
         /// </summary>
         /// <returns></returns>
         public TestResult UpdateTestResult()
         {
-            CalculateDeviations();
+            Position avgPosition = GetAveragePostion(this.PositionsList);
+
+            CalculateDeviations(avgPosition);
 
             TestResult testResult = new TestResult(TestCase, Category);
 
@@ -340,19 +308,39 @@ namespace FreeWheels.Tests
             testResult.TotalResults = this.PositionsList.Count();
             testResult.ZeroCount = this.ZeroCount;
 
+            testResult.realPostion = this.MyPosition;
+            testResult.avgPostion = avgPosition;
+
+
             testResult.Results = this.PositionsList.ToArray();
 
-            testResult.Deviations2d = this.Deviations2d;
-            testResult.Median2d = GetMedian(2);
-            testResult.Mode2d = GetMode(2); ;
-            testResult.Average2d = GetAverage(2);
-            testResult.StandardDeviation2d = GetStandardDeviation(2);
+            // Deviation X Y to avg
+            testResult.Distance2d = this.Distance2dList;
+            testResult.MedianDistance2d = GetMedian(Distance2dList);
+            testResult.ModeDistance2d = GetMode(Distance2dList); ;
+            testResult.AverageDistance2d = GetAverage(Distance2dList);
+            testResult.StandardDeviationDistance2d = GetStandardDeviation(Distance2dList);
 
+            // Deviation X Y Z to avg
+            testResult.Distance3d = this.Distance3dList;
+            testResult.MedianDistance3d = GetMedian(Distance3dList);
+            testResult.ModeDistance3d = GetMode(Distance3dList); ;
+            testResult.AverageDistance3d = GetAverage(Distance3dList);
+            testResult.StandardDeviationDistance3d = GetStandardDeviation(Distance3dList);
+
+            // Deviation X Y to real
+            testResult.Deviations2d = this.Deviations2d;
+            testResult.Median2d = GetMedian(Deviations2d);
+            testResult.Mode2d = GetMode(Deviations2d); ;
+            testResult.Average2d = GetAverage(Deviations2d);
+            testResult.StandardDeviation2d = GetStandardDeviation(Deviations2d);
+
+            // Deviation X Y Zto real
             testResult.Deviations3d = this.Deviations3d;
-            testResult.Median3d = GetMedian(3);
-            testResult.Mode3d = GetMode(3); ;
-            testResult.Average3d = GetAverage(3);
-            testResult.StandardDeviation3d = GetStandardDeviation(3);
+            testResult.Median3d = GetMedian(Deviations3d);
+            testResult.Mode3d = GetMode(Deviations3d); ;
+            testResult.Average3d = GetAverage(Deviations3d);
+            testResult.StandardDeviation3d = GetStandardDeviation(Deviations3d);
             return testResult;
         }
     }
