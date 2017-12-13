@@ -38,14 +38,13 @@ namespace FreeWheels.PozyxLibrary
             }
             while (!_Connection.connected);
 
-            ConfigurationRegisters  = new ConfigurationRegisters(_Connection);
-            DeviceListFunctions     = new DeviceListFunctions(_Connection);
-            GeneralData             = new GeneralData(_Connection);
-            PositioningData         = new PositioningData(_Connection);
-            RegisterFunctions       = new RegisterFunctions(_Connection);
-            SensorData              = new SensorData(_Connection);
-            StatusRegisters         = new StatusRegisters(_Connection);
-
+            ConfigurationRegisters = new ConfigurationRegisters(_Connection);
+            DeviceListFunctions = new DeviceListFunctions(_Connection);
+            GeneralData = new GeneralData(_Connection);
+            PositioningData = new PositioningData(_Connection);
+            RegisterFunctions = new RegisterFunctions(_Connection);
+            SensorData = new SensorData(_Connection);
+            StatusRegisters = new StatusRegisters(_Connection);
         }
 
 
@@ -78,7 +77,7 @@ namespace FreeWheels.PozyxLibrary
             // Set the anchor height on 1800 and the flag to 8
             foreach (int deviceId in deviceIds)
             {
-                if(!AddAnchor(deviceId, 8, 0, 0, 1800))
+                if (!AddAnchor(deviceId, 8, 0, 0, 1800))
                 {
                     return false;
                 }
@@ -156,7 +155,6 @@ namespace FreeWheels.PozyxLibrary
             {
                 Debug.WriteLine("ERROR: " + err);
             }
-
         }
 
         public bool AddAnchor(int id, int flag, int x, int y, int z)
@@ -234,6 +232,5 @@ namespace FreeWheels.PozyxLibrary
 
             return success;
         }
-
     }
 }
