@@ -1,13 +1,21 @@
-﻿using System;
+﻿using FreeWheels.PozyxLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class SensorData
+    public class SensorData
     {
+        private IConnection Connection;
+
+        public SensorData(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
+
         /// <summary>
         ///     This register contains the maximum measured norm of the 3D linear acceleration.
         ///     This value is reset after reading the register.
@@ -15,7 +23,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 1 int.
         /// </summary>
         /// <returns>Maximum linear acceleration</returns>
-        public static int MaxLinAcc()
+        public int MaxLinAcc()
         {
             byte[] request = { 0x4E };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -29,7 +37,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mPa = 1 int.
         /// </summary>
         /// <returns>Pressure data</returns>
-        public static UInt32 Pressure()
+        public UInt32 Pressure()
         {
             byte[] request = { 0x50 };
             byte[] data = Connection.ReadWrite(request, 4);
@@ -43,7 +51,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Accelerometer data (in mg)</returns>
-        public static int AccelX()
+        public int AccelX()
         {
             byte[] request = { 0x54 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -57,7 +65,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Accelerometer data (in mg)</returns>
-        public static int AccelY()
+        public int AccelY()
         {
             byte[] request = { 0x56 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -71,7 +79,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Accelerometer data (in mg)</returns>
-        public static int AccelZ()
+        public int AccelZ()
         {
             byte[] request = { 0x58 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -85,7 +93,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1µT = 16 int.
         /// </summary>
         /// <returns>Magnemtometer data</returns>
-        public static int MagnX()
+        public int MagnX()
         {
             byte[] request = { 0x5A };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -99,7 +107,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1µT = 16 int.
         /// </summary>
         /// <returns>Magnemtometer data</returns>
-        public static int MagnY()
+        public int MagnY()
         {
             byte[] request = { 0x5C };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -113,7 +121,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1µT = 16 int.
         /// </summary>
         /// <returns>Magnemtometer data</returns>
-        public static int MagnZ()
+        public int MagnZ()
         {
             byte[] request = { 0x5E };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -127,7 +135,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Gyroscope data</returns>
-        public static int GyroX()
+        public int GyroX()
         {
             byte[] request = { 0x60 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -141,7 +149,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Gyroscope data</returns>
-        public static int GyroY()
+        public int GyroY()
         {
             byte[] request = { 0x62 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -155,7 +163,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Gyroscope data</returns>
-        public static int GyroZ()
+        public int GyroZ()
         {
             byte[] request = { 0x64 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -169,7 +177,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Euler angles heading (or yaw)</returns>
-        public static int EulHeading()
+        public int EulHeading()
         {
             byte[] request = { 0x66 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -183,7 +191,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Euler angles roll</returns>
-        public static int EulRoll()
+        public int EulRoll()
         {
             byte[] request = { 0x68 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -197,7 +205,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Euler angles pitch</returns>
-        public static int EulPitch()
+        public int EulPitch()
         {
             byte[] request = { 0x6A };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -211,7 +219,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>Weight of quaternion</returns>
-        public static int QuatW()
+        public int QuatW()
         {
             byte[] request = { 0x6C };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -225,7 +233,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>x of quaternion</returns>
-        public static int QuatX()
+        public int QuatX()
         {
             byte[] request = { 0x6E };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -239,7 +247,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>y of quaternion</returns>
-        public static int QuatY()
+        public int QuatY()
         {
             byte[] request = { 0x70 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -253,7 +261,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>z of quaternion</returns>
-        public static int QuatZ()
+        public int QuatZ()
         {
             byte[] request = { 0x72 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -268,7 +276,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Linear acceleration in x-direction</returns>
-        public static int LiaX()
+        public int LiaX()
         {
             byte[] request = { 0x74 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -283,7 +291,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Linear acceleration in y-direction</returns>
-        public static int LiaY()
+        public int LiaY()
         {
             byte[] request = { 0x76 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -298,7 +306,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Linear acceleration in z-direction</returns>
-        public static int LiaZ()
+        public int LiaZ()
         {
             byte[] request = { 0x78 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -312,7 +320,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>x-component of gravity vector</returns>
-        public static int GravX()
+        public int GravX()
         {
             byte[] request = { 0x7A };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -326,7 +334,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>y-component of gravity vector</returns>
-        public static int GravY()
+        public int GravY()
         {
             byte[] request = { 0x7C };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -340,7 +348,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>z-component of gravity vector</returns>
-        public static int GravZ()
+        public int GravZ()
         {
             byte[] request = { 0x7E };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -354,7 +362,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     For more accurate ambient temperature measurements, it is recommended to use a separate sensor.
         /// </summary>
         /// <returns>Temperature</returns>
-        public static int Temperature()
+        public int Temperature()
         {
             byte[] request = { 0x80 };
             byte[] data = Connection.ReadWrite(request, 1);

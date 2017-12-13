@@ -1,18 +1,28 @@
-﻿using System;
+﻿using FreeWheels.PozyxLibrary.Classes;
+using FreeWheels.PozyxLibrary.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class PositioningData
+    public class PositioningData
     {
+
+        private IConnection Connection;
+
+        public PositioningData(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
+
         /// <summary>
         ///     x-coordinate of the device in mm.
         /// </summary>
         /// <returns></returns>
-        public static int PosX()
+        public int PosX()
         {
             byte[] request = { 0x30 };
             byte[] data = Connection.ReadWrite(request, 4);
@@ -24,7 +34,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     y-coordinate of the device in mm.
         /// </summary>
         /// <returns></returns>
-        public static int PosY()
+        public int PosY()
         {
             byte[] request = { 0x34 };
             byte[] data = Connection.ReadWrite(request, 4);
@@ -36,7 +46,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     z-coordinate of the device in mm.
         /// </summary>
         /// <returns></returns>
-        public static int PosZ()
+        public int PosZ()
         {
             byte[] request = { 0x38 };
             byte[] data = Connection.ReadWrite(request, 4);
@@ -44,11 +54,19 @@ namespace FreeWheels.Classes.PozyxApi
             return BitConverter.ToInt32(data, 0);
         }
 
+        public Position Pos()
+        {
+            byte[] request = { 0x30 };
+            byte[] data = Connection.ReadWrite(request, 12);
+
+            return new Position(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToInt32(data, 8));
+        }
+
         /// <summary>
         ///     estimated error covariance of x
         /// </summary>
         /// <returns></returns>
-        public static int PosErrX()
+        public int PosErrX()
         {
             byte[] request = { 0x3C };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -60,7 +78,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     estimated error covariance of y
         /// </summary>
         /// <returns></returns>
-        public static int PosErrY()
+        public int PosErrY()
         {
             byte[] request = { 0x3E };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -72,7 +90,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     estimated error covariance of z
         /// </summary>
         /// <returns></returns>
-        public static int PosErrZ()
+        public int PosErrZ()
         {
             byte[] request = { 0x40 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -84,7 +102,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     estimated covariance of xy
         /// </summary>
         /// <returns></returns>
-        public static int PosErrXY()
+        public int PosErrXY()
         {
             byte[] request = { 0x42 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -96,7 +114,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// 	estimated covariance of xz
         /// </summary>
         /// <returns></returns>
-        public static int PosErrXZ()
+        public int PosErrXZ()
         {
             byte[] request = { 0x44 };
             byte[] data = Connection.ReadWrite(request, 2);
@@ -108,7 +126,7 @@ namespace FreeWheels.Classes.PozyxApi
         /// 	estimated covariance of YZ
         /// </summary>
         /// <returns></returns>
-        public static int PosErrYZ()
+        public int PosErrYZ()
         {
             byte[] request = { 0x46 };
             byte[] data = Connection.ReadWrite(request, 2);

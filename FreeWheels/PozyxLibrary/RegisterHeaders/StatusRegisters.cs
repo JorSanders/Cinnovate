@@ -1,20 +1,27 @@
-﻿using FreeWheels.Enums;
+﻿using FreeWheels.PozyxLibrary.Interfaces;
+using FreeWheels.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FreeWheels.Classes.PozyxApi
+namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public static class StatusRegisters
+    public class StatusRegisters
     {
+        private IConnection Connection;
+
+        public StatusRegisters(IConnection pozyxConnection)
+        {
+            Connection = pozyxConnection;
+        }
 
         /// <summary>
         ///     This register identifies the Pozyx device. This can be used to make sure that Pozyx is connected properly.
         /// </summary>
         /// <returns>Returns the constant value 0x43</returns>
-        public static int WhoAmI()
+        public int WhoAmI()
         {
             byte[] request = { 0x0 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -27,7 +34,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     It is recommended to have all devices run on the same firmware version. 
         /// </summary>
         /// <returns>Firmware Version</returns>
-        public static string FirmwareVer()
+        public string FirmwareVer()
         {
             byte[] request = { 0x1 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -43,7 +50,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     The value is programmed during production and cannot be changed.
         /// </summary>
         /// <returns>Hardware Version</returns>
-        public static string HarwareVer()
+        public string HarwareVer()
         {
             byte[] request = { 0x2 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -59,7 +66,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     The self test is automatically initiated at device startup.
         /// </summary>
         /// <returns>Self-test Result</returns>
-        public static List<string> STResult()
+        public List<string> STResult()
         {
             byte[] request = { 0x3 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -101,7 +108,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     The presence of an error is indicated by the ERR-bit in the IntStatus() register. 
         /// </summary>
         /// <returns>Describes a possible system error</returns>
-        public static string ErrorCode()
+        public string ErrorCode()
         {
             byte[] request = { 0x4 };
             byte[] data = Connection.ReadWrite(request, 1);
@@ -126,7 +133,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     (RX_DATA)   Indicates that the pozyx device has received some data over its wireless uwb link.
         ///     (FUNC)      Indicates that a register function call has finished(excluding positioning).
         /// </returns>
-        public static List<string> IntStatus()
+        public List<string> IntStatus()
         {
             List<string> status = new List<string>();
 
@@ -163,7 +170,7 @@ namespace FreeWheels.Classes.PozyxApi
         ///     (ACC) Current accelerometer calibration status, depends on status of the accelerometer.
         ///     (MAG) Current magnetometer calibration status, depends on status of the magnetometer.
         /// </returns>
-        public static List<string> CalibStatus()
+        public List<string> CalibStatus()
         {
             List<string> status = new List<string>();
 
