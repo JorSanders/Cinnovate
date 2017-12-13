@@ -1,42 +1,43 @@
-# Cinnovate
-Codebase for the self driving wheelchair
+# Freewheels
+Codebase for a Windows unival app that uses [Pozyx](www.pozyx.io) for indoor positioning. Using  Pozyx firmware version 1.1. Developed to support a self driving wheelchair
 
-# Requirements
+# Overview
+- Setup guide
+    - Required hardware
+    - Connecting the pozyx
+    - Opening the application
+    - Running the application
+- Tips and tricks
 
-##### Required hardware
-- Raspberry Pi v3 x1
-- Pozyx Shield x1
-- UTP cable x2
-- Micro USB cable (Power supply Raspberry Pi) x1 
-- Keyboard x1
-- Mouse x1
-- Display x1
-- HDMI cable x1
-- Jumper cables male to female x4
-- Laptop/PC (laptop is recommended for testing) x1
+# Setup guide
 
-##### Required software
-- Visual studio (latest version)
-- Windows 10 (latest version)
+###### Required hardware
+- Windows machine to run the application on
+    - We used a Raspberry pi v3 which runs [Windows Iot](developer.microsoft.com/en-us/windows/iot/downloads)
+- Windows 10 machine with visual studio.
+- Pozyx shield
+- at least 3 Pozyx anchors, 4 are required for 3d positioning
 
-# How to connect the Raspberry Pi to the Pozyx shield
-1. Connect the UTP cable to the Raspberry Pi (see number .. on image..)
-2. Connect the HDMI cable from the display to the Raspberry Pi (see number .. on image..)
-3. Connect the Micro USB cable to the Raspberry Pi, this will function as the power supply for the Raspberry Pi (see number .. on image ..)  
-4. Connect the Raspberry Pi and Pozyx shield pins with the jumper cables (x4)
-	- Connect the male end of one jumper cable to the pozyx SCL pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-    - Connect the male end of one jumper cable to the pozyx SDA pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-    - Connect the male end of one jumper cable to the pozyx 5v pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-    -  Connect the male end of one jumper cable to the pozyx GND pin (see number .. on image ..)     connect the female end to the Raspberry Pi (see number .. on image ..)
-5. Make sure everything is plugged in and powered, to test this turn on the display, you should now see a page with information about the Raspberry Pi and an IPv4 address, this IP is later used in 'How to connect with the Prozyx Shield' (see image ..)
+###### Connecting the pozyx
+- We have chosen to connect the Pozyx via I2C with our Raspberry.
+    - Connect the (5v, ground, scl and sda) pins
+- Pozyx should also be abled to connect via a serial connection. However we couldn't manage to get this functional
 
-# How to clone and open the application
+###### Opening the application
+- Clone the project: ```$ git clone https://github.com/JorSanders/Cinnovate.git ```
+- Open the project in visual studio: file > open > project/solution > (location where you cloned the project to) > click and open <name> *
 
-1. Clone the project: $ git clone https://github.com/JorSanders/Cinnovate.git
-2. Open the project in visual studio: file > open > project/solution > (location where you cloned the project to) > click and open <name> *
+###### Running the application
+- Connect the machine with visual studio(Your pc or laptop) to the same network as the machine connected to the pozyx(Rasperry Pi)
+- In visual studio open your project properties and go to the debug tab.
+    - Set platform to "Active (Arm)"
+    - Set target device to "Remove machine" 
+    - Set the remote machine to the IP address
+    - Set Authentication mode to "Universal (Unencrypted Protocol)
 
-# How to connect with the Pozyx Shield using the application
-
-1. Connect your Laptop/PC with the same network as the Pozyx Shield (UTP cable) make sure your IP matches that of the IP (IPv4) you got from 'How to connect the Raspberry Pi to the Pozyx shield' #5
-2. In visual studio right click the project <name> in the solution explorer > properties > debug > under 'remote machine' click 'find' . Under 'manual configuration' type the IP addres of the Pozyx Shield in the address field  (your own IP should match this). Set the authentication mode to 'universal (unencrypted protocol)' and click the 'select' button. 
-3. Back in Visual studio run the application by clicking the 'remote machine' button, with the setting 'Debug' and 'ARM' selected. The project should now open in a new window, from this point you can start using the pozyx
+# Tips and tricks
+- Open a webbrowser and go to the ipaddress of your Windows Iot device and port 8080 example ```192.168.0.2:8080``` To access more settings and the files explorer of your device.
+- Setting ```Pozyx.ConfigurationsRegisters.PosNumAnchors()``` seems to result in Pozyx always raising the error "POZYX_ERROR_NOT_ENOUGH_ANCHORS"
+- Setting ```Pozyx.ConfigurationsRegisters.PosAlg()``` to tracking seems to set the algorithm to tracking although when requested it returns "UWB-only" is the set algorithm
+- Our network didn't allow for a wifi connection to our Raspberry Pi. So we setup one of our laptops to host a hotspot and connected the Raspberry Pi to that network.
+- Check the Pozyx [Register Headers](https://www.pozyx.io/Documentation/Datasheet/RegisterOverview) for additional info on the Pozyx library functions.
