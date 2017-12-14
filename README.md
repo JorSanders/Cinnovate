@@ -1,5 +1,5 @@
 # Freewheels
-Codebase for a Windows unival app that uses [Pozyx](www.pozyx.io) for indoor positioning. Using  Pozyx firmware version 1.1. Developed to support a self driving wheelchair
+Codebase for a Windows unival app that uses [Pozyx](http://www.pozyx.io) for indoor positioning. Using  Pozyx firmware version 1.1. Developed to support a self driving wheelchair
 
 # Overview
 - Setup guide
@@ -41,3 +41,6 @@ Codebase for a Windows unival app that uses [Pozyx](www.pozyx.io) for indoor pos
 - Setting ```Pozyx.ConfigurationsRegisters.PosAlg()``` to tracking seems to set the algorithm to tracking although when requested it returns "UWB-only" is the set algorithm
 - Our network didn't allow for a wifi connection to our Raspberry Pi. So we setup one of our laptops to host a hotspot and connected the Raspberry Pi to that network.
 - Check the Pozyx [Register Headers](https://www.pozyx.io/Documentation/Datasheet/RegisterOverview) for additional info on the Pozyx library functions.
+- Where to postion the anchors according to Pozyx, [see here](https://www.pozyx.io/Documentation/where_to_place_the_anchors)
+- How to set UWB settings, [see here](https://www.pozyx.io/Documentation/Tutorials/uwb_settings)
+- Pozyx own performance tests, [see here](https://www.pozyx.io/Documentation/Datasheet/SystemPerformance)
