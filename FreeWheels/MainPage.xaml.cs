@@ -251,7 +251,7 @@ namespace FreeWheels
             {
                 await _Pozyx.SetConfiguration();
                 UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 50);
+                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 500);
                 UpdateScreen.Start();
                 UpdatePosition.Start();
 
@@ -350,9 +350,18 @@ namespace FreeWheels
             await Task.Delay(200);
             _Pozyx.AddAnchor(0x6038, 1, 7000, 0, 2000);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 500);
+            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 2000);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 10);
+            _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 500);
+            await Task.Delay(200);
+
+            _Pozyx.AddAnchor(0x6970, 1, 0, 2560, 1100);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6957, 1, 3500, 0, 1500);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x697C, 1, 7000, 2540, 950);
+            await Task.Delay(200);
+            _Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
             await Task.Delay(200);
 
             Button1.IsEnabled = true;
