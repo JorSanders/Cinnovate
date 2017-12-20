@@ -44,10 +44,12 @@ namespace FreeWheels
         private Pozyx _Pozyx;
 
         private Position _MyPosition;
+        private int friendId = 0x6E38; // the other pozyx tag id
+        private Position _Friend; // The other pozyx location
+        private Position _errorCo;
 
         private DispatcherTimer UpdateScreen;
         private DispatcherTimer UpdatePosition;
-        private bool Init;
         private Testcase testcase;
 
         private List<float[]> linePoints = new List<float[]>();
@@ -59,7 +61,6 @@ namespace FreeWheels
         public MainPage()
         {
             _Pozyx = new Pozyx();
-            this.Init = true;
             this.InitializeComponent();
             UpdateScreen = new DispatcherTimer();
             UpdatePosition = new DispatcherTimer();
@@ -251,7 +252,7 @@ namespace FreeWheels
             {
                 await _Pozyx.SetConfiguration();
                 UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 50);
+                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 400);
                 UpdateScreen.Start();
                 UpdatePosition.Start();
 
@@ -316,13 +317,13 @@ namespace FreeWheels
             await Task.Delay(500);
 
             // Onze kamer
-            _Pozyx.AddAnchor(0x697D, 1, 0, 45, 2000);
+            _Pozyx.AddAnchor(0x605B, 1, 0, 0, 500);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6956, 1, 45, 3580, 500);
+            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 2000);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6957, 1, 3590, 3535, 2000);
+            _Pozyx.AddAnchor(0x697C, 1, 3500, 0, 1500);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x697C, 1, 3545, 0, 500);
+            _Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
             await Task.Delay(200);
 
             Button1.IsEnabled = true;
@@ -346,14 +347,23 @@ namespace FreeWheels
             await Task.Delay(500);
 
             // Grote vergader ruimte
-            _Pozyx.AddAnchor(0x605B, 1, 0, 0, 500);
+            _Pozyx.AddAnchor(0x605B, 1, 0, 0, 2000);
             await Task.Delay(200);
             _Pozyx.AddAnchor(0x6038, 1, 7000, 0, 2000);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 500);
+            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 2000);
             await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 10);
+            _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 2000);
             await Task.Delay(200);
+
+            //_Pozyx.AddAnchor(0x6957, 1, 0, 2560, 1100);
+            //await Task.Delay(200);
+            //_Pozyx.AddAnchor(0x697C, 1, 3500, 0, 1500);
+            //await Task.Delay(200);
+            //_Pozyx.AddAnchor(0x697D, 1, 7000, 2540, 950);
+            //await Task.Delay(200);
+            //_Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
+            //await Task.Delay(200);
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
@@ -369,6 +379,8 @@ namespace FreeWheels
 
         void UpdateScreen_Tick(object sender, object e)
         {
+            _errorCo = new Position(_Pozyx.PositioningData.PosErrX(), _Pozyx.PositioningData.PosErrY(), _Pozyx.PositioningData.PosZ());
+
             this.Output.Text = "x: " + _MyPosition.X + "\t y: " + _MyPosition.Y + "\t z: " + _MyPosition.Z;
 
             String timeStamp = DateTime.Now.ToString();
@@ -381,7 +393,16 @@ namespace FreeWheels
         {
             _Pozyx.RegisterFunctions.DoPositioning();
 
+            _Pozyx.RegisterFunctions.TXData(0, new byte[] {0xB6});
+            _Pozyx.RegisterFunctions.TXSend(friendId, 4);
+
+            _Pozyx.RegisterFunctions.TXData(0, new byte[0x30]);
+            _Pozyx.RegisterFunctions.TXSend(friendId, 2);
+
+            var data = _Pozyx.RegisterFunctions.RXData();
+
             _MyPosition = _Pozyx.PositioningData.Pos();
+
 
             // Add to the position list
             PositionList.Add(_MyPosition);
