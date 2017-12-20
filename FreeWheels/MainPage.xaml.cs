@@ -69,6 +69,8 @@ namespace FreeWheels
             _MyPosition = new Position();
             testcase = new Testcase(_Pozyx);
 
+            _Friend = new Position();
+
             StartUp();
         }
 
@@ -163,6 +165,9 @@ namespace FreeWheels
 
             // Draw Tag
             args.DrawingSession.FillCircle((float)(this._MyPosition.X * pixelSize + space), (float)(this._MyPosition.Y * pixelSize + space), 5, Colors.Green);
+           
+            // Draw friend
+            args.DrawingSession.FillCircle((float)(this._Friend.X * pixelSize + space), (float)(this._Friend.Y * pixelSize + space), 5, Colors.Pink);
         }
 
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -252,7 +257,7 @@ namespace FreeWheels
             {
                 await _Pozyx.SetConfiguration();
                 UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 400);
+                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 1000);
                 UpdateScreen.Start();
                 UpdatePosition.Start();
 
@@ -381,7 +386,7 @@ namespace FreeWheels
         {
             _errorCo = new Position(_Pozyx.PositioningData.PosErrX(), _Pozyx.PositioningData.PosErrY(), _Pozyx.PositioningData.PosZ());
 
-            this.Output.Text = "x: " + _MyPosition.X + "\t y: " + _MyPosition.Y + "\t z: " + _MyPosition.Z;
+            this.Output.Text = "x: " + _Friend.X + "\t y: " + _Friend.Y + "\t z: " + _Friend.Z;
 
             String timeStamp = DateTime.Now.ToString();
             this.Timestamp.Text = "Timestamp: " + timeStamp;
@@ -389,20 +394,24 @@ namespace FreeWheels
             this.GridCanvas.Invalidate();
         }
 
-        void UpdatePosition_Tick(object sender, object e)
+        async void UpdatePosition_Tick(object sender, object e)
         {
             _Pozyx.RegisterFunctions.DoPositioning();
+            _MyPosition = await _Pozyx.PositioningData.Pos();
 
-            _Pozyx.RegisterFunctions.TXData(0, new byte[] {0xB6});
+            await Task.Delay(1000);
+
+            // friend do pos
+            _Pozyx.RegisterFunctions.TXData(0, new byte[] {0xB6, 1});
             _Pozyx.RegisterFunctions.TXSend(friendId, 4);
+            await Task.Delay(1000);
+            var txs = _Pozyx.RegisterFunctions.TXSend(friendId, 2);
+            await Task.Delay(200);
 
-            _Pozyx.RegisterFunctions.TXData(0, new byte[0x30]);
-            _Pozyx.RegisterFunctions.TXSend(friendId, 2);
+            // friend get pos
+            _Friend = await _Pozyx.PositioningData.Pos(friendId);
 
-            var data = _Pozyx.RegisterFunctions.RXData();
-
-            _MyPosition = _Pozyx.PositioningData.Pos();
-
+            return;
 
             // Add to the position list
             PositionList.Add(_MyPosition);

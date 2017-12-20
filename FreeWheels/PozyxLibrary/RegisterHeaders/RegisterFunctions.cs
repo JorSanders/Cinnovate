@@ -90,7 +90,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// <returns> True or False </returns>
         public bool TXSend(int networkID, int option)
         {
-            byte[] request = new byte[] { 0xB3, (byte)option };
+            byte[] request = new byte[] { 0xB3, (byte)networkID, (byte)(networkID >> 8), (byte)option };
             byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
