@@ -14,6 +14,54 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         }
 
         /// <summary>
+        ///     	Indicates which interrupts are enabled.    
+        /// </summary>
+        /// <param name="err">Enables interrupts whenever an error occurs.</param>
+        /// <param name="pos">Enables interrupts whenever a new positiong update is availabe.</param>
+        /// <param name="imu">Enables interrupts whenever a new IMU update is availabe.</param>
+        /// <param name="rxData">Enables interrupts whenever data is received through the ultra-wideband network.</param>
+        /// <param name="funt">Enables interrupts whenever a register function call has completed.</param>
+        /// <param name="pin">Configures the interrupt pin.</param>
+        public void IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin, int remoteId = 0)
+        {
+            byte parameters = 0x0;
+            bool[] interupts = { err, pos, imu, rxData, funt };
+
+            for (int i = 0; i < interupts.Count(); i++)
+            {
+                if (interupts[i])
+                {
+                    parameters = (byte)(0x1 << i | parameters);
+                }
+            }
+            parameters = (byte)(pin << 7 | parameters);
+
+            byte[] request = { 0x10, parameters };
+            Connection.Write(request);
+        }
+
+        // See IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
+        public List<string> IntMask(int remoteId = 0)
+        {
+            byte[] data = ReadRegister(0x10, 1, null, remoteId);
+
+            List<string> interupts = new List<string>();
+            interupts.Add(((0x80 & data[0]) == 1) ? "PIN1" : "PIN0");
+
+            string[] interuptFlags = { "ERR", "POS", "IMU", "RXDATA", "FUNC" };
+
+            for (int i = 0; i < interuptFlags.Length; i++)
+            {
+                if ((data[0] >> i & 0x1) == 1)
+                {
+                    interupts.Add(interuptFlags[i]);
+                }
+            }
+
+            return interupts;
+        }
+
+        /// <summary>
         ///     This register configures the external interrupt pin of the Pozyx device. It should be configured in combination with the POZYX_INT_MASK register.
         /// </summary>
         /// <param name="pinNum">
@@ -62,7 +110,6 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         public int[] IntConfig(int remoteId = 0)
         {
             byte[] request = { 0x11 };
-            byte[] data = Connection.ReadWrite(request, 1);
             byte[] data = ReadRegister(0x11, 1, null, remoteId);
 
             return new int[] { data[0] & 0x7, data[0] & 0x8, data[0] & 0x20, data[0] & 0x40 };
@@ -95,8 +142,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See PosFilter(int strength, int filter)
         public int[] PosFilter(int remoteId = 0)
         {
-            byte[] request = { 0x14 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x14, 1, null, remoteId);
 
             return new int[] { data[0] >> 4, data[0] & 0x0F };
         }
@@ -153,8 +199,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
         public bool[] ConfigLeds(int remoteId = 0)
         {
-            byte[] request = { 0x15 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x15, 1, null, remoteId);
 
             bool[] leds = new bool[6];
 
@@ -194,8 +239,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See PosAlg(int algorithm, int dim)
         public int[] PosAlg(int remoteId = 0)
         {
-            byte[] request = { 0x16 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x16, 1, null, remoteId);
 
             return new int[] { data[0] & 0xF, data[0] >> 4 };
         }
@@ -225,8 +269,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // PosNumAnchors(int num, int mode)
         public int[] PosNumAnchors(int remoteId = 0)
         {
-            byte[] request = { 0x17 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x17, 1, null, remoteId);
 
             return new int[] { data[0] & 0xF, data[0] >> 7 };
         }
@@ -250,8 +293,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See void PosInterval(int interval)
         public int PosInterval(int remoteId = 0)
         {
-            byte[] request = { 0x18 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x18, 2, null, remoteId);
 
             return BitConverter.ToUInt16(data, 0);
         }
@@ -272,8 +314,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See NetworkId(NetworkID(int networkID))
         public int NetworkID(int remoteId = 0)
         {
-            byte[] request = { 0x1A };
-            return BitConverter.ToInt32(Connection.ReadWrite(request, 2), 0);
+            byte[] data = ReadRegister(0x1A, 2, null, remoteId);
+
+            return BitConverter.ToInt32(data, 0);
         }
 
         /// <summary>
@@ -300,60 +343,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See UwbChannel(int uwbChannel)
         public int UwbChannel(int remoteId = 0)
         {
-            byte[] request = { 0x1C };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x1C, 1, null, remoteId);
 
             return data[0];
         }
 
-        /// <summary>
-        ///     	Indicates which interrupts are enabled.    
-        /// </summary>
-        /// <param name="err">Enables interrupts whenever an error occurs.</param>
-        /// <param name="pos">Enables interrupts whenever a new positiong update is availabe.</param>
-        /// <param name="imu">Enables interrupts whenever a new IMU update is availabe.</param>
-        /// <param name="rxData">Enables interrupts whenever data is received through the ultra-wideband network.</param>
-        /// <param name="funt">Enables interrupts whenever a register function call has completed.</param>
-        /// <param name="pin">Configures the interrupt pin.</param>
-        public void IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin, int remoteId = 0)
-        {
-            byte parameters = 0x0;
-            bool[] interupts = { err, pos, imu, rxData, funt };
-
-            for (int i = 0; i < interupts.Count(); i++)
-            {
-                if (interupts[i])
-                {
-                    parameters = (byte)(0x1 << i | parameters);
-                }
-            }
-            parameters = (byte)(pin << 7 | parameters);
-
-            byte[] request = { 0x10, parameters };
-            Connection.Write(request);
-        }
-
-        // See IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
-        public List<string> IntMask(int remoteId = 0)
-        {
-            byte[] request = { 0x10 };
-            byte[] data = Connection.ReadWrite(request, 1);
-
-            List<string> interupts = new List<string>();
-            interupts.Add(((0x80 & data[0]) == 1) ? "PIN1" : "PIN0");
-
-            string[] interuptFlags = { "ERR", "POS", "IMU", "RXDATA", "FUNC" };
-
-            for (int i = 0; i < interuptFlags.Length; i++)
-            {
-                if ((data[0] >> i & 0x1) == 1)
-                {
-                    interupts.Add(interuptFlags[i]);
-                }
-            }
-
-            return interupts;
-        }
 
         /// <summary>
         ///     This register describes the UWB bitrate and nominal pulse repition frequency (PRF).
@@ -380,8 +374,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See UwbRates(int bitrate, int prf)
         public int[] UwbRates(int remoteId = 0)
         {
-            byte[] request = { 0x1D };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x1D, 1, null, remoteId);
 
             return new int[] { data[0] & 0x3F, data[0] >> 6 };
         }
@@ -409,8 +402,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See UwbPlen(int plen)
         public int UwbPlen(int remoteId = 0)
         {
-            byte[] request = { 0x1E };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x1E, 1, null, remoteId);
 
             return data[0];
         }
@@ -432,8 +424,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See UwbGain(int gain)
         public int UwbGain(int remoteId = 0)
         {
-            byte[] request = { 0x1F };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x1F, 1, null, remoteId);
 
             return data[0];
         }
@@ -453,8 +444,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See XTalTrim(int xTalTrim)
         public int XTalTrim(int remoteId = 0)
         {
-            byte[] request = { 0x20 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x20, 1, null, remoteId);
 
             return data[0];
         }
@@ -475,8 +465,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See RangeProtocol(int rangeProtocol)
         public int RangeProtocol(int remoteId = 0)
         {
-            byte[] request = { 0x21 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x21, 1, null, remoteId);
 
             return data[0];
         }
@@ -497,8 +486,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See OperationMode(int operationMode)
         public int OperationMode(int remoteId = 0)
         {
-            byte[] request = { 0x22 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x22, 1, null, remoteId);
 
             return data[0];
         }
@@ -532,8 +520,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See SensorsMode(int sensorMode)
         public int SensorsMode(int remoteId = 0)
         {
-            byte[] request = { 0x23 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x23, 1, null, remoteId);
 
             return data[0];
         }
@@ -565,8 +552,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         // See ConfigGpio1(int mode, int pull)
         public int[] ConfigGpio1(int remoteId = 0)
         {
-            byte[] request = { 0x27 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x27, 1, null, remoteId);
 
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
@@ -582,8 +568,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
         public int[] ConfigGpio2(int remoteId = 0)
         {
-            byte[] request = { 0x28 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x28, 1, null, remoteId);
 
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
@@ -599,8 +584,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
         public int[] ConfigGpio3(int remoteId = 0)
         {
-            byte[] request = { 0x29 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x29, 1, null, remoteId);
 
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
@@ -616,8 +600,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
         public int[] ConfigGpio4(int remoteId = 0)
         {
-            byte[] request = { 0x2A };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x2A, 1, null, remoteId);
 
             return new int[] { data[0] & 0x7, data[0] >> 3 };
         }
