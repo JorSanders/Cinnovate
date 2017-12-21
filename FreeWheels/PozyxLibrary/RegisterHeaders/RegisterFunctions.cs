@@ -24,7 +24,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             if (data[0] != 1)
             {
-                throw new PozyxFailException(0xB0);
+                //throw new PozyxFailException(0xB0);
             }
             return true;
         }
@@ -186,7 +186,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             if (data[0] != 1)
             {
-                throw new PozyxFailException(0xB9);
+                //throw new PozyxFailException(0xB9);
             }
             return true;
         }

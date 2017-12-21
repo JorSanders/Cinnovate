@@ -21,7 +21,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// <returns>network IDs of all devices</returns>
         public int[] DevicesGetIds(int offset = 0, int size = 20, int remoteId = 0)
         {
-            byte[] parameters = {(byte)offset, (byte)size };
+            byte[] parameters = { (byte)offset, (byte)size };
             byte[] data = ReadRegister(0xC0, size * 2 + 1, parameters, remoteId); //2 bytes per device + 1 byte for success/failure
 
             int[] DeviceIds = new int[size];
@@ -64,9 +64,10 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         public bool DevicesDiscover(int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10, int remoteId = 0)
         {
             byte[] parameters = { (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
-            byte[] data = ReadRegister(0xC1, 1, parameters, remoteId); 
+            byte[] data = ReadRegister(0xC1, 1, parameters, remoteId);
 
-            if (data[0] != 1){
+            if (data[0] != 1)
+            {
                 throw new PozyxFailException(0xC1);
             }
             return true;
@@ -162,10 +163,6 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xC4, 1, parameters, remoteId);
 
-            if (data[0] != 1)
-            {
-                throw new PozyxFailException(0xC4);
-            }
             return true;
         }
 
@@ -229,7 +226,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             return DeviceCoords;
         }
 
-      
+
         /// <summary>
         ///     This function returns the channel impulse response (CIR) of the last received ultra-wideband message.
         ///     The CIR can be used for diagnostic purposes, or to run custom timing algorithms.
