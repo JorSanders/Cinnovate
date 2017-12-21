@@ -12,7 +12,7 @@ namespace FreeWheels.PozyxLibrary
 {
     public class Pozyx
     {
-        private IConnection _Connection;
+        public IConnection _Connection;
         public ConfigurationRegisters ConfigurationRegisters;
         public DeviceListFunctions DeviceListFunctions;
         public GeneralData GeneralData;
@@ -137,7 +137,7 @@ namespace FreeWheels.PozyxLibrary
 
         public async Task SetConfiguration()
         {
-            ConfigurationRegisters.PosInterval(50);
+            ConfigurationRegisters.PosInterval(0);
             await Task.Delay(200);
             ConfigurationRegisters.PosAlg(4, 3);
             await Task.Delay(200);
@@ -175,6 +175,7 @@ namespace FreeWheels.PozyxLibrary
             anchor.RefreshInfo(info);
         }
 
+        // Depricated
         public async Task ManualAnchorsSetup()
         {
             //DeviceListFunctions.DeviceAdd(0x605B, 1, 0, 0, 500);
@@ -206,11 +207,11 @@ namespace FreeWheels.PozyxLibrary
             AddAnchor(0x697C, 1, 3545, 0, 500);
             await Task.Delay(200);
 
-            ConfigurationRegisters.PosInterval(50);
+            ConfigurationRegisters.PosInterval(400);
             await Task.Delay(200);
             ConfigurationRegisters.PosAlg(4, 3);
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(10, 4);
+            ConfigurationRegisters.PosFilter(0, 0);
             await Task.Delay(200);
             ConfigurationRegisters.RangeProtocol(1);
             await Task.Delay(200);

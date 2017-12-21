@@ -11,11 +11,13 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
     public class PositioningData
     {
 
+        private RegisterFunctions registerFunctions;
         private IConnection Connection;
 
         public PositioningData(IConnection pozyxConnection)
         {
             Connection = pozyxConnection;
+            registerFunctions = new RegisterFunctions(pozyxConnection);
         }
 
         /// <summary>
@@ -54,10 +56,31 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             return BitConverter.ToInt32(data, 0);
         }
 
-        public Position Pos()
+        async public Task<Position> Pos(int remoteId = 0)
         {
-            byte[] request = { 0x30 };
-            byte[] data = Connection.ReadWrite(request, 12);
+            byte header = 0x30;
+            byte numReturnBytes = 12;
+            byte[] data;
+
+            if (remoteId > 0)
+            {
+                // friend get pos
+                bool txd = registerFunctions.TXData(0, new byte[] { header, numReturnBytes });
+                //if (!txd) { return txd; };
+                await Task.Delay(200);
+                bool txs = registerFunctions.TXSend(remoteId, 2);
+                //if (!txs) { return txd; };
+                await Task.Delay(1000);
+                data = registerFunctions.RXData();
+
+                //Sorry ill fix later i promise
+                data = new byte[] { data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12] };
+            }
+            else
+            {
+                byte[] request = { header };
+                data = Connection.ReadWrite(request, numReturnBytes);
+            }
 
             return new Position(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToInt32(data, 8));
         }

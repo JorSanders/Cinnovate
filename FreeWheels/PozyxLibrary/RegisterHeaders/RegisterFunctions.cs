@@ -86,11 +86,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     After sending the data, the transmission buffer is emptied.
         /// </summary>
         /// <param name="networkID"></param>
-        /// <param name="dataBytes"></param>
+        /// <param name="option"></param>
         /// <returns> True or False </returns>
-        public bool TXSend(int networkID, byte[] dataBytes)
+        public bool TXSend(int networkID, int option)
         {
-            byte[] request = new byte[] { 0xB3, 0x60, 0x5B, 0x02 };
+            byte[] request = new byte[] { 0xB3, (byte)networkID, (byte)(networkID >> 8), (byte)option };
             byte[] data = Connection.ReadWrite(request, 1);
 
             return data[0] == 1;
@@ -106,22 +106,14 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     This is done automatically whenever an acknowledgment is expected (after a POZYX_TX_SEND operation). 
         /// </summary>
         /// <returns> Requested bytes from the receive buffer </returns>
-        public List<int> RXData()
+        public byte[] RXData(int offset = 0)
         {
             List<int> rxData = new List<int>();
 
-            byte[] request = { 0xB4 };
+            byte[] request = { 0xB4, (byte)offset };
             byte[] data = Connection.ReadWrite(request, 100);
 
-            if (data.Length > 0 && data[0] == 1)
-            {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    rxData.Add(data[i]);
-                }
-            }
-
-            return rxData;
+            return data;
         }
 
         /// <summary>
