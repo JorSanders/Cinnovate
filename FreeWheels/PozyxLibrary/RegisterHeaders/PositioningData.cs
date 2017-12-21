@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class PositioningData : RegisterHeader
+    public class PositioningData : RegisterHeaders
     {
         public PositioningData(IConnection connection) : base(connection)
         {

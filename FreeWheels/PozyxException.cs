@@ -11,11 +11,12 @@ namespace FreeWheels
     {
         public int RegisterHeader;
 
-        public PozyxException()
+        public PozyxException(int registerHeader)
         {
+            this.RegisterHeader = registerHeader;
         }
 
-        public PozyxException(int registerHeader, string message = "")
+        public PozyxException(int registerHeader, string message)
             : base(message)
         {
             this.RegisterHeader = registerHeader;

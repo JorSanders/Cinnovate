@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class DeviceListFunctions : RegisterHeader
+    public class DeviceListFunctions : RegisterHeaders
     {
         public DeviceListFunctions(IConnection connection) : base(connection)
         {

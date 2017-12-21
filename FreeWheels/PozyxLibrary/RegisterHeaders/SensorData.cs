@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class SensorData : RegisterHeader
+    public class SensorData : RegisterHeaders
     {
         public SensorData(IConnection connection) : base(connection)
         {

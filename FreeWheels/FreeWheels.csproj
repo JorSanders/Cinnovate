@@ -106,7 +106,7 @@
     <Compile Include="PozyxLibrary\Pozyx.cs" />
     <Compile Include="PozyxLibrary\Interfaces\IConnection.cs" />
     <Compile Include="PozyxLibrary\RegisterHeaders\RegisterFunctions.cs" />
-    <Compile Include="PozyxLibrary\RegisterHeaders\RegisterHeader.cs" />
+    <Compile Include="PozyxLibrary\RegisterHeaders\RegisterHeaders.cs" />
     <Compile Include="PozyxLibrary\RegisterHeaders\SensorData.cs" />
     <Compile Include="PozyxLibrary\RegisterHeaders\StatusRegisters.cs" />
     <Compile Include="PozyxLibrary\Classes\Tag.cs" />

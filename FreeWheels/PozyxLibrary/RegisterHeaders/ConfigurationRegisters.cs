@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class ConfigurationRegisters : RegisterHeader
+    public class ConfigurationRegisters : RegisterHeaders
     {
         public ConfigurationRegisters(IConnection connection) : base(connection)
         {
@@ -36,8 +36,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             }
             parameters = (byte)(pin << 7 | parameters);
 
-            byte[] request = { 0x10, parameters };
-            Connection.Write(request);
+            WriteRegister(0x10, new byte[] { parameters }, remoteId);
         }
 
         // See IntMask(bool err, bool pos, bool imu, bool rxData, bool funt, int pin)
@@ -102,8 +101,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                 }
             }
 
-            byte[] request = { 0x11, parameters };
-            Connection.Write(request);
+            WriteRegister(0x11, new byte[] { parameters }, remoteId);
         }
 
         // See IntConfig(int pinNum, int mode, int act, int latch)
@@ -135,8 +133,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte strengthByte = (byte)(strength << 4);
             parameters |= strengthByte;
 
-            byte[] request = { 0x14, parameters };
-            Connection.Write(request);
+            WriteRegister(0x14, new byte[] { parameters }, remoteId);
         }
 
         // See PosFilter(int strength, int filter)
@@ -192,8 +189,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                 }
             }
 
-            byte[] request = { 0x15, parameters };
-            Connection.Write(request);
+            WriteRegister(0x15, new byte[] { parameters }, remoteId);
         }
 
         // See ConfigLeds(bool led1, bool led2, bool led3, bool led4, bool ledRx, bool ledTx)
@@ -232,8 +228,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte dimByte = (byte)(dim << 4);
             parameters |= dimByte;
 
-            byte[] request = { 0x16, parameters };
-            Connection.Write(request);
+            WriteRegister(0x16, new byte[] { parameters }, remoteId);
         }
 
         // See PosAlg(int algorithm, int dim)
@@ -262,8 +257,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte modeByte = (byte)(mode << 7);
             parameters &= modeByte;
 
-            byte[] request = { 0x17, parameters };
-            Connection.Write(request);
+            WriteRegister(0x17, new byte[] { parameters }, remoteId);
         }
 
         // PosNumAnchors(int num, int mode)
@@ -286,8 +280,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         {
             byte[] intervalBytes = BitConverter.GetBytes(interval);
 
-            byte[] request = { 0x18, intervalBytes[0], intervalBytes[1] };
-            Connection.Write(request);
+            WriteRegister(0x18, intervalBytes, remoteId);
         }
 
         // See void PosInterval(int interval)
@@ -304,11 +297,10 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// <param name="networkID"></param>
         public void NetworkID(int networkID, int remoteId = 0)
         {
-            byte[] request = new byte[3];
-            request[0] = 0x1A;
-            BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
+            byte[] parameters = new byte[2];
+            BitConverter.GetBytes((UInt16)networkID).CopyTo(parameters, 0);
 
-            Connection.Write(request);
+            WriteRegister(0x1A, parameters, remoteId);
         }
 
         // See NetworkId(NetworkID(int networkID))
@@ -335,8 +327,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void UwbChannel(int uwbChannel, int remoteId = 0)
         {
-            byte[] request = { 0x1C, (byte)uwbChannel };
-            Connection.Write(request);
+            WriteRegister(0x1A, new byte[] { (byte)uwbChannel }, remoteId);
         }
 
 
@@ -367,8 +358,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte parameters = (byte)bitrate;
             parameters |= (byte)(prf << 6);
 
-            byte[] request = { 0x1D, parameters };
-            Connection.Write(request);
+            WriteRegister(0x1D, new byte[] { parameters }, remoteId);
         }
 
         // See UwbRates(int bitrate, int prf)
@@ -395,8 +385,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void UwbPlen(int plen, int remoteId = 0)
         {
-            byte[] request = { 0x1E, (byte)plen };
-            Connection.Write(request);
+            WriteRegister(0x1D, new byte[] { (byte)plen }, remoteId);
         }
 
         // See UwbPlen(int plen)
@@ -417,8 +406,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void UwbGain(int gain, int remoteId = 0)
         {
-            byte[] request = { 0x1F, (byte)gain };
-            Connection.Write(request);
+            WriteRegister(0x1F, new byte[] { (byte)gain }, remoteId);
         }
 
         // See UwbGain(int gain)
@@ -437,8 +425,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// <param name="xTalTrim"></param>
         public void XTalTrim(int xTalTrim, int remoteId = 0)
         {
-            byte[] request = { 0x20, (byte)xTalTrim };
-            Connection.Write(request);
+            WriteRegister(0x20, new byte[] { (byte)xTalTrim }, remoteId);
         }
 
         // See XTalTrim(int xTalTrim)
@@ -458,8 +445,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void RangeProtocol(int rangeProtocol, int remoteId = 0)
         {
-            byte[] request = { 0x21, (byte)rangeProtocol };
-            Connection.Write(request);
+            WriteRegister(0x21, new byte[] { (byte)rangeProtocol }, remoteId);
         }
 
         // See RangeProtocol(int rangeProtocol)
@@ -479,8 +465,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void OperationMode(int operationMode, int remoteId = 0)
         {
-            byte[] request = { 0x22, (byte)operationMode };
-            Connection.Write(request);
+            WriteRegister(0x22, new byte[] { (byte)operationMode }, remoteId);
         }
 
         // See OperationMode(int operationMode)
@@ -513,8 +498,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void SensorsMode(int sensorMode, int remoteId = 0)
         {
-            byte[] request = { 0x23, (byte)sensorMode };
-            Connection.Write(request);
+            WriteRegister(0x23, new byte[] { (byte)sensorMode }, remoteId);
         }
 
         // See SensorsMode(int sensorMode)
@@ -545,8 +529,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
 
-            byte[] request = { 0x27, parameters };
-            Connection.Write(request);
+            WriteRegister(0x27, new byte[] { parameters }, remoteId);
         }
 
         // See ConfigGpio1(int mode, int pull)
@@ -562,8 +545,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
 
-            byte[] request = { 0x28, parameters };
-            Connection.Write(request);
+            WriteRegister(0x28, new byte[] { parameters }, remoteId);
         }
 
         public int[] ConfigGpio2(int remoteId = 0)
@@ -578,8 +560,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
 
-            byte[] request = { 0x29, parameters };
-            Connection.Write(request);
+            WriteRegister(0x29, new byte[] { parameters }, remoteId);
         }
 
         public int[] ConfigGpio3(int remoteId = 0)
@@ -594,8 +575,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte parameters = (byte)mode;
             parameters |= (byte)(pull >> 3);
 
-            byte[] request = { 0x2A, parameters };
-            Connection.Write(request);
+            WriteRegister(0x2A, new byte[] { parameters }, remoteId);
         }
 
         public int[] ConfigGpio4(int remoteId = 0)

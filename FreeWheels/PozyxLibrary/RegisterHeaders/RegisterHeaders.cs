@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
     // Inteded as parent class
-    public class RegisterHeader
+    public class RegisterHeaders
     {
-        protected IConnection Connection; //TODO set to private. Childer shouldnt directly write
+        private IConnection Connection; //TODO set to private. Childer shouldnt directly write
 
-        public RegisterHeader(IConnection pozyxConnection)
+        public RegisterHeaders(IConnection pozyxConnection)
         {
             Connection = pozyxConnection;
         }
@@ -94,14 +94,13 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                 bool txd = TXData(0, new byte[] { registerHeader, (byte)numReturnBytes });
                 if (!txd)
                 {
-                    throw new Exception("Setting TXData failed for register: 0x" + registerHeader.ToString("X2"));
-                };
-                bool txs = TXSend(remoteId, 2);
+                    throw new PozyxException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
+                }
+                bool txs = TXSend(remoteId, 0x02);
                 if (!txs)
                 {
-                    throw new Exception("TXSend failed for register: 0x" + registerHeader.ToString("X2"));
-
-                };
+                    throw new PozyxException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
+                }
 
                 Task.Delay(3000).Wait();
 
@@ -120,6 +119,32 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             }
 
             return request;
+        }
+
+        public void WriteRegister(byte registerHeader, byte[] parameters, int remoteId = 0)
+        {
+            byte[] request = new byte[parameters.Length + 1];
+            request[0] = registerHeader;
+            parameters.CopyTo(request, 1);
+
+            if (remoteId == 0)
+            {
+                Connection.Write(request);
+            }
+            else
+            {
+                bool txd = TXData(0, request);
+
+                if (!txd)
+                {
+                    throw new PozyxException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
+                }
+
+                if (!TXSend(remoteId, 0x04))
+                {
+                    throw new PozyxException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
+                }
+            }
         }
     }
 }
