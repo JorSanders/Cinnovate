@@ -31,6 +31,7 @@ using FreeWheels.PozyxLibrary.Classes;
 using Windows.UI.Xaml.Shapes;
 using System.ComponentModel;
 using Windows.Storage;
+using FreeWheels.PozyxLibrary.RegisterHeaders;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 

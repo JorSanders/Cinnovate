@@ -22,7 +22,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         {
             byte[] data = ReadRegister(0xB0, 1, null, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB0);
+            }
+            return true;
         }
 
         /// <summary>
@@ -52,7 +56,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xB1, 1, new byte[] { parameters }, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB1);
+            }
+            return true;
         }
 
 
@@ -89,7 +97,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xB5, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB5);
+            }
+            return true;
         }
 
         /// <summary>
@@ -103,7 +115,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         {
             byte[] data = ReadRegister(0xB6, 1, null, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB6);
+            }
+            return true;
         }
 
         /// <summary>
@@ -124,7 +140,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xB7, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB7);
+            }
+            return true;
         }
 
         /// <summary>
@@ -141,6 +161,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             {
                 return anchorIds;
             }
+
 
             for (int i = 1; i + 1 < data.Length; i += 2)
             {
@@ -163,7 +184,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         {
             byte[] data = ReadRegister(0xB9, 1, null, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB9);
+            }
+            return true;
         }
 
         /// <summary>
@@ -195,7 +220,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xBA, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xBA);
+            }
+            return true;
         }
 
         /// <summary>
