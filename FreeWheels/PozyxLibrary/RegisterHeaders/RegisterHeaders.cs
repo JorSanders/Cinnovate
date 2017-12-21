@@ -102,12 +102,12 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                 bool txd = TXData(0, new byte[] { registerHeader, (byte)numReturnBytes });
                 if (!txd)
                 {
-                    throw new PozyxException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
+                    throw new PozyxFailException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
                 }
                 bool txs = TXSend(remoteId, 0x02);
                 if (!txs)
                 {
-                    throw new PozyxException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
+                    throw new PozyxFailException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
                 }
 
                 Task.Delay(3000).Wait();
@@ -145,12 +145,12 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
                 if (!txd)
                 {
-                    throw new PozyxException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
+                    throw new PozyxFailException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
                 }
 
                 if (!TXSend(remoteId, 0x04))
                 {
-                    throw new PozyxException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
+                    throw new PozyxFailException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
                 }
             }
         }

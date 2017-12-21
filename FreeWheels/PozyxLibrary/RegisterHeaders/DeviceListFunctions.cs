@@ -133,7 +133,8 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             if (data[0] != 1)
             {
-                throw new PozyxFailException(0xC3);
+                //throw new PozyxFailException(0xC3);
+                return false;
             }
             return true;
         }
