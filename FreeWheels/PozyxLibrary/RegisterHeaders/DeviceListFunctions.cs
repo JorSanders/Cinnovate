@@ -70,7 +70,10 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte[] request = { 0xC1, (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return data[0] == 1;
+            if (data[0] != 1){
+                throw new PozyxException(0xC1);
+            }
+            return true;
         }
 
         /// <summary>
@@ -118,7 +121,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxException(0xC2);
+            }
+            return true;
         }
 
         /// <summary>
@@ -130,7 +137,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte[] request = { 0xC3 };
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxException(0xC3);
+            }
+            return true;
         }
 
         /// <summary>
@@ -157,7 +168,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxException(0xC4);
+            }
+            return true;
         }
 
         /// <summary>
