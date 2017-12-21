@@ -31,7 +31,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             dataBytes.CopyTo(request, 2);
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB2);
+            }
+            return true;
         }
 
         /// <summary>
@@ -49,7 +53,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte[] request = new byte[] { 0xB3, (byte)networkID, (byte)(networkID >> 8), (byte)option };
             byte[] data = Connection.ReadWrite(request, 1);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xB3);
+            }
+            return true;
         }
 
         /// <summary>
