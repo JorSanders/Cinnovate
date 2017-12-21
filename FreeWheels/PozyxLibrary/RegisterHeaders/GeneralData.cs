@@ -7,55 +7,41 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class GeneralData
+    public class GeneralData : RegisterHeaders
     {
-
-        private IConnection Connection;
-
-        public GeneralData(IConnection pozyxConnection)
+        public GeneralData(IConnection connection) : base(connection)
         {
-            Connection = pozyxConnection;
         }
 
         /// <summary>
         ///     Returns the number of devices stored internally
         /// </summary>
         /// <returns></returns>
-        public int GetDeviceListSize()
+        public int GetDeviceListSize(int remoteId = 0)
         {
-            byte[] request = { 0x81 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x81, 1, null, remoteId);
 
-            if (data.Length > 0)
-            {
-                return data[0];
-            }
-
-            return 0;
+            return data[0];
         }
 
         /// <summary>
         ///     Places the network id of device A in POZYX_RX_NETWORK_ID
         /// </summary>
         /// <returns>Network id of the latest received message</returns>
-        public int RxNetworkId()
+        public int RxNetworkId(int remoteId = 0)
         {
-            byte[] request = { 0x82 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x82, 2, null, remoteId);
 
-            byte[] rxNetworkId = { data[0], data[1] };
-
-            return BitConverter.ToUInt16(rxNetworkId, 0);
+            return BitConverter.ToUInt16(data, 0);
         }
 
         /// <summary>
         ///     Places the length of the received data in the register
         /// </summary>
         /// <returns>The length of the latest received message</returns>
-        public int RxDataLen()
+        public int RxDataLen(int remoteId = 0)
         {
-            byte[] request = { 0x84 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x84, 1, null, remoteId);
 
             return data[0];
         }
@@ -70,10 +56,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </summary>
         /// 
         /// <returns>Value of the GPIO pin 1</returns>
-        public int Gpio1()
+        public int Gpio1(int remoteId = 0)
         {
-            byte[] request = { 0x85 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x85, 1, null, remoteId);
 
             return data[0];
         }
@@ -88,10 +73,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </summary>
         /// <returns>Value of the GPIO pin 2</returns>
         /// 
-        public int Gpio2()
+        public int Gpio2(int remoteId = 0)
         {
-            byte[] request = { 0x86 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x86, 1, null, remoteId);
 
             return data[0];
         }
@@ -105,10 +89,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 3</returns>
-        public int Gpio3()
+        public int Gpio3(int remoteId = 0)
         {
-            byte[] request = { 0x87 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x87, 1, null, remoteId);
 
             return data[0];
         }
@@ -122,10 +105,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     Default value: 0
         /// </summary>
         /// <returns>Value of the GPIO pin 4</returns>
-        public int Gpio4()
+        public int Gpio4(int remoteId = 0)
         {
-            byte[] request = { 0x88 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x88, 1, null, remoteId);
 
             return data[0];
         }

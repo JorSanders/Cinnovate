@@ -115,7 +115,7 @@ namespace FreeWheels.Tests
             {
                 difference = (stopTime - DateTime.Now);
                 this.Status = difference.Minutes + ":" + difference.Seconds;
-                position = await _Pozyx.PositioningData.Pos();
+                position = _Pozyx.PositioningData.Pos();
 
                 if (position.X == 0 && position.Y == 0 && position.Z == 0)
                 {

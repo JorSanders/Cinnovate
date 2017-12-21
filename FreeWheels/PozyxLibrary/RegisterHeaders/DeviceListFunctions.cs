@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class DeviceListFunctions
+    public class DeviceListFunctions : RegisterHeaders
     {
-
-        private IConnection Connection;
-
-        public DeviceListFunctions(IConnection pozyxConnection)
+        public DeviceListFunctions(IConnection connection) : base(connection)
         {
-            Connection = pozyxConnection;
         }
 
         /// <summary>
@@ -23,10 +19,10 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// <param name="offset">Offset (optional). This function will return network ID's starting from this offset in the list of network ID's. The default value is 0.</param>
         /// <param name="size">	size (optional). Number of network ID's to return, starting from the offset. The default value is (20-offset), i.e., returning the complete list. Possible values are between 1 and 20.</param>
         /// <returns>network IDs of all devices</returns>
-        public int[] DevicesGetIds(int offset = 0, int size = 20)
+        public int[] DevicesGetIds(int offset = 0, int size = 20, int remoteId = 0)
         {
-            byte[] request = { 0xC0, (byte)offset, (byte)size };
-            byte[] data = Connection.ReadWrite(request, size * 2 + 1); //2 bytes per device + 1 byte for success/failure
+            byte[] parameters = {(byte)offset, (byte)size };
+            byte[] data = ReadRegister(0xC0, size * 2 + 1, parameters, remoteId); //2 bytes per device + 1 byte for success/failure
 
             int[] DeviceIds = new int[size];
 
@@ -65,12 +61,15 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     The default value is 10ms.
         /// </param>
         /// <returns>Success</returns>
-        public bool DevicesDiscover(int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
+        public bool DevicesDiscover(int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10, int remoteId = 0)
         {
-            byte[] request = { 0xC1, (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] parameters = { (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
+            byte[] data = ReadRegister(0xC1, 1, parameters, remoteId); 
 
-            return data[0] == 1;
+            if (data[0] != 1){
+                throw new PozyxFailException(0xC1);
+            }
+            return true;
         }
 
         /// <summary>
@@ -101,36 +100,42 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     (Network id anchor 3+) (optional) The network id of the fourth anchor is given.
         /// </param>
         /// <returns>Success</returns>
-        public bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds = null)
+        public bool CalibrateDevices(int calibrationOption = 0x02, int measurements = 10, int[] networkIds = null, int remoteId = 0)
         {
             networkIds = networkIds ?? new int[0];
 
-            byte[] request = new byte[3 + networkIds.Length * 2];
+            byte[] parameters = new byte[2 + networkIds.Length * 2];
 
-            request[0] = 0xC2;
-            request[1] = (byte)calibrationOption;
-            request[2] = (byte)measurements;
+            parameters[1] = (byte)calibrationOption;
+            parameters[2] = (byte)measurements;
 
             for (int i = 0; i < networkIds.Length * 2; i += 2)
             {
-                BitConverter.GetBytes((UInt16)networkIds[i / 2]).CopyTo(request, i + 3);
+                BitConverter.GetBytes((UInt16)networkIds[i / 2]).CopyTo(parameters, i + 2);
             }
 
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0xC2, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xC2);
+            }
+            return true;
         }
 
         /// <summary>
         ///     Clear the list of all pozyx devices.
         /// </summary>
         /// <returns>Success</returns>
-        public bool DevicesClear()
+        public bool DevicesClear(int remoteId = 0)
         {
-            byte[] request = { 0xC3 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0xC3, 1, null, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xC3);
+            }
+            return true;
         }
 
         /// <summary>
@@ -143,21 +148,24 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// <param name="y">y-coordinate of the device</param>
         /// <param name="z">z-coordinate of the device</param>
         /// <returns>Success</returns>
-        public bool DeviceAdd(int networkID, int flag, int x, int y, int z)
+        public bool DeviceAdd(int networkID, int flag, int x, int y, int z, int remoteId = 0)
         {
-            byte[] request = new byte[16];
-            request[0] = 0xC4;
+            byte[] parameters = new byte[15];
 
             // Convert parameters to byte[] and join with byte[] request
-            BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
-            BitConverter.GetBytes((byte)flag).CopyTo(request, 3);
-            BitConverter.GetBytes(x).CopyTo(request, 4);
-            BitConverter.GetBytes(y).CopyTo(request, 8);
-            BitConverter.GetBytes(z).CopyTo(request, 12);
+            BitConverter.GetBytes((UInt16)networkID).CopyTo(parameters, 0);
+            BitConverter.GetBytes((byte)flag).CopyTo(parameters, 2);
+            BitConverter.GetBytes(x).CopyTo(parameters, 3);
+            BitConverter.GetBytes(y).CopyTo(parameters, 7);
+            BitConverter.GetBytes(z).CopyTo(parameters, 11);
 
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0xC4, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxFailException(0xC4);
+            }
+            return true;
         }
 
         /// <summary>
@@ -171,13 +179,12 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     (3) y-coördianate
         ///     (4) z-coördianate
         /// </returns>
-        public int[] DeviceGetInfo(int networkID)
+        public int[] DeviceGetInfo(int networkID, int remoteId = 0)
         {
-            byte[] request = new byte[3];
-            request[0] = 0xC5;
-            BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
+            byte[] parameters = new byte[2];
+            BitConverter.GetBytes((UInt16)networkID).CopyTo(parameters, 0);
 
-            byte[] data = Connection.ReadWrite(request, 16);
+            byte[] data = ReadRegister(0xC5, 16, parameters, remoteId);
 
             int[] DeviceInfo = new int[5];
 
@@ -203,13 +210,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     (1) y-coördinate
         ///     (2) z-coördinate
         /// </returns>
-        public int[] DeviceGetCoords(int networkID)
+        public int[] DeviceGetCoords(int networkID, int remoteId = 0)
         {
-            byte[] request = new byte[3];
-            request[0] = 0xC6;
-            BitConverter.GetBytes((UInt16)networkID).CopyTo(request, 1);
-
-            byte[] data = Connection.ReadWrite(request, 13);
+            byte[] parameters = new byte[2];
+            BitConverter.GetBytes((UInt16)networkID).CopyTo(parameters, 1);
+            byte[] data = ReadRegister(0xC6, 13, parameters, remoteId);
 
             int[] DeviceCoords = new int[3];
 
@@ -238,21 +243,20 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     (0) CIR coefficient 0+offset (real value).
         ///     (1) CIR coefficient 0+offset (imaginary value).
         /// </returns>
-        public int[][] CirData(int offset, int size)
+        public int[][] CirData(int offset, int size, int remoteId = 0)
         {
             //Offset needs to be between 0 - 1015
             //Size needs to be between 1 - 49
             offset = offset > 1015 ? 1015 : offset;
             size = size > 49 || size < 1 ? 49 : size;
 
-            byte[] request = new byte[4];
-            request[0] = 0xC8;
+            byte[] parameters = new byte[3];
 
             //Add parameters to request byte[]
-            BitConverter.GetBytes((UInt16)offset).CopyTo(request, 1);
-            request[3] = (byte)size;
+            BitConverter.GetBytes((UInt16)offset).CopyTo(parameters, 0);
+            parameters[2] = (byte)size;
 
-            byte[] data = Connection.ReadWrite(request, (size * 2 + 1));
+            byte[] data = ReadRegister(0xC8, (size * 2 + 1), parameters, remoteId);
 
             int[][] CirData = new int[size * 2][];
 

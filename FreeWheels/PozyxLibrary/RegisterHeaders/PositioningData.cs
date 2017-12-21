@@ -8,26 +8,19 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class PositioningData
+    public class PositioningData : RegisterHeaders
     {
-
-        private RegisterFunctions registerFunctions;
-        private IConnection Connection;
-
-        public PositioningData(IConnection pozyxConnection)
+        public PositioningData(IConnection connection) : base(connection)
         {
-            Connection = pozyxConnection;
-            registerFunctions = new RegisterFunctions(pozyxConnection);
         }
 
         /// <summary>
         ///     x-coordinate of the device in mm.
         /// </summary>
         /// <returns></returns>
-        public int PosX()
+        public int PosX(int remoteId = 0)
         {
-            byte[] request = { 0x30 };
-            byte[] data = Connection.ReadWrite(request, 4);
+            byte[] data = ReadRegister(0x30, 4, null, remoteId);
 
             return BitConverter.ToInt32(data, 0);
         }
@@ -36,10 +29,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     y-coordinate of the device in mm.
         /// </summary>
         /// <returns></returns>
-        public int PosY()
+        public int PosY(int remoteId = 0)
         {
-            byte[] request = { 0x34 };
-            byte[] data = Connection.ReadWrite(request, 4);
+            byte[] data = ReadRegister(0x34, 4, null, remoteId);
 
             return BitConverter.ToInt32(data, 0);
         }
@@ -48,40 +40,16 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     z-coordinate of the device in mm.
         /// </summary>
         /// <returns></returns>
-        public int PosZ()
+        public int PosZ(int remoteId = 0)
         {
-            byte[] request = { 0x38 };
-            byte[] data = Connection.ReadWrite(request, 4);
+            byte[] data = ReadRegister(0x38, 4, null, remoteId);
 
             return BitConverter.ToInt32(data, 0);
         }
 
-        async public Task<Position> Pos(int remoteId = 0)
+        public Position Pos(int remoteId = 0)
         {
-            byte header = 0x30;
-            byte numReturnBytes = 12;
-            byte[] data;
-
-            if (remoteId > 0)
-            {
-                // friend get pos
-                bool txd = registerFunctions.TXData(0, new byte[] { header, numReturnBytes });
-                //if (!txd) { return txd; };
-                await Task.Delay(200);
-                bool txs = registerFunctions.TXSend(remoteId, 2);
-                //if (!txs) { return txd; };
-                await Task.Delay(1000);
-                data = registerFunctions.RXData();
-
-                //Sorry ill fix later i promise
-                data = new byte[] { data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12] };
-            }
-            else
-            {
-                byte[] request = { header };
-                data = Connection.ReadWrite(request, numReturnBytes);
-            }
-
+            byte[] data = ReadRegister(0x30, 12, null, remoteId);
             return new Position(BitConverter.ToInt32(data, 0), BitConverter.ToInt32(data, 4), BitConverter.ToInt32(data, 8));
         }
 
@@ -89,10 +57,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     estimated error covariance of x
         /// </summary>
         /// <returns></returns>
-        public int PosErrX()
+        public int PosErrX(int remoteId = 0)
         {
-            byte[] request = { 0x3C };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x3C, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -101,10 +68,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     estimated error covariance of y
         /// </summary>
         /// <returns></returns>
-        public int PosErrY()
+        public int PosErrY(int remoteId = 0)
         {
-            byte[] request = { 0x3E };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x3E, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -113,10 +79,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     estimated error covariance of z
         /// </summary>
         /// <returns></returns>
-        public int PosErrZ()
+        public int PosErrZ(int remoteId = 0)
         {
-            byte[] request = { 0x40 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x40, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -125,10 +90,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     estimated covariance of xy
         /// </summary>
         /// <returns></returns>
-        public int PosErrXY()
+        public int PosErrXY(int remoteId = 0)
         {
-            byte[] request = { 0x42 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x42, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -137,10 +101,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// 	estimated covariance of xz
         /// </summary>
         /// <returns></returns>
-        public int PosErrXZ()
+        public int PosErrXZ(int remoteId = 0)
         {
-            byte[] request = { 0x44 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x44, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -149,10 +112,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// 	estimated covariance of YZ
         /// </summary>
         /// <returns></returns>
-        public int PosErrYZ()
+        public int PosErrYZ(int remoteId = 0)
         {
-            byte[] request = { 0x46 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x46, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary
 {
+
     public class Pozyx
     {
         public IConnection _Connection;
