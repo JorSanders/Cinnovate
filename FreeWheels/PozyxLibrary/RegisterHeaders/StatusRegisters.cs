@@ -8,23 +8,19 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class StatusRegisters
+    public class StatusRegisters : RegisterHeader
     {
-        private IConnection Connection;
-
-        public StatusRegisters(IConnection pozyxConnection)
+        public StatusRegisters(IConnection connection) : base(connection)
         {
-            Connection = pozyxConnection;
         }
 
         /// <summary>
         ///     This register identifies the Pozyx device. This can be used to make sure that Pozyx is connected properly.
         /// </summary>
         /// <returns>Returns the constant value 0x43</returns>
-        public int WhoAmI()
+        public int WhoAmI(int remoteId = 0)
         {
-            byte[] request = { 0x0 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x0, 1, null, remoteId);
 
             return data[0];
         }
@@ -34,10 +30,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     It is recommended to have all devices run on the same firmware version. 
         /// </summary>
         /// <returns>Firmware Version</returns>
-        public string FirmwareVer()
+        public string FirmwareVer(int remoteId = 0)
         {
-            byte[] request = { 0x1 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x1, 1, null, remoteId);
 
             UInt16 minor = (byte)(data[0] & 0x0f);
             UInt16 major = (byte)(data[0] >> 4);
@@ -50,10 +45,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     The value is programmed during production and cannot be changed.
         /// </summary>
         /// <returns>Hardware Version</returns>
-        public string HarwareVer()
+        public string HarwareVer(int remoteId = 0)
         {
-            byte[] request = { 0x2 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x2, 1, null, remoteId);
 
             UInt16 version = (byte)(data[0] & 0x1f);
             UInt16 type = (byte)(data[0] >> 5);
@@ -66,10 +60,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     The self test is automatically initiated at device startup.
         /// </summary>
         /// <returns>Self-test Result</returns>
-        public List<string> STResult()
+        public List<string> STResult(int remoteId = 0)
         {
-            byte[] request = { 0x3 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x3, 1, null, remoteId);
 
             List<string> errors = new List<string>();
 
@@ -108,10 +101,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     The presence of an error is indicated by the ERR-bit in the IntStatus() register. 
         /// </summary>
         /// <returns>Describes a possible system error</returns>
-        public string ErrorCode()
+        public string ErrorCode(int remoteId = 0)
         {
-            byte[] request = { 0x4 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x4, 1, null, remoteId);
 
             //convert hex to string
             string hexResult = data[0].ToString("X2");
@@ -133,12 +125,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     (RX_DATA)   Indicates that the pozyx device has received some data over its wireless uwb link.
         ///     (FUNC)      Indicates that a register function call has finished(excluding positioning).
         /// </returns>
-        public List<string> IntStatus()
+        public List<string> IntStatus(int remoteId = 0)
         {
-            List<string> status = new List<string>();
+            byte[] data = ReadRegister(0x5, 1, null, remoteId);
 
-            byte[] request = { 0x5 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            List<string> status = new List<string>();
 
             string[] statuscodes = new string[] {
                 "ERR: An has error occured",
@@ -170,12 +161,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     (ACC) Current accelerometer calibration status, depends on status of the accelerometer.
         ///     (MAG) Current magnetometer calibration status, depends on status of the magnetometer.
         /// </returns>
-        public List<string> CalibStatus()
+        public List<string> CalibStatus(int remoteId = 0)
         {
-            List<string> status = new List<string>();
+            byte[] data = ReadRegister(0x6, 1, null, remoteId);
 
-            byte[] request = { 0x6 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            List<string> status = new List<string>();
 
             string[] statuscodes = new string[] { "MAG", "ACC", "GYR", "SYS" };
 

@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary.RegisterHeaders
 {
-    public class SensorData
+    public class SensorData : RegisterHeader
     {
-        private IConnection Connection;
-
-        public SensorData(IConnection pozyxConnection)
+        public SensorData(IConnection connection) : base(connection)
         {
-            Connection = pozyxConnection;
         }
 
         /// <summary>
@@ -23,10 +20,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 1 int.
         /// </summary>
         /// <returns>Maximum linear acceleration</returns>
-        public int MaxLinAcc()
+        public int MaxLinAcc(int remoteId = 0)
         {
-            byte[] request = { 0x4E };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x4E, 2, null, remoteId);
 
             return BitConverter.ToUInt16(data, 0);
         }
@@ -37,10 +33,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mPa = 1 int.
         /// </summary>
         /// <returns>Pressure data</returns>
-        public UInt32 Pressure()
+        public UInt32 Pressure(int remoteId = 0)
         {
-            byte[] request = { 0x50 };
-            byte[] data = Connection.ReadWrite(request, 4);
+            byte[] data = ReadRegister(0x50, 4, null, remoteId);
 
             return BitConverter.ToUInt32(data, 0);
         }
@@ -51,10 +46,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Accelerometer data (in mg)</returns>
-        public int AccelX()
+        public int AccelX(int remoteId = 0)
         {
-            byte[] request = { 0x54 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x54, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -65,10 +59,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Accelerometer data (in mg)</returns>
-        public int AccelY()
+        public int AccelY(int remoteId = 0)
         {
-            byte[] request = { 0x56 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x56, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -79,10 +72,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Accelerometer data (in mg)</returns>
-        public int AccelZ()
+        public int AccelZ(int remoteId = 0)
         {
-            byte[] request = { 0x58 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x58, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -93,10 +85,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1µT = 16 int.
         /// </summary>
         /// <returns>Magnemtometer data</returns>
-        public int MagnX()
+        public int MagnX(int remoteId = 0)
         {
-            byte[] request = { 0x5A };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x5A, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -107,10 +98,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1µT = 16 int.
         /// </summary>
         /// <returns>Magnemtometer data</returns>
-        public int MagnY()
+        public int MagnY(int remoteId = 0)
         {
-            byte[] request = { 0x5C };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x5C, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -121,10 +111,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1µT = 16 int.
         /// </summary>
         /// <returns>Magnemtometer data</returns>
-        public int MagnZ()
+        public int MagnZ(int remoteId = 0)
         {
-            byte[] request = { 0x5E };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x5E, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -135,10 +124,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Gyroscope data</returns>
-        public int GyroX()
+        public int GyroX(int remoteId = 0)
         {
-            byte[] request = { 0x60 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x60, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -149,10 +137,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Gyroscope data</returns>
-        public int GyroY()
+        public int GyroY(int remoteId = 0)
         {
-            byte[] request = { 0x62 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x62, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -163,10 +150,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Gyroscope data</returns>
-        public int GyroZ()
+        public int GyroZ(int remoteId = 0)
         {
-            byte[] request = { 0x64 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x64, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -177,10 +163,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Euler angles heading (or yaw)</returns>
-        public int EulHeading()
+        public int EulHeading(int remoteId = 0)
         {
-            byte[] request = { 0x66 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x66, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -191,10 +176,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Euler angles roll</returns>
-        public int EulRoll()
+        public int EulRoll(int remoteId = 0)
         {
-            byte[] request = { 0x68 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x68, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -205,10 +189,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1degree = 16 int.
         /// </summary>
         /// <returns>Euler angles pitch</returns>
-        public int EulPitch()
+        public int EulPitch(int remoteId = 0)
         {
-            byte[] request = { 0x6A };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x6A, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -219,10 +202,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>Weight of quaternion</returns>
-        public int QuatW()
+        public int QuatW(int remoteId = 0)
         {
-            byte[] request = { 0x6C };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x6C, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -233,10 +215,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>x of quaternion</returns>
-        public int QuatX()
+        public int QuatX(int remoteId = 0)
         {
-            byte[] request = { 0x6E };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x6E, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -247,10 +228,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>y of quaternion</returns>
-        public int QuatY()
+        public int QuatY(int remoteId = 0)
         {
-            byte[] request = { 0x70 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x70, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -261,10 +241,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1 quaternion(unit less) = 2^14 int = 16384 int.
         /// </summary>
         /// <returns>z of quaternion</returns>
-        public int QuatZ()
+        public int QuatZ(int remoteId = 0)
         {
-            byte[] request = { 0x72 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x72, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -276,10 +255,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Linear acceleration in x-direction</returns>
-        public int LiaX()
+        public int LiaX(int remoteId = 0)
         {
-            byte[] request = { 0x74 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x74, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -291,10 +269,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Linear acceleration in y-direction</returns>
-        public int LiaY()
+        public int LiaY(int remoteId = 0)
         {
-            byte[] request = { 0x76 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x76, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -306,10 +283,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>Linear acceleration in z-direction</returns>
-        public int LiaZ()
+        public int LiaZ(int remoteId = 0)
         {
-            byte[] request = { 0x78 };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x78, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -320,10 +296,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>x-component of gravity vector</returns>
-        public int GravX()
+        public int GravX(int remoteId = 0)
         {
-            byte[] request = { 0x7A };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x7A, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -334,10 +309,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>y-component of gravity vector</returns>
-        public int GravY()
+        public int GravY(int remoteId = 0)
         {
-            byte[] request = { 0x7C };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x7C, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -348,10 +322,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     1mg = 16 int.
         /// </summary>
         /// <returns>z-component of gravity vector</returns>
-        public int GravZ()
+        public int GravZ(int remoteId = 0)
         {
-            byte[] request = { 0x7E };
-            byte[] data = Connection.ReadWrite(request, 2);
+            byte[] data = ReadRegister(0x7E, 2, null, remoteId);
 
             return BitConverter.ToInt16(data, 0);
         }
@@ -362,10 +335,9 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     For more accurate ambient temperature measurements, it is recommended to use a separate sensor.
         /// </summary>
         /// <returns>Temperature</returns>
-        public int Temperature()
+        public int Temperature(int remoteId = 0)
         {
-            byte[] request = { 0x80 };
-            byte[] data = Connection.ReadWrite(request, 1);
+            byte[] data = ReadRegister(0x80, 1, null, remoteId);
 
             return data[0];
         }

@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary
 {
+
     public class Pozyx
     {
-        private IConnection _Connection;
+        public IConnection _Connection;
         public ConfigurationRegisters ConfigurationRegisters;
         public DeviceListFunctions DeviceListFunctions;
         public GeneralData GeneralData;
