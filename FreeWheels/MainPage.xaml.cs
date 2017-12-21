@@ -397,7 +397,7 @@ namespace FreeWheels
         async void UpdatePosition_Tick(object sender, object e)
         {
             _Pozyx.RegisterFunctions.DoPositioning();
-            _MyPosition = await _Pozyx.PositioningData.Pos();
+            _MyPosition = _Pozyx.PositioningData.Pos();
 
             await Task.Delay(1000);
 
@@ -409,7 +409,7 @@ namespace FreeWheels
             await Task.Delay(200);
 
             // friend get pos
-            _Friend = await _Pozyx.PositioningData.Pos(friendId);
+            _Friend = _Pozyx.PositioningData.Pos(friendId);
 
             return;
 
