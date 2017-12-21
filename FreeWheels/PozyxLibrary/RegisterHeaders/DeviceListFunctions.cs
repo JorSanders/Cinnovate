@@ -66,7 +66,10 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte[] parameters = { (byte)deviceType, (byte)idleSlots, (byte)idleSlotDuration };
             byte[] data = ReadRegister(0xC1, 1, parameters, remoteId); 
 
-            return data[0] == 1;
+            if (data[0] != 1){
+                throw new PozyxException(0xC1);
+            }
+            return true;
         }
 
         /// <summary>
@@ -113,7 +116,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xC2, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxException(0xC2);
+            }
+            return true;
         }
 
         /// <summary>
@@ -124,7 +131,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         {
             byte[] data = ReadRegister(0xC3, 1, null, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxException(0xC3);
+            }
+            return true;
         }
 
         /// <summary>
@@ -150,7 +161,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xC4, 1, parameters, remoteId);
 
-            return data[0] == 1;
+            if (data[0] != 1)
+            {
+                throw new PozyxException(0xC4);
+            }
+            return true;
         }
 
         /// <summary>
