@@ -14,11 +14,11 @@
         <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="ResetButton_Click" />
 
         <!-- Sidebar -->
-        <Button x:Name="Button1" Content="Small room" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="SmallRoom_Click" />
-        <Button x:Name="Button2" Content="Big room" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="BigRoom_Click" />
-        <Button x:Name="Button3" Content="Export" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="DiscoverAnchors_Click" />
-        <Button x:Name="Button4" Content="Start" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="StartStop_Click" />
-        <Button x:Name="Button5" Content="Erase" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Test_Click" />
+        <Button x:Name="Button1" Content="Small room" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Button1_Click" />
+        <Button x:Name="Button2" Content="Big room" HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Button2_Click" />
+        <Button x:Name="Button3" Content="Export" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Button3_Click" />
+        <Button x:Name="Button4" Content="Start" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Button4_Click" />
+        <Button x:Name="Button5" Content="Erase" HorizontalAlignment="Left" Margin="10,310,0,0" VerticalAlignment="Top" Width="130" Height="65" FontSize="24" Background="#FF3776C9" FontFamily="Tahoma" Foreground="White" Click="Button5_Click" />
         
         <!-- Footer -->
         <Image HorizontalAlignment="Right" Height="108" Margin="0,80,10,13" VerticalAlignment="Bottom" Width="108" Source="Assets/logo-cinnovate.jpg"/>
