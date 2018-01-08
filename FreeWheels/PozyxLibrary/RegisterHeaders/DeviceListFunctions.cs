@@ -68,7 +68,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             if (data[0] != 1)
             {
-                throw new PozyxFailException(0xC1);
+                return false;
             }
             return true;
         }
@@ -119,7 +119,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             if (data[0] != 1)
             {
-                throw new PozyxFailException(0xC2);
+                return false;
             }
             return true;
         }
@@ -134,7 +134,6 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             if (data[0] != 1)
             {
-                //throw new PozyxFailException(0xC3);
                 return false;
             }
             return true;
@@ -162,6 +161,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             BitConverter.GetBytes(z).CopyTo(parameters, 11);
 
             byte[] data = ReadRegister(0xC4, 1, parameters, remoteId);
+
+            if (data[0] != 1)
+            {
+                return false;
+            }
 
             return true;
         }

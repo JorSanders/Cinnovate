@@ -7,26 +7,23 @@ using System.Threading.Tasks;
 
 namespace FreeWheels
 {
-    public class PozyxFailException : Exception
+    public class PozyxException : Exception
     {
         public int RegisterHeader;
 
-        public PozyxFailException(int registerHeader)
-            : base()
+        public PozyxException()
         {
-            this.RegisterHeader = registerHeader;
         }
 
-        public PozyxFailException(int registerHeader, string message = "")
+        public PozyxException(int registerHeader, string message = "")
             : base(message)
         {
             this.RegisterHeader = registerHeader;
         }
 
-        public PozyxFailException(int registerHeader, string message, Exception inner)
+        public PozyxException(string message, Exception inner)
             : base(message, inner)
         {
-            this.RegisterHeader = registerHeader;
         }
         
     }

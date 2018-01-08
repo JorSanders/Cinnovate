@@ -31,11 +31,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             dataBytes.CopyTo(request, 2);
             byte[] data = Connection.ReadWrite(request, 1);
 
-            if (data[0] != 1)
-            {
-                throw new PozyxFailException(0xB2);
-            }
-            return true;
+            return data[0] == 1;
         }
 
         /// <summary>
@@ -53,11 +49,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
             byte[] request = new byte[] { 0xB3, (byte)networkID, (byte)(networkID >> 8), (byte)option };
             byte[] data = Connection.ReadWrite(request, 1);
 
-            if (data[0] != 1)
-            {
-                throw new PozyxFailException(0xB3);
-            }
-            return true;
+            return data[0] == 1;
         }
 
         /// <summary>
@@ -102,12 +94,12 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                 bool txd = TXData(0, new byte[] { registerHeader, (byte)numReturnBytes });
                 if (!txd)
                 {
-                    throw new PozyxFailException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
+                    throw new Exception("Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
                 }
                 bool txs = TXSend(remoteId, 0x02);
                 if (!txs)
                 {
-                    throw new PozyxFailException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
+                    throw new Exception("Failed TX sending on register 0x" + registerHeader.ToString("X2"));
                 }
 
                 Task.Delay(3000).Wait();
@@ -145,12 +137,12 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
                 if (!txd)
                 {
-                    throw new PozyxFailException(0xB2, "Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
+                    throw new Exception("Failed TXData setting on register 0x" + registerHeader.ToString("X2"));
                 }
 
                 if (!TXSend(remoteId, 0x04))
                 {
-                    throw new PozyxFailException(0xB3, "Failed TX sending on register 0x" + registerHeader.ToString("X2"));
+                    throw new Exception("Failed TX sending on register 0x" + registerHeader.ToString("X2"));
                 }
             }
         }

@@ -13,7 +13,9 @@ namespace FreeWheels.PozyxLibrary
 
     public class Pozyx
     {
-        public IConnection _Connection;
+        private IConnection _Connection; // Pozyx connection object. 
+
+        // Register header objects
         public ConfigurationRegisters ConfigurationRegisters;
         public DeviceListFunctions DeviceListFunctions;
         public GeneralData GeneralData;
@@ -22,6 +24,7 @@ namespace FreeWheels.PozyxLibrary
         public SensorData SensorData;
         public StatusRegisters StatusRegisters;
 
+        // The anchor list (positioning beacons)
         public List<Anchor> Anchors;
 
         public Pozyx()
@@ -29,6 +32,11 @@ namespace FreeWheels.PozyxLibrary
             Anchors = new List<Anchor>();
         }
 
+        /// <summary>
+        ///     Keep trying to connect to I2C. 
+        ///     TODO: set timeout
+        /// </summary>
+        /// <returns></returns>
         public async Task ConnectI2c()
         {
             _Connection = new ConnectionI2c();
@@ -48,7 +56,6 @@ namespace FreeWheels.PozyxLibrary
             StatusRegisters = new StatusRegisters(_Connection);
         }
 
-
         /// <summary>
         ///     Discover up to 6 anchors in range. And calibrate them. Carefull this wipes the current anchorList
         /// </summary>
@@ -57,18 +64,25 @@ namespace FreeWheels.PozyxLibrary
         public async Task<bool> DoAnchorDiscovery(int minAnchors = 4)
         {
             bool succes;
-            int nAnchors = 6; // TODO implement this. Maybe idleslots// Pozyx can calibrate up to 6 anchors
 
-            // Clear the anchors
-            succes = ClearDevices();
-            Debug.WriteLine("Devicelist clear: " + (succes ? "Succes" : "Failed"));
+            /* 
+             * TODO: implement this. 
+             * Its not implemented because I dont know how to set a maximum number of anchors through the Pozyx api
+             * Maybe idleslots, havent tested it.
+             * Pozyx can calibrate up to 6 anchors thats why its set to 6
+             * */
+            int maxAnchors = 6;
+
+            if (!ClearDevices())
+            {
+                return false;
+            }
 
             // Check the devicelist size
             int deviceListSize = await DiscoverDevices(10, 4, 0);
 
             if (deviceListSize < minAnchors)
             {
-                Debug.WriteLine("Not enough devices discovered");
                 return false;
             }
 
@@ -84,20 +98,20 @@ namespace FreeWheels.PozyxLibrary
                 }
             }
 
-            // Calibrate the anchors
+            // Calibrate the anchors wait 10 seconds
             await Task.Delay(TimeSpan.FromSeconds(1));
             DeviceListFunctions.CalibrateDevices(1, 10, deviceIds);
-            Debug.WriteLine("Calibrating... ");
             await Task.Delay(TimeSpan.FromSeconds(10));
 
-            // Refresh the anchor update and print the positions
+            // Refresh the anchor info
             foreach (Anchor anchor in Anchors)
             {
                 RefreshAnchorInfo(anchor);
-                Debug.Write("Id: " + anchor.Id + "\t x:" + anchor.X + "\t y:" + anchor.Y + "\t z:" + anchor.Z + "\n");
             }
 
             RegisterFunctions.PosSetAnchorIds(deviceIds);
+
+            // setting numAnchors always results in pozyx raising the error not enough anchors.
             //ConfigurationRegisters.PosNumAnchors(this.Anchors.Count, 0);
 
             return true;
@@ -111,53 +125,66 @@ namespace FreeWheels.PozyxLibrary
         /// <param name="deviceType">Pozyx device type</param>
         /// <param name="idleSlots">Pozyx idle slot</param>
         /// <param name="idleSlotDuration">Pozyx idle slot duration</param>
-        /// <returns></returns>
+        /// <returns> number of devices found. -1 means an error or not enough devices found</returns>
         public async Task<int> DiscoverDevices(int discoverAttempts = 10, int minDevices = 4, int deviceType = 0, int idleSlots = 3, int idleSlotDuration = 10)
         {
-            bool DiscoverSuccess;
+            bool discoverSuccess;
 
             int deviceListSize;
 
             for (int i = 0; i < discoverAttempts; i++)
             {
-                DiscoverSuccess = DeviceListFunctions.DevicesDiscover(deviceType, idleSlots, idleSlotDuration);
-                Debug.WriteLine("Discover devices: " + (DiscoverSuccess ? "Success" : "Failed"));
+                discoverSuccess = DeviceListFunctions.DevicesDiscover(deviceType, idleSlots, idleSlotDuration);
+
+                if (!discoverSuccess)
+                {
+                    return -1;
+                }
+
                 await Task.Delay(2000);
                 deviceListSize = GeneralData.GetDeviceListSize();
                 if (deviceListSize >= minDevices)
                 {
-                    Debug.WriteLine(deviceListSize + " Devices found in " + (i + 1) + " tries");
                     return deviceListSize;
                 }
 
-                Debug.WriteLine("Not enough devices found: " + deviceListSize + " required: " + minDevices);
+                // Not enough deviced found wait 1 second and try again
                 await Task.Delay(1000);
             }
-            return 0;
+            
+            // Not enough devices found and out of attempts
+            return -1;
         }
 
-        public async Task SetConfiguration()
+        /// <summary>
+        ///     Set the configurations how we recommend them
+        /// </summary>
+        /// <returns></returns>
+        public async Task SetRecommendedConfigurations()
         {
-            ConfigurationRegisters.PosInterval(0);
+            ConfigurationRegisters.PosInterval(0); // We call DoPositioning every time we want an update. So we dont set an update interval
             await Task.Delay(200);
-            ConfigurationRegisters.PosAlg(4, 3);
+            ConfigurationRegisters.PosAlg(4, 3); // 3d positioning and tracking
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(0, 0);
+            ConfigurationRegisters.PosFilter(0, 0); // Dont filter, so we can see the results most clearly. 
             await Task.Delay(200);
-            ConfigurationRegisters.RangeProtocol(0);
+            ConfigurationRegisters.RangeProtocol(0); // Set to its default value
             await Task.Delay(200);
-            ConfigurationRegisters.UwbPlen(8);
+            ConfigurationRegisters.UwbPlen(8); // Set to its default value
             await Task.Delay(200);
-            ConfigurationRegisters.UwbRates(0, 2);
+            ConfigurationRegisters.UwbRates(0, 2); // Set to its default value
             await Task.Delay(200);
-
-            string err = StatusRegisters.ErrorCode();
-            if (err != "0x00 - Success")
-            {
-                Debug.WriteLine("ERROR: " + err);
-            }
         }
 
+        /// <summary>
+        ///     Adds a pozyx anchor to your anchor list.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="flag"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
         public bool AddAnchor(int id, int flag, int x, int y, int z)
         {
             if (!DeviceListFunctions.DeviceAdd(id, flag, x, y, z))
@@ -170,59 +197,17 @@ namespace FreeWheels.PozyxLibrary
             return true;
         }
 
+        /// <summary>
+        ///     Update the information about an anchor. Should be called after calibrating, because then the device coordinates will change
+        /// </summary>
+        /// <param name="anchor"></param>
         public void RefreshAnchorInfo(Anchor anchor)
         {
             int[] info = DeviceListFunctions.DeviceGetInfo(anchor.Id);
             anchor.RefreshInfo(info);
         }
 
-        // Depricated
-        public async Task ManualAnchorsSetup()
-        {
-            //DeviceListFunctions.DeviceAdd(0x605B, 1, 0, 0, 500);
-            //await Task.Delay(200);
-            //DeviceListFunctions.DeviceAdd(0x6038, 1, 7000, 0, 2000);
-            //await Task.Delay(200);
-            //DeviceListFunctions.DeviceAdd(0x6029, 1, 0, 5100, 500);
-            //await Task.Delay(200);
-            //DeviceListFunctions.DeviceAdd(0x6047, 1, 6750, 5100, 10);
-            //await Task.Delay(200);
-
-            //// Grote vergader ruimte
-            //AddAnchor(0x605B, 1, 0, 0, 500);
-            //await Task.Delay(200);
-            //AddAnchor(0x6038, 1, 7000, 0, 2000);
-            //await Task.Delay(200);
-            //AddAnchor(0x6029, 1, 0, 5100, 500);
-            //await Task.Delay(200);
-            //AddAnchor(0x6047, 1, 6750, 5100, 10);
-            //await Task.Delay(200);
-
-            // Onze kamer
-            AddAnchor(0x697D, 1, 0, 45, 2000);
-            await Task.Delay(200);
-            AddAnchor(0x6956, 1, 45, 3580, 500);
-            await Task.Delay(200);
-            AddAnchor(0x6957, 1, 3590, 3535, 2000);
-            await Task.Delay(200);
-            AddAnchor(0x697C, 1, 3545, 0, 500);
-            await Task.Delay(200);
-
-            ConfigurationRegisters.PosInterval(400);
-            await Task.Delay(200);
-            ConfigurationRegisters.PosAlg(4, 3);
-            await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(0, 0);
-            await Task.Delay(200);
-            ConfigurationRegisters.RangeProtocol(1);
-            await Task.Delay(200);
-            ConfigurationRegisters.UwbPlen(8);
-            await Task.Delay(200);
-            ConfigurationRegisters.UwbRates(0, 2);
-            await Task.Delay(200);
-
-        }
-
+        // Clear the devicelist
         public bool ClearDevices()
         {
             bool success = DeviceListFunctions.DevicesClear();
