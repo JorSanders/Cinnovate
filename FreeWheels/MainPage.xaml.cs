@@ -65,17 +65,19 @@ namespace FreeWheels
             UpdatePosition = new DispatcherTimer();
             UpdateScreen.Tick += UpdateScreen_Tick;
             UpdatePosition.Tick += UpdatePosition_Tick;
+
+            this.InitializeComponent();
+
             StopRunning();
 
             _Pozyx = new Pozyx();
-            this.InitializeComponent();
 
             _Testcase = new Testcase(_Pozyx);
 
             _FriendPosition = new Position();
             _FriendId = 0x6E38; // The id of our 2nd pozyx
 
-            StartUp();
+            //StartUp();
         }
 
         /// <summary>
