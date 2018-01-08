@@ -94,7 +94,7 @@ namespace FreeWheels.Tests
         {
             this.Status = "Setting configurations";
 
-            await _Pozyx.SetConfiguration();
+            await _Pozyx.SetRecommendedConfigurations();
 
             this.MyPosition = new Position(2050, 1020, 840);
             startTime = DateTime.Now;

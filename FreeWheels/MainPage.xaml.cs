@@ -49,29 +49,31 @@ namespace FreeWheels
         private DispatcherTimer UpdateScreen; // Dispatchtimer that controls the drawing on screen
         private DispatcherTimer UpdatePosition; // Dispatchtimer that controls updating the position
 
-        private List<float[]> _LinePoints = new List<float[]>();
-        private List<Position> _PositionList = new List<Position>();
-        private List<DateTime> _TimestampList = new List<DateTime>();
+        private List<float[]> _LinePoints = new List<float[]>(); // Position points for on the canvas with previous positions
+        private List<Position> _PositionList = new List<Position>(); // Actual previous positions
+        private List<DateTime> _TimestampList = new List<DateTime>(); // Timestams form these positions
 
         private double _PixelSize, _Space; // Information for the canvas
 
-        private bool _Running;
+        private bool _Running; // Indicates wether we are getting the position and updating the screen.
 
         private Testcase _Testcase;
 
         public MainPage()
         {
-            _Pozyx = new Pozyx();
-            this.InitializeComponent();
             UpdateScreen = new DispatcherTimer();
             UpdatePosition = new DispatcherTimer();
             UpdateScreen.Tick += UpdateScreen_Tick;
             UpdatePosition.Tick += UpdatePosition_Tick;
+            StopRunning();
+
+            _Pozyx = new Pozyx();
+            this.InitializeComponent();
+
             _Testcase = new Testcase(_Pozyx);
 
             _FriendPosition = new Position();
-            _FriendId = 0x6E38;
-            _Running = false;
+            _FriendId = 0x6E38; // The id of our 2nd pozyx
 
             StartUp();
         }
@@ -218,11 +220,7 @@ namespace FreeWheels
             }
             else // set the anchors in the Kleine vergader ruimte
             {
-                Button1.IsEnabled = false;
-                Button2.IsEnabled = false;
-                Button3.IsEnabled = false;
-                Button4.IsEnabled = false;
-                Button5.IsEnabled = false;
+                DisableButtons();
 
                 _Pozyx.ClearDevices();
                 await Task.Delay(500);
@@ -237,11 +235,7 @@ namespace FreeWheels
                 _Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
                 await Task.Delay(200);
 
-                Button1.IsEnabled = true;
-                Button2.IsEnabled = true;
-                Button3.IsEnabled = true;
-                Button4.IsEnabled = true;
-                Button5.IsEnabled = true;
+                EnableButtons();
             }
         }
 
@@ -253,11 +247,7 @@ namespace FreeWheels
             }
             else // set the anchors in the Grote vergader ruimte
             {
-                Button1.IsEnabled = false;
-                Button2.IsEnabled = false;
-                Button3.IsEnabled = false;
-                Button4.IsEnabled = false;
-                Button5.IsEnabled = false;
+                DisableButtons();
 
                 _Pozyx.ClearDevices();
                 await Task.Delay(500);
@@ -280,27 +270,17 @@ namespace FreeWheels
                 _Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
                 await Task.Delay(200);
 
-                Button1.IsEnabled = true;
-                Button2.IsEnabled = true;
-                Button3.IsEnabled = true;
-                Button4.IsEnabled = true;
-                Button5.IsEnabled = true;
+                EnableButtons();
             }
         }
 
         private async void Button3_Click(object sender, RoutedEventArgs e)
         {
-            Button1.IsEnabled = false;
-            Button2.IsEnabled = false;
-            Button3.IsEnabled = false;
-            Button4.IsEnabled = false;
-            Button5.IsEnabled = false;
+            DisableButtons();
 
             if (_Running)
             {
-                UpdatePosition.Stop();
-                UpdateScreen.Stop();
-                _Running = false;
+                StopRunning();
 
                 List<string> ExportData = new List<string>();
 
@@ -325,35 +305,24 @@ namespace FreeWheels
                 await _Pozyx.DoAnchorDiscovery();
             }
 
-            Button1.IsEnabled = true;
-            Button2.IsEnabled = true;
-            Button3.IsEnabled = true;
-            Button4.IsEnabled = true;
-            Button5.IsEnabled = true;
+            EnableButtons();
         }
 
         private async void Button4_Click(object sender, RoutedEventArgs e)
         {
             if (_Running) // Stop
             {
-                UpdateScreen.Stop();
-                UpdatePosition.Stop();
-                _Running = false;
-
-                _LinePoints = new List<float[]>();
-
-                GridCanvas.Visibility = Visibility.Collapsed;
+                StopRunning();
             }
             else if (_Pozyx.Anchors.Count >= 4) // Start
             {
-                await _Pozyx.SetRecommendedConfigurations();
-                UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 1000);
-                UpdateScreen.Start();
-                UpdatePosition.Start();
+                DisableButtons();
 
-                GridCanvas.Visibility = Visibility.Visible;
-                _Running = true;
+                await _Pozyx.SetRecommendedConfigurations();
+
+                this.StartRunning();
+
+                EnableButtons();
             }
             else
             {
@@ -371,11 +340,7 @@ namespace FreeWheels
             }
             else
             {
-                Button1.IsEnabled = false;
-                Button2.IsEnabled = false;
-                Button3.IsEnabled = false;
-                Button4.IsEnabled = false;
-                Button5.IsEnabled = false;
+                DisableButtons();
 
                 DispatcherTimer progress = new DispatcherTimer();
                 progress.Tick += progress_Tick;
@@ -402,11 +367,7 @@ namespace FreeWheels
                 progress.Stop();
                 this.Output.Text = "Test finished";
 
-                Button1.IsEnabled = true;
-                Button2.IsEnabled = true;
-                Button3.IsEnabled = true;
-                Button4.IsEnabled = true;
-                Button5.IsEnabled = true;
+                EnableButtons();
             }
         }
 
@@ -448,6 +409,93 @@ namespace FreeWheels
 
             //// friend get pos
             //_FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
+        }
+
+        void progress_Tick(object sender, object e)
+        {
+            this.Output.Text = _Testcase.Status;
+        }
+
+        /// <summary>
+        ///     Starts the updating the postion and sceen
+        /// </summary>
+        private void StartRunning()
+        {
+            _Running = true;
+            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
+            UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            UpdateScreen.Start();
+            UpdatePosition.Start();
+
+            GridCanvas.Visibility = Visibility.Visible;
+
+            Button1.IsEnabled = false;
+
+            Button2.IsEnabled = false;
+
+            Button3.Content = "Export";
+            Button3.IsEnabled = true;
+
+            Button4.Content = "Start";
+            Button4.IsEnabled = true;
+
+            Button5.Content = "Erase";
+            Button5.IsEnabled = true;
+        }
+
+        /// <summary>
+        ///     Stops the updating the postion and sceen
+        /// </summary>
+        private void StopRunning()
+        {
+            _Running = false;
+
+            UpdateScreen.Stop();
+            UpdatePosition.Stop();
+            _LinePoints = new List<float[]>();
+            GridCanvas.Visibility = Visibility.Collapsed;
+
+            Button1.Content = "Small room";
+            Button1.IsEnabled = true;
+
+            Button2.Content = "Big room";
+            Button2.IsEnabled = true;
+
+            Button3.Content = "Discover";
+            Button3.IsEnabled = true;
+
+            Button4.Content = "Start";
+            Button4.IsEnabled = true;
+
+            Button5.Content = "Run test";
+            Button5.IsEnabled = true;
+        }
+
+        /// <summary>
+        ///     Enables the buttons
+        /// </summary>
+        private void EnableButtons()
+        {
+            if (!_Running)
+            {
+                Button1.IsEnabled = true;
+                Button2.IsEnabled = true;
+            }
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+        }
+
+        /// <summary>
+        ///  Disables the buttons
+        /// </summary>
+        private void DisableButtons()
+        {
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
         }
     }
 }
