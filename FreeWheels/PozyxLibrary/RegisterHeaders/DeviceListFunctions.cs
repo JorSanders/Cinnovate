@@ -107,8 +107,8 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] parameters = new byte[2 + networkIds.Length * 2];
 
-            parameters[1] = (byte)calibrationOption;
-            parameters[2] = (byte)measurements;
+            parameters[0] = (byte)calibrationOption;
+            parameters[1] = (byte)measurements;
 
             for (int i = 0; i < networkIds.Length * 2; i += 2)
             {
@@ -162,12 +162,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             byte[] data = ReadRegister(0xC4, 1, parameters, remoteId);
 
-            if (data[0] != 1)
-            {
-                return false;
-            }
-
-            return true;
+            return data[0] == 1;
         }
 
         /// <summary>

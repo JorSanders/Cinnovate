@@ -1,6 +1,7 @@
 ﻿using FreeWheels.PozyxLibrary.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -102,7 +103,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                     throw new Exception("Failed TX sending on register 0x" + registerHeader.ToString("X2"));
                 }
 
-                Task.Delay(3000).Wait();
+                Task.Delay(100).Wait();
 
                 byte[] rxData = RXData();
 
@@ -118,7 +119,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
                 data = Connection.ReadWrite(request, numReturnBytes);
             }
 
-            return request;
+            return data;
         }
 
         public void WriteRegister(byte registerHeader, byte[] parameters, int remoteId = 0)

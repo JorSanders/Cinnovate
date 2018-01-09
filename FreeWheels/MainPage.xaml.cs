@@ -94,10 +94,12 @@ namespace FreeWheels
             ResetButton.IsEnabled = false;
             await _Pozyx.ConnectI2c();
 
-            _Pozyx.RegisterFunctions.ResetSys();
-            await (Task.Delay(1000));
-            _Pozyx.RegisterFunctions.FlashReset();
-            await (Task.Delay(1000));
+            //_Pozyx.RegisterFunctions.ResetSys(_FriendId);
+            //await Task.Delay(200);
+            //_Pozyx.RegisterFunctions.ResetSys();
+            //await (Task.Delay(1000));
+            //_Pozyx.RegisterFunctions.FlashReset();
+            //await (Task.Delay(1000));
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
@@ -124,7 +126,7 @@ namespace FreeWheels
             double height = size.Height - 180;
 
             //Calculate Seperator
-            double scale = 7;
+            double scale = 15;
             _Space = height / scale;
             _PixelSize = height / (scale * 1000);
 
@@ -178,8 +180,11 @@ namespace FreeWheels
                 args.DrawingSession.DrawLine(_LinePoints[i][0], _LinePoints[i][1], _LinePoints[i + 1][0], _LinePoints[i + 1][1], Windows.UI.Colors.Red);
             }
 
-            // Draw Tag
-            args.DrawingSession.FillCircle(_LinePoints.Last()[0], _LinePoints.Last()[1], 5, Colors.Green);
+            if (_LinePoints.Count >= 1)
+            {
+                // Draw Tag
+                args.DrawingSession.FillCircle(_LinePoints.Last()[0], _LinePoints.Last()[1], 5, Colors.Green);
+            }
 
             // Draw friend
             args.DrawingSession.FillCircle((float)(this._FriendPosition.X * _PixelSize + _Space), (float)(this._FriendPosition.Y * _PixelSize + _Space), 5, Colors.Pink);
@@ -192,14 +197,10 @@ namespace FreeWheels
         /// <param name="e"></param>
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            UpdateScreen.Stop();
-            UpdatePosition.Stop();
-            Button1.IsEnabled = false;
-            Button2.IsEnabled = false;
-            Button3.IsEnabled = false;
-            Button4.IsEnabled = false;
-            Button5.IsEnabled = false;
+            DisableButtons();
+            StopRunning();
 
+            await (Task.Delay(1000));
             _Pozyx.RegisterFunctions.ResetSys();
             await (Task.Delay(1000));
             _Pozyx.RegisterFunctions.FlashReset();
@@ -207,11 +208,7 @@ namespace FreeWheels
 
             _Pozyx.Anchors = new List<Anchor>();
 
-            Button1.IsEnabled = true;
-            Button2.IsEnabled = true;
-            Button3.IsEnabled = true;
-            Button4.IsEnabled = true;
-            Button5.IsEnabled = true;
+            EnableButtons();
         }
 
         private async void Button1_Click(object sender, RoutedEventArgs e)
@@ -228,13 +225,13 @@ namespace FreeWheels
                 await Task.Delay(500);
 
                 // Onze kamer
-                _Pozyx.AddAnchor(0x605B, 1, 0, 0, 500);
+                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000);
                 await Task.Delay(200);
-                _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 2000);
+                _Pozyx.AddAnchor(0x6038, 1, 2252, 0, 2000);
                 await Task.Delay(200);
-                _Pozyx.AddAnchor(0x697C, 1, 3500, 0, 1500);
+                _Pozyx.AddAnchor(0x605B, 1, -560, 8056, 20000);
                 await Task.Delay(200);
-                _Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
+                _Pozyx.AddAnchor(0x6047, 1, 2953, 8197, 2000);
                 await Task.Delay(200);
 
                 EnableButtons();
@@ -254,23 +251,27 @@ namespace FreeWheels
                 _Pozyx.ClearDevices();
                 await Task.Delay(500);
 
-                _Pozyx.AddAnchor(0x605B, 1, 0, 0, 2000);
+                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000);
+                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000, _FriendId);
                 await Task.Delay(200);
-                _Pozyx.AddAnchor(0x6038, 1, 7000, 0, 2000);
+                _Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000);
+                _Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000, _FriendId);
                 await Task.Delay(200);
-                _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 2000);
+                _Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000);
+                _Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000, _FriendId);
                 await Task.Delay(200);
-                _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 2000);
+                _Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000);
+                _Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000, _FriendId);
                 await Task.Delay(200);
 
-                _Pozyx.AddAnchor(0x6957, 1, 0, 2560, 1100);
-                await Task.Delay(200);
-                _Pozyx.AddAnchor(0x697C, 1, 3500, 0, 1500);
-                await Task.Delay(200);
-                _Pozyx.AddAnchor(0x697D, 1, 7000, 2540, 950);
-                await Task.Delay(200);
-                _Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
-                await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x6957, 1, 0, 2560, 1100);
+                //await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x697C, 1, 3500, 0, 1500);
+                //await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x697D, 1, 7000, 2540, 950);
+                //await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
+                //await Task.Delay(200);
 
                 EnableButtons();
             }
@@ -321,6 +322,9 @@ namespace FreeWheels
                 DisableButtons();
 
                 await _Pozyx.SetRecommendedConfigurations();
+
+                await Task.Delay(1000);
+                _Pozyx.ConfigurationRegisters.PosAlg(4, 3, _FriendId);
 
                 this.StartRunning();
 
@@ -402,15 +406,8 @@ namespace FreeWheels
             await Task.Delay(1000);
 
             // friend do pos
-
-            //_Pozyx.RegisterFunctions.TXData(0, new byte[] { 0xB6, 1 });
-            //_Pozyx.RegisterFunctions.TXSend(_FriendId, 4);
-            //await Task.Delay(1000);
-            //var txs = _Pozyx.RegisterFunctions.TXSend(_FriendId, 2);
-            //await Task.Delay(200);
-
-            //// friend get pos
-            //_FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
+            _Pozyx.RegisterFunctions.DoPositioning(_FriendId);
+            _FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
         }
 
         void progress_Tick(object sender, object e)
@@ -425,7 +422,7 @@ namespace FreeWheels
         {
             _Running = true;
             UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-            UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 300);
             UpdateScreen.Start();
             UpdatePosition.Start();
 
@@ -438,7 +435,7 @@ namespace FreeWheels
             Button3.Content = "Export";
             Button3.IsEnabled = true;
 
-            Button4.Content = "Start";
+            Button4.Content = "Stop";
             Button4.IsEnabled = true;
 
             Button5.Content = "Erase";

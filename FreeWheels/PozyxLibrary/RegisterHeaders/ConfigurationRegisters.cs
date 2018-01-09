@@ -278,7 +278,7 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         /// </param>
         public void PosInterval(int interval, int remoteId = 0)
         {
-            byte[] intervalBytes = BitConverter.GetBytes(interval);
+            byte[] intervalBytes = BitConverter.GetBytes((UInt16)interval);
 
             WriteRegister(0x18, intervalBytes, remoteId);
         }

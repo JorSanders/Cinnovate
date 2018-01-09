@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace FreeWheels.PozyxLibrary
 {
-
     public class Pozyx
     {
         private IConnection _Connection; // Pozyx connection object. 
@@ -63,8 +62,6 @@ namespace FreeWheels.PozyxLibrary
         /// <returns>False if not enough anchors are found. True on succes</returns>
         public async Task<bool> DoAnchorDiscovery(int minAnchors = 4)
         {
-            bool succes;
-
             /* 
              * TODO: implement this. 
              * Its not implemented because I dont know how to set a maximum number of anchors through the Pozyx api
@@ -92,15 +89,12 @@ namespace FreeWheels.PozyxLibrary
             // Set the anchor height on 1800 and the flag to 8
             foreach (int deviceId in deviceIds)
             {
-                if (!AddAnchor(deviceId, 8, 0, 0, 1800))
-                {
-                    return false;
-                }
+                AddAnchor(deviceId, 8, 0, 0, 1800);
             }
 
             // Calibrate the anchors wait 10 seconds
             await Task.Delay(TimeSpan.FromSeconds(1));
-            DeviceListFunctions.CalibrateDevices(1, 10, deviceIds);
+            DeviceListFunctions.CalibrateDevices(1, 10 /*, deviceIds */);
             await Task.Delay(TimeSpan.FromSeconds(10));
 
             // Refresh the anchor info
@@ -151,7 +145,7 @@ namespace FreeWheels.PozyxLibrary
                 // Not enough deviced found wait 1 second and try again
                 await Task.Delay(1000);
             }
-            
+
             // Not enough devices found and out of attempts
             return -1;
         }
@@ -162,17 +156,17 @@ namespace FreeWheels.PozyxLibrary
         /// <returns></returns>
         public async Task SetRecommendedConfigurations()
         {
-            ConfigurationRegisters.PosInterval(0); // We call DoPositioning every time we want an update. So we dont set an update interval
+            ConfigurationRegisters.PosInterval(0, 0); // We call DoPositioning every time we want an update. So we dont set an update interval
             await Task.Delay(200);
-            ConfigurationRegisters.PosAlg(4, 3); // 3d positioning and tracking
+            ConfigurationRegisters.PosAlg(4, 3, 0); // 3d positioning and tracking
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(0, 0); // Dont filter, so we can see the results most clearly. 
+            ConfigurationRegisters.PosFilter(0, 0, 0); // Dont filter, so we can see the results most clearly. 
             await Task.Delay(200);
-            ConfigurationRegisters.RangeProtocol(0); // Set to its default value
+            ConfigurationRegisters.RangeProtocol(0, 0); // Set to its default value
             await Task.Delay(200);
-            ConfigurationRegisters.UwbPlen(8); // Set to its default value
+            ConfigurationRegisters.UwbPlen(8, 0); // Set to its default value
             await Task.Delay(200);
-            ConfigurationRegisters.UwbRates(0, 2); // Set to its default value
+            ConfigurationRegisters.UwbRates(0, 2, 0); // Set to its default value
             await Task.Delay(200);
         }
 
@@ -185,14 +179,17 @@ namespace FreeWheels.PozyxLibrary
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        public bool AddAnchor(int id, int flag, int x, int y, int z)
+        public bool AddAnchor(int id, int flag, int x, int y, int z, int remoteId = 0)
         {
-            if (!DeviceListFunctions.DeviceAdd(id, flag, x, y, z))
+            if (!DeviceListFunctions.DeviceAdd(id, flag, x, y, z, remoteId))
             {
                 return false;
             }
 
-            Anchors.Add(new Anchor(id, flag, x, y, z));
+            if (remoteId == 0)
+            {
+                Anchors.Add(new Anchor(id, flag, x, y, z));
+            }
 
             return true;
         }
