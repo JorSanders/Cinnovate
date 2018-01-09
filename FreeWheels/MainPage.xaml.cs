@@ -77,7 +77,7 @@ namespace FreeWheels
             _FriendPosition = new Position();
             _FriendId = 0x6E38; // The id of our 2nd pozyx
 
-            //StartUp();
+            StartUp();
         }
 
         /// <summary>

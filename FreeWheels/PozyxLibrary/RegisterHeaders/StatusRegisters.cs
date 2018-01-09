@@ -30,14 +30,19 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
         ///     It is recommended to have all devices run on the same firmware version. 
         /// </summary>
         /// <returns>Firmware Version</returns>
-        public string FirmwareVer(int remoteId = 0)
+        public float FirmwareVer(int remoteId = 0)
         {
             byte[] data = ReadRegister(0x1, 1, null, remoteId);
 
             UInt16 minor = (byte)(data[0] & 0x0f);
             UInt16 major = (byte)(data[0] >> 4);
 
-            return major + "." + minor;
+            do
+            {
+                major /= 10;
+            } while (minor >= 1);
+
+            return major + minor;
         }
 
         /// <summary>
@@ -51,6 +56,11 @@ namespace FreeWheels.PozyxLibrary.RegisterHeaders
 
             UInt16 version = (byte)(data[0] & 0x1f);
             UInt16 type = (byte)(data[0] >> 5);
+
+            do
+            {
+                version /= 10;
+            } while (version >= 1);
 
             return type + "." + version;
         }
