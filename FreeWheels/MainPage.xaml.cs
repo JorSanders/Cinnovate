@@ -41,36 +41,49 @@ namespace FreeWheels
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private Pozyx _Pozyx;
+        private Pozyx _Pozyx; // Pozyxlibrary object
 
-        private Position _MyPosition;
+        private int _FriendId; // the other pozyx tag id
+        private Position _FriendPosition; // The other pozyx location
 
-        private DispatcherTimer UpdateScreen;
-        private DispatcherTimer UpdatePosition;
-        private bool Init;
-        private Testcase testcase;
+        private DispatcherTimer UpdateScreen; // Dispatchtimer that controls the drawing on screen
+        private DispatcherTimer UpdatePosition; // Dispatchtimer that controls updating the position
 
-        private List<float[]> linePoints = new List<float[]>();
-        private List<Position> PositionList = new List<Position>();
-        private List<DateTime> TimestampList = new List<DateTime>();
+        private List<float[]> _LinePoints = new List<float[]>(); // Position points for on the canvas with previous positions
+        private List<Position> _PositionList = new List<Position>(); // Actual previous positions
+        private List<DateTime> _TimestampList = new List<DateTime>(); // Timestams form these positions
 
-        private double pixelSize, space;
+        private double _PixelSize, _Space; // Information for the canvas
+
+        private bool _Running; // Indicates wether we are getting the position and updating the screen.
+
+        private Testcase _Testcase;
 
         public MainPage()
         {
-            _Pozyx = new Pozyx();
-            this.Init = true;
-            this.InitializeComponent();
             UpdateScreen = new DispatcherTimer();
             UpdatePosition = new DispatcherTimer();
             UpdateScreen.Tick += UpdateScreen_Tick;
             UpdatePosition.Tick += UpdatePosition_Tick;
-            _MyPosition = new Position();
-            testcase = new Testcase(_Pozyx);
+
+            this.InitializeComponent();
+
+            StopRunning();
+
+            _Pozyx = new Pozyx();
+
+            _Testcase = new Testcase(_Pozyx);
+
+            _FriendPosition = new Position();
+            _FriendId = 0x6E38; // The id of our 2nd pozyx
 
             StartUp();
         }
 
+        /// <summary>
+        ///     Connect the pozyx via I2C and reset it.
+        /// </summary>
+        /// <returns></returns>
         private async Task StartUp()
         {
             Button1.IsEnabled = false;
@@ -81,10 +94,12 @@ namespace FreeWheels
             ResetButton.IsEnabled = false;
             await _Pozyx.ConnectI2c();
 
-            _Pozyx.RegisterFunctions.ResetSys();
-            await (Task.Delay(1000));
-            _Pozyx.RegisterFunctions.FlashReset();
-            await (Task.Delay(1000));
+            //_Pozyx.RegisterFunctions.ResetSys(_FriendId);
+            //await Task.Delay(200);
+            //_Pozyx.RegisterFunctions.ResetSys();
+            //await (Task.Delay(1000));
+            //_Pozyx.RegisterFunctions.FlashReset();
+            //await (Task.Delay(1000));
 
             Button1.IsEnabled = true;
             Button2.IsEnabled = true;
@@ -94,6 +109,11 @@ namespace FreeWheels
             ResetButton.IsEnabled = true;
         }
 
+        /// <summary>
+        ///     Draw the canvas and its contents
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
             // Get Screen Size/Bounds
@@ -106,9 +126,9 @@ namespace FreeWheels
             double height = size.Height - 180;
 
             //Calculate Seperator
-            double scale = 7;
-            space = height / scale;
-            pixelSize = height / (scale * 1000);
+            double scale = 15;
+            _Space = height / scale;
+            _PixelSize = height / (scale * 1000);
 
             //Set Text Properties
             CanvasTextFormat textFormat = new CanvasTextFormat();
@@ -123,91 +143,221 @@ namespace FreeWheels
             GridCanvas.Height = height;
 
             //Draw Grid
-            for (int i = (int)space; i < width; i += (int)space)
+            for (int i = (int)_Space; i < width; i += (int)_Space)
             {
                 args.DrawingSession.DrawLine(i, 0, i, (int)height, Colors.LightGray);
-                args.DrawingSession.DrawText((Math.Round(i / space) - 1).ToString(), i + 3, 0, Colors.LightGray, textFormat);
+                args.DrawingSession.DrawText((Math.Round(i / _Space) - 1).ToString(), i + 3, 0, Colors.LightGray, textFormat);
             }
 
-            for (int i = (int)space; i < height; i += (int)space)
+            for (int i = (int)_Space; i < height; i += (int)_Space)
             {
                 args.DrawingSession.DrawLine(0, i, (int)width, i, Colors.LightGray);
-                args.DrawingSession.DrawText((Math.Round(i / space) - 1).ToString(), 0, i + 3, Colors.LightGray, textFormat);
+                args.DrawingSession.DrawText((Math.Round(i / _Space) - 1).ToString(), 0, i + 3, Colors.LightGray, textFormat);
             }
 
 
             //Draw Anchors
             foreach (Anchor anchor in _Pozyx.Anchors)
             {
-                args.DrawingSession.DrawEllipse((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, 5, Colors.Blue);
-                args.DrawingSession.FillCircle((float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space), 5, Colors.Blue);
-                args.DrawingSession.DrawText("ID: 0X" + anchor.Id.ToString("X4"), (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 2), Colors.SlateGray, textFormatFat);
-                args.DrawingSession.DrawText(anchor.X + "," + anchor.Y + "," + anchor.Z, (float)(anchor.X * pixelSize + space), (float)(anchor.Y * pixelSize + space + 20), Colors.DarkGray, textFormat);
+                args.DrawingSession.DrawEllipse((float)(anchor.X * _PixelSize + _Space), (float)(anchor.Y * _PixelSize + _Space), 5, 5, Colors.Blue);
+                args.DrawingSession.FillCircle((float)(anchor.X * _PixelSize + _Space), (float)(anchor.Y * _PixelSize + _Space), 5, Colors.Blue);
+                args.DrawingSession.DrawText("ID: 0X" + anchor.Id.ToString("X4"), (float)(anchor.X * _PixelSize + _Space), (float)(anchor.Y * _PixelSize + _Space + 2), Colors.SlateGray, textFormatFat);
+                args.DrawingSession.DrawText(anchor.X + "," + anchor.Y + "," + anchor.Z, (float)(anchor.X * _PixelSize + _Space), (float)(anchor.Y * _PixelSize + _Space + 20), Colors.DarkGray, textFormat);
             }
 
             // Draw table big
-            args.DrawingSession.DrawRectangle((float)(1980 * pixelSize + space), (float)(2000 * pixelSize + space), (float)(3600 * pixelSize), (float)(1200 * pixelSize), Colors.Cyan, 5);
+            args.DrawingSession.DrawRectangle((float)(1980 * _PixelSize + _Space), (float)(2000 * _PixelSize + _Space), (float)(3600 * _PixelSize), (float)(1200 * _PixelSize), Colors.Cyan, 5);
 
             // Draw table circle 
             // args.DrawingSession.DrawEllipse((float)(2030 * pixelSize + space), (float)(2310 * pixelSize + space), (float)(600 * pixelSize), (float)(600 * pixelSize), Colors.Cyan, 5);
 
             // Draw Test Path
-            args.DrawingSession.DrawRectangle((float)(1170 * pixelSize + space), (float)(1220 * pixelSize + space), (float)(5000 * pixelSize), (float)(2500 * pixelSize), Colors.BlanchedAlmond, 29);
+            args.DrawingSession.DrawRectangle((float)(1170 * _PixelSize + _Space), (float)(1220 * _PixelSize + _Space), (float)(5000 * _PixelSize), (float)(2500 * _PixelSize), Colors.BlanchedAlmond, 29);
 
             // Draw line
-            for (int i = 0; i < linePoints.Count - 1; i++)
+            for (int i = 0; i < _LinePoints.Count - 1; i++)
             {
-                args.DrawingSession.DrawLine(linePoints[i][0], linePoints[i][1], linePoints[i + 1][0], linePoints[i + 1][1], Windows.UI.Colors.Red);
+                args.DrawingSession.DrawLine(_LinePoints[i][0], _LinePoints[i][1], _LinePoints[i + 1][0], _LinePoints[i + 1][1], Windows.UI.Colors.Red);
             }
 
-            // Draw Tag
-            args.DrawingSession.FillCircle((float)(this._MyPosition.X * pixelSize + space), (float)(this._MyPosition.Y * pixelSize + space), 5, Colors.Green);
+            if (_LinePoints.Count >= 1)
+            {
+                // Draw Tag
+                args.DrawingSession.FillCircle(_LinePoints.Last()[0], _LinePoints.Last()[1], 5, Colors.Green);
+            }
+
+            // Draw friend
+            args.DrawingSession.FillCircle((float)(this._FriendPosition.X * _PixelSize + _Space), (float)(this._FriendPosition.Y * _PixelSize + _Space), 5, Colors.Pink);
         }
 
+        /// <summary>
+        ///     Reset the pozyx system
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            UpdateScreen.Stop();
-            UpdatePosition.Stop();
-            Button1.IsEnabled = false;
-            Button2.IsEnabled = false;
-            Button3.IsEnabled = false;
-            Button4.IsEnabled = false;
-            Button5.IsEnabled = false;
+            DisableButtons();
+            StopRunning();
 
+            await (Task.Delay(1000));
             _Pozyx.RegisterFunctions.ResetSys();
             await (Task.Delay(1000));
             _Pozyx.RegisterFunctions.FlashReset();
             await (Task.Delay(1000));
 
-            Button1.IsEnabled = true;
-            Button2.IsEnabled = true;
-            Button3.IsEnabled = true;
-            Button4.IsEnabled = true;
-            Button5.IsEnabled = true;
+            _Pozyx.Anchors = new List<Anchor>();
+
+            EnableButtons();
         }
 
-        private async void Test_Click(object sender, RoutedEventArgs e)
+        private async void Button1_Click(object sender, RoutedEventArgs e)
         {
-            this.linePoints = new List<float[]>();
-            this.PositionList = new List<Position>();
+            if (_Running)
+            {
 
-            /*
-            Button1.IsEnabled = false;
-            Button2.IsEnabled = false;
-            Button3.IsEnabled = false;
-            Button4.IsEnabled = false;
-            Button5.IsEnabled = false;
+            }
+            else // set the anchors in the Kleine vergader ruimte
+            {
+                DisableButtons();
 
-            DispatcherTimer progress = new DispatcherTimer();
-            progress.Tick += progress_Tick;
-            progress.Interval = new TimeSpan(0, 0, 0, 0, 1);
-            progress.Start();
+                _Pozyx.ClearDevices();
+                await Task.Delay(500);
 
-            int timespan = 10 * 60 * 1000;
-            int interval = 50;
-            string testCase = "Middle of room";
-            string catagory = "Static test";
-            string[] description = {
+                // Onze kamer
+                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000);
+                await Task.Delay(200);
+                _Pozyx.AddAnchor(0x6038, 1, 2252, 0, 2000);
+                await Task.Delay(200);
+                _Pozyx.AddAnchor(0x605B, 1, -560, 8056, 20000);
+                await Task.Delay(200);
+                _Pozyx.AddAnchor(0x6047, 1, 2953, 8197, 2000);
+                await Task.Delay(200);
+
+                EnableButtons();
+            }
+        }
+
+        private async void Button2_Click(object sender, RoutedEventArgs e)
+        {
+            if (_Running)
+            {
+
+            }
+            else // set the anchors in the Grote vergader ruimte
+            {
+                DisableButtons();
+
+                _Pozyx.ClearDevices();
+                await Task.Delay(500);
+
+                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000);
+                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000, _FriendId);
+                await Task.Delay(200);
+                _Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000);
+                _Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000, _FriendId);
+                await Task.Delay(200);
+                _Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000);
+                _Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000, _FriendId);
+                await Task.Delay(200);
+                _Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000);
+                _Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000, _FriendId);
+                await Task.Delay(200);
+
+                //_Pozyx.AddAnchor(0x6957, 1, 0, 2560, 1100);
+                //await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x697C, 1, 3500, 0, 1500);
+                //await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x697D, 1, 7000, 2540, 950);
+                //await Task.Delay(200);
+                //_Pozyx.AddAnchor(0x6956, 1, 3500, 5200, 2000);
+                //await Task.Delay(200);
+
+                EnableButtons();
+            }
+        }
+
+        private async void Button3_Click(object sender, RoutedEventArgs e)
+        {
+            DisableButtons();
+
+            if (_Running)
+            {
+                StopRunning();
+
+                List<string> ExportData = new List<string>();
+
+                string testcase = "";
+                ExportData.Add("sep=;");
+
+                ExportData.Add("Testcase;" + testcase);
+                ExportData.Add("X;Y;Z;Timestamp");
+                for (int i = 0; i < _PositionList.Count; i++)
+                {
+                    ExportData.Add(_PositionList[i].X + ";" + _PositionList[i].Y + ";" + _PositionList[i].Z + ";" + _TimestampList[i].ToLocalTime().ToString("H:mm:s.ff"));
+                }
+
+                StorageFolder folder = ApplicationData.Current.LocalFolder;
+                string fileName = testcase + "-" + DateTime.Now.ToLocalTime().ToString("dd-MMMM-yy H-mm") + ".csv";
+                StorageFile sample = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+                await FileIO.WriteLinesAsync(sample, ExportData);
+            }
+            else
+            {
+                await _Pozyx.DoAnchorDiscovery();
+            }
+
+            EnableButtons();
+        }
+
+        private async void Button4_Click(object sender, RoutedEventArgs e)
+        {
+            if (_Running) // Stop
+            {
+                StopRunning();
+            }
+            else if (_Pozyx.Anchors.Count >= 4) // Start
+            {
+                DisableButtons();
+
+                await _Pozyx.SetRecommendedConfigurations();
+
+                await Task.Delay(1000);
+                _Pozyx.ConfigurationRegisters.PosAlg(4, 3, _FriendId);
+
+                this.StartRunning();
+
+                EnableButtons();
+            }
+            else
+            {
+                this.Output.Text = "Set anchors first";
+            }
+        }
+
+        private async void Button5_Click(object sender, RoutedEventArgs e)
+        {
+            if (_Running) //wipe the lists
+            {
+                this._LinePoints = new List<float[]>();
+                this._PositionList = new List<Position>();
+                this._TimestampList = new List<DateTime>();
+            }
+            else
+            {
+                DisableButtons();
+
+                DispatcherTimer progress = new DispatcherTimer();
+                progress.Tick += progress_Tick;
+                progress.Interval = new TimeSpan(0, 0, 0, 0, 1);
+                progress.Start();
+
+                int timespan = 10 * 60 * 1000;
+                int interval = 50;
+                string testCase = "Middle of room";
+                string catagory = "Static test";
+                string[] description = {
                 "Posinterval: 50",
                 "Algorithm: Tracking",
                 "Dimension: 3D",
@@ -218,183 +368,133 @@ namespace FreeWheels
                 "UWB prf: 64MHz",
             };
 
-            await testcase.DoTest(timespan, interval, testCase, catagory, description);
+                await _Testcase.DoTest(timespan, interval, testCase, catagory, description);
 
-            progress.Stop();
-            this.Output.Text = "Test finished";
+                progress.Stop();
+                this.Output.Text = "Test finished";
 
-            Button1.IsEnabled = true;
-            Button2.IsEnabled = true;
-            Button3.IsEnabled = true;
-            Button4.IsEnabled = true;
-            Button5.IsEnabled = true;
-
-    */
-        }
-
-        private async void StartStop_Click(object sender, RoutedEventArgs e)
-        {
-            if (UpdateScreen.IsEnabled)
-            {
-                UpdateScreen.Stop();
-                UpdatePosition.Stop();
-                linePoints = new List<float[]>();
-                Button1.IsEnabled = true;
-                Button2.IsEnabled = true;
-                Button3.IsEnabled = true;
-                Button4.IsEnabled = true;
-                Button5.IsEnabled = true;
-                GridCanvas.Visibility = Visibility.Collapsed;
-                Button4.Content = "Start";
+                EnableButtons();
             }
-            else if (_Pozyx.Anchors.Count >= 4)
-            {
-                await _Pozyx.SetConfiguration();
-                UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-                UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 50);
-                UpdateScreen.Start();
-                UpdatePosition.Start();
-
-                Button1.IsEnabled = false;
-                Button2.IsEnabled = false;
-                //Button3.IsEnabled = false;
-                //Button5.IsEnabled = false;
-                GridCanvas.Visibility = Visibility.Visible;
-                Button4.Content = "Stop";
-            }
-        }
-
-        private async void DiscoverAnchors_Click(object sender, RoutedEventArgs e)
-        {
-            UpdatePosition.Stop();
-            UpdateScreen.Stop();
-
-            List<string> ExportData = new List<string>();
-
-            string testcase = "";
-            ExportData.Add("sep=;");
-
-            ExportData.Add("Testcase;" + testcase);
-            ExportData.Add("X;Y;Z;Timestamp");
-            for (int i = 0; i < PositionList.Count; i++)
-            {
-                ExportData.Add(PositionList[i].X + ";" + PositionList[i].Y + ";" + PositionList[i].Z + ";" + TimestampList[i].ToLocalTime().ToString("H:mm:s.ff"));
-            }
-
-            StorageFolder folder = ApplicationData.Current.LocalFolder;
-            string fileName = testcase + "-" + DateTime.Now.ToLocalTime().ToString("dd-MMMM-yy H-mm") + ".csv";
-            StorageFile sample = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-
-            await FileIO.WriteLinesAsync(sample, ExportData);
-
-            //UpdateScreen.Stop();
-            //UpdatePosition.Stop();
-            //Button1.IsEnabled = false;
-            //Button2.IsEnabled = false;
-            //Button3.IsEnabled = false;
-            //Button4.IsEnabled = false;
-            //Button5.IsEnabled = false;
-            //await _Pozyx.DoAnchorDiscovery();
-            //Button1.IsEnabled = true;
-            //Button2.IsEnabled = true;
-            //Button3.IsEnabled = true;
-            //Button4.IsEnabled = true;
-            //Button5.IsEnabled = true;
-        }
-
-        private async void SmallRoom_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateScreen.Stop();
-            UpdatePosition.Stop();
-            Button1.IsEnabled = false;
-            Button2.IsEnabled = false;
-            Button3.IsEnabled = false;
-            Button4.IsEnabled = false;
-            Button5.IsEnabled = false;
-
-            _Pozyx.ClearDevices();
-            await Task.Delay(500);
-
-            // Onze kamer
-            _Pozyx.AddAnchor(0x697D, 1, 0, 45, 2000);
-            await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6956, 1, 45, 3580, 500);
-            await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6957, 1, 3590, 3535, 2000);
-            await Task.Delay(200);
-            _Pozyx.AddAnchor(0x697C, 1, 3545, 0, 500);
-            await Task.Delay(200);
-
-            Button1.IsEnabled = true;
-            Button2.IsEnabled = true;
-            Button3.IsEnabled = true;
-            Button4.IsEnabled = true;
-            Button5.IsEnabled = true;
-        }
-
-        private async void BigRoom_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateScreen.Stop();
-            UpdatePosition.Stop();
-            Button1.IsEnabled = false;
-            Button2.IsEnabled = false;
-            Button3.IsEnabled = false;
-            Button4.IsEnabled = false;
-            Button5.IsEnabled = false;
-
-            _Pozyx.ClearDevices();
-            await Task.Delay(500);
-
-            // Grote vergader ruimte
-            _Pozyx.AddAnchor(0x605B, 1, 0, 0, 500);
-            await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6038, 1, 7000, 0, 2000);
-            await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6029, 1, 0, 5100, 500);
-            await Task.Delay(200);
-            _Pozyx.AddAnchor(0x6047, 1, 6750, 5100, 10);
-            await Task.Delay(200);
-
-            Button1.IsEnabled = true;
-            Button2.IsEnabled = true;
-            Button3.IsEnabled = true;
-            Button4.IsEnabled = true;
-            Button5.IsEnabled = true;
-        }
-
-        void progress_Tick(object sender, object e)
-        {
-            this.Output.Text = testcase.Status;
         }
 
         void UpdateScreen_Tick(object sender, object e)
         {
-            this.Output.Text = "x: " + _MyPosition.X + "\t y: " + _MyPosition.Y + "\t z: " + _MyPosition.Z;
+            this.Output.Text = "x: " + _FriendPosition.X + "\t y: " + _FriendPosition.Y + "\t z: " + _FriendPosition.Z;
 
             String timeStamp = DateTime.Now.ToString();
             this.Timestamp.Text = "Timestamp: " + timeStamp;
 
             this.GridCanvas.Invalidate();
-        }
 
-        void UpdatePosition_Tick(object sender, object e)
-        {
-            _Pozyx.RegisterFunctions.DoPositioning();
-
-            _MyPosition = _Pozyx.PositioningData.Pos();
-
-            // Add to the position list
-            PositionList.Add(_MyPosition);
-            TimestampList.Add(DateTime.Now);
-
-            //Adds the route walked to the map
-            linePoints.Add(new float[] { (float)(_MyPosition.X * pixelSize + space), (float)(_MyPosition.Y * pixelSize + space) });
 
             string err = _Pozyx.StatusRegisters.ErrorCode();
             if (err != "0x00 - Success")
             {
                 Debug.WriteLine("ERROR: " + err);
             }
+        }
+
+        async void UpdatePosition_Tick(object sender, object e)
+        {
+            // UPdate postion
+            _Pozyx.RegisterFunctions.DoPositioning();
+            Position position = _Pozyx.PositioningData.Pos();
+            _PositionList.Add(position);
+            _TimestampList.Add(DateTime.Now);
+            _LinePoints.Add(new float[] { (float)(position.X * _PixelSize + _Space), (float)(position.Y * _PixelSize + _Space) });
+
+            await Task.Delay(1000);
+
+            // friend do pos
+            _Pozyx.RegisterFunctions.DoPositioning(_FriendId);
+            _FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
+        }
+
+        void progress_Tick(object sender, object e)
+        {
+            this.Output.Text = _Testcase.Status;
+        }
+
+        /// <summary>
+        ///     Starts the updating the postion and sceen
+        /// </summary>
+        private void StartRunning()
+        {
+            _Running = true;
+            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
+            UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            UpdateScreen.Start();
+            UpdatePosition.Start();
+
+            GridCanvas.Visibility = Visibility.Visible;
+
+            Button1.IsEnabled = false;
+
+            Button2.IsEnabled = false;
+
+            Button3.Content = "Export";
+            Button3.IsEnabled = true;
+
+            Button4.Content = "Stop";
+            Button4.IsEnabled = true;
+
+            Button5.Content = "Erase";
+            Button5.IsEnabled = true;
+        }
+
+        /// <summary>
+        ///     Stops the updating the postion and sceen
+        /// </summary>
+        private void StopRunning()
+        {
+            _Running = false;
+
+            UpdateScreen.Stop();
+            UpdatePosition.Stop();
+            _LinePoints = new List<float[]>();
+            GridCanvas.Visibility = Visibility.Collapsed;
+
+            Button1.Content = "Small room";
+            Button1.IsEnabled = true;
+
+            Button2.Content = "Big room";
+            Button2.IsEnabled = true;
+
+            Button3.Content = "Discover";
+            Button3.IsEnabled = true;
+
+            Button4.Content = "Start";
+            Button4.IsEnabled = true;
+
+            Button5.Content = "Run test";
+            Button5.IsEnabled = true;
+        }
+
+        /// <summary>
+        ///     Enables the buttons
+        /// </summary>
+        private void EnableButtons()
+        {
+            if (!_Running)
+            {
+                Button1.IsEnabled = true;
+                Button2.IsEnabled = true;
+            }
+            Button3.IsEnabled = true;
+            Button4.IsEnabled = true;
+            Button5.IsEnabled = true;
+        }
+
+        /// <summary>
+        ///  Disables the buttons
+        /// </summary>
+        private void DisableButtons()
+        {
+            Button1.IsEnabled = false;
+            Button2.IsEnabled = false;
+            Button3.IsEnabled = false;
+            Button4.IsEnabled = false;
+            Button5.IsEnabled = false;
         }
     }
 }
