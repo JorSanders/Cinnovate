@@ -71,9 +71,9 @@ namespace FreeWheels
             UpdateScreen.Tick += UpdateScreen_Tick;
             DoPositioning.Tick += DoPositioning_Tick;
             RetrievePosition.Tick += RetrievePosition_Tick;
-            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 30);
-            RetrievePosition.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            DoPositioning.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 50);
+            RetrievePosition.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            DoPositioning.Interval = new TimeSpan(0, 0, 0, 0, 400);
 
             this.InitializeComponent();
 
