@@ -45,9 +45,11 @@ namespace FreeWheels
 
         private int _FriendId; // the other pozyx tag id
         private Position _FriendPosition; // The other pozyx location
+        private List<float[]> _FriendLine = new List<float[]>(); // Position points for on the canvas for the friend
 
         private DispatcherTimer UpdateScreen; // Dispatchtimer that controls the drawing on screen
-        private DispatcherTimer UpdatePosition; // Dispatchtimer that controls updating the position
+        private DispatcherTimer DoPositioning; // Dispatchtimer that controls updating the position
+        private DispatcherTimer RetrievePosition; // Dispatchtimer that controls updating the position
 
         private List<float[]> _LinePoints = new List<float[]>(); // Position points for on the canvas with previous positions
         private List<Position> _PositionList = new List<Position>(); // Actual previous positions
@@ -62,9 +64,14 @@ namespace FreeWheels
         public MainPage()
         {
             UpdateScreen = new DispatcherTimer();
-            UpdatePosition = new DispatcherTimer();
+            DoPositioning = new DispatcherTimer();
+            RetrievePosition = new DispatcherTimer();
             UpdateScreen.Tick += UpdateScreen_Tick;
-            UpdatePosition.Tick += UpdatePosition_Tick;
+            DoPositioning.Tick += DoPositioning_Tick;
+            RetrievePosition.Tick += RetrievePosition_Tick;
+            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
+            RetrievePosition.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            DoPositioning.Interval = new TimeSpan(0, 0, 0, 0, 300);
 
             this.InitializeComponent();
 
@@ -75,6 +82,8 @@ namespace FreeWheels
             _Testcase = new Testcase(_Pozyx);
 
             _FriendPosition = new Position();
+
+            //_FriendId = 0x6843; 
             _FriendId = 0x6E38; // The id of our 2nd pozyx
 
             StartUp();
@@ -126,7 +135,7 @@ namespace FreeWheels
             double height = size.Height - 180;
 
             //Calculate Seperator
-            double scale = 15;
+            double scale = 7;
             _Space = height / scale;
             _PixelSize = height / (scale * 1000);
 
@@ -172,12 +181,18 @@ namespace FreeWheels
             // args.DrawingSession.DrawEllipse((float)(2030 * pixelSize + space), (float)(2310 * pixelSize + space), (float)(600 * pixelSize), (float)(600 * pixelSize), Colors.Cyan, 5);
 
             // Draw Test Path
-            args.DrawingSession.DrawRectangle((float)(1170 * _PixelSize + _Space), (float)(1220 * _PixelSize + _Space), (float)(5000 * _PixelSize), (float)(2500 * _PixelSize), Colors.BlanchedAlmond, 29);
+            //args.DrawingSession.DrawRectangle((float)(1170 * _PixelSize + _Space), (float)(1220 * _PixelSize + _Space), (float)(5000 * _PixelSize), (float)(2500 * _PixelSize), Colors.BlanchedAlmond, 29);
 
             // Draw line
             for (int i = 0; i < _LinePoints.Count - 1; i++)
             {
-                args.DrawingSession.DrawLine(_LinePoints[i][0], _LinePoints[i][1], _LinePoints[i + 1][0], _LinePoints[i + 1][1], Windows.UI.Colors.Red);
+                args.DrawingSession.DrawLine(_LinePoints[i][0], _LinePoints[i][1], _LinePoints[i + 1][0], _LinePoints[i + 1][1], Windows.UI.Colors.Green);
+            }
+            
+            // Draw line friend
+            for (int i = 0; i < _FriendLine.Count - 1; i++)
+            {
+                args.DrawingSession.DrawLine(_FriendLine[i][0], _FriendLine[i][1], _FriendLine[i + 1][0], _FriendLine[i + 1][1], Windows.UI.Colors.Purple);
             }
 
             if (_LinePoints.Count >= 1)
@@ -186,8 +201,11 @@ namespace FreeWheels
                 args.DrawingSession.FillCircle(_LinePoints.Last()[0], _LinePoints.Last()[1], 5, Colors.Green);
             }
 
-            // Draw friend
-            args.DrawingSession.FillCircle((float)(this._FriendPosition.X * _PixelSize + _Space), (float)(this._FriendPosition.Y * _PixelSize + _Space), 5, Colors.Pink);
+            if (_FriendLine.Count >= 1)
+            {
+                // Draw friend
+                args.DrawingSession.FillCircle(_FriendLine.Last()[0], _FriendLine.Last()[1], 5, Colors.Purple);
+            }
         }
 
         /// <summary>
@@ -215,7 +233,7 @@ namespace FreeWheels
         {
             if (_Running)
             {
-
+               
             }
             else // set the anchors in the Kleine vergader ruimte
             {
@@ -252,16 +270,16 @@ namespace FreeWheels
                 await Task.Delay(500);
 
                 _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000);
-                _Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000, _FriendId);
+                //_Pozyx.AddAnchor(0x6029, 1, 0, 0, 2000, _FriendId);
                 await Task.Delay(200);
                 _Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000);
-                _Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000, _FriendId);
+                //_Pozyx.AddAnchor(0x6047, 1, 7000, 0, 2000, _FriendId);
                 await Task.Delay(200);
                 _Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000);
-                _Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000, _FriendId);
+                //_Pozyx.AddAnchor(0x605B, 1, 0, 5100, 2000, _FriendId);
                 await Task.Delay(200);
                 _Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000);
-                _Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000, _FriendId);
+                //_Pozyx.AddAnchor(0x6038, 1, 6750, 5100, 2000, _FriendId);
                 await Task.Delay(200);
 
                 //_Pozyx.AddAnchor(0x6957, 1, 0, 2560, 1100);
@@ -305,7 +323,9 @@ namespace FreeWheels
             }
             else
             {
-                await _Pozyx.DoAnchorDiscovery();
+                _Pozyx.RetrieveAnchors();
+                StartRunning(true);
+                //await _Pozyx.DoAnchorDiscovery();
             }
 
             EnableButtons();
@@ -384,8 +404,10 @@ namespace FreeWheels
             String timeStamp = DateTime.Now.ToString();
             this.Timestamp.Text = "Timestamp: " + timeStamp;
 
-            this.GridCanvas.Invalidate();
-
+            if (_Running)
+            {
+                this.GridCanvas.Invalidate();
+            }
 
             string err = _Pozyx.StatusRegisters.ErrorCode();
             if (err != "0x00 - Success")
@@ -394,20 +416,27 @@ namespace FreeWheels
             }
         }
 
-        async void UpdatePosition_Tick(object sender, object e)
+
+        async void DoPositioning_Tick(object sender, object e)
         {
             // UPdate postion
             _Pozyx.RegisterFunctions.DoPositioning();
+            await Task.Delay(100);
+            _Pozyx.RegisterFunctions.DoPositioning(_FriendId);
+        }
+
+        void RetrievePosition_Tick(object sender, object e)
+        {
+            // UPdate postion
             Position position = _Pozyx.PositioningData.Pos();
+
             _PositionList.Add(position);
             _TimestampList.Add(DateTime.Now);
             _LinePoints.Add(new float[] { (float)(position.X * _PixelSize + _Space), (float)(position.Y * _PixelSize + _Space) });
 
-            await Task.Delay(1000);
-
             // friend do pos
-            _Pozyx.RegisterFunctions.DoPositioning(_FriendId);
             _FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
+            _FriendLine.Add(new float[] { (float)(_FriendPosition.X * _PixelSize + _Space), (float)(_FriendPosition.Y * _PixelSize + _Space) });
         }
 
         void progress_Tick(object sender, object e)
@@ -418,13 +447,15 @@ namespace FreeWheels
         /// <summary>
         ///     Starts the updating the postion and sceen
         /// </summary>
-        private void StartRunning()
+        private void StartRunning(bool slave = false)
         {
             _Running = true;
-            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-            UpdatePosition.Interval = new TimeSpan(0, 0, 0, 0, 300);
             UpdateScreen.Start();
-            UpdatePosition.Start();
+            RetrievePosition.Start();
+            if (!slave)
+            {
+                DoPositioning.Start();
+            }
 
             GridCanvas.Visibility = Visibility.Visible;
 
@@ -450,7 +481,8 @@ namespace FreeWheels
             _Running = false;
 
             UpdateScreen.Stop();
-            UpdatePosition.Stop();
+            RetrievePosition.Stop();
+            DoPositioning.Stop();
             _LinePoints = new List<float[]>();
             GridCanvas.Visibility = Visibility.Collapsed;
 
@@ -460,7 +492,7 @@ namespace FreeWheels
             Button2.Content = "Big room";
             Button2.IsEnabled = true;
 
-            Button3.Content = "Discover";
+            Button3.Content = "2nd";
             Button3.IsEnabled = true;
 
             Button4.Content = "Start";

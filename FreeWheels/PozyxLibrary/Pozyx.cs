@@ -216,5 +216,22 @@ namespace FreeWheels.PozyxLibrary
 
             return success;
         }
+
+        /// <summary>
+        ///     Retrieves the anchors from the Pozyx flash
+        /// </summary>
+        public void RetrieveAnchors()
+        {
+            int[] deviceIds = RegisterFunctions.PosGetAnchorIds().ToArray();
+
+            int[] deviceInfo;
+
+            foreach (int deviceId in deviceIds)
+            {
+                deviceInfo = DeviceListFunctions.DeviceGetInfo(deviceId);
+
+                AddAnchor(deviceInfo[0], deviceInfo[1], deviceInfo[2], deviceInfo[3], deviceInfo[4]);
+            }
+        }
     }
 }
