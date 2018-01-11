@@ -59,6 +59,8 @@ namespace FreeWheels
 
         private bool _Running; // Indicates wether we are getting the position and updating the screen.
 
+        private bool _UseFriend;
+
         private Testcase _Testcase;
 
         public MainPage()
@@ -69,9 +71,9 @@ namespace FreeWheels
             UpdateScreen.Tick += UpdateScreen_Tick;
             DoPositioning.Tick += DoPositioning_Tick;
             RetrievePosition.Tick += RetrievePosition_Tick;
-            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60);
-            RetrievePosition.Interval = new TimeSpan(0, 0, 0, 0, 300);
-            DoPositioning.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            UpdateScreen.Interval = new TimeSpan(0, 0, 0, 0, 1000 / 30);
+            RetrievePosition.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            DoPositioning.Interval = new TimeSpan(0, 0, 0, 0, 100);
 
             this.InitializeComponent();
 
@@ -85,6 +87,8 @@ namespace FreeWheels
 
             //_FriendId = 0x6843; 
             _FriendId = 0x6E38; // The id of our 2nd pozyx
+
+            _UseFriend = true;
 
             StartUp();
         }
@@ -188,7 +192,7 @@ namespace FreeWheels
             {
                 args.DrawingSession.DrawLine(_LinePoints[i][0], _LinePoints[i][1], _LinePoints[i + 1][0], _LinePoints[i + 1][1], Windows.UI.Colors.Green);
             }
-            
+
             // Draw line friend
             for (int i = 0; i < _FriendLine.Count - 1; i++)
             {
@@ -233,7 +237,7 @@ namespace FreeWheels
         {
             if (_Running)
             {
-               
+
             }
             else // set the anchors in the Kleine vergader ruimte
             {
@@ -361,6 +365,7 @@ namespace FreeWheels
             if (_Running) //wipe the lists
             {
                 this._LinePoints = new List<float[]>();
+                this._FriendLine = new List<float[]>();
                 this._PositionList = new List<Position>();
                 this._TimestampList = new List<DateTime>();
             }
@@ -421,8 +426,12 @@ namespace FreeWheels
         {
             // UPdate postion
             _Pozyx.RegisterFunctions.DoPositioning();
-            await Task.Delay(100);
-            _Pozyx.RegisterFunctions.DoPositioning(_FriendId);
+
+            if (_UseFriend)
+            {
+                await Task.Delay(250);
+                _Pozyx.RegisterFunctions.DoPositioning(_FriendId);
+            }
         }
 
         void RetrievePosition_Tick(object sender, object e)
@@ -432,11 +441,23 @@ namespace FreeWheels
 
             _PositionList.Add(position);
             _TimestampList.Add(DateTime.Now);
-            _LinePoints.Add(new float[] { (float)(position.X * _PixelSize + _Space), (float)(position.Y * _PixelSize + _Space) });
-
-            // friend do pos
-            _FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
-            _FriendLine.Add(new float[] { (float)(_FriendPosition.X * _PixelSize + _Space), (float)(_FriendPosition.Y * _PixelSize + _Space) });
+            if (!(position.X == 0 ||
+                position.Y == 0 ||
+                position.Z == 0))
+            {
+                _LinePoints.Add(new float[] { (float)(position.X * _PixelSize + _Space), (float)(position.Y * _PixelSize + _Space) });
+            }
+            if (_UseFriend)
+            {
+                // friend do pos
+                _FriendPosition = _Pozyx.PositioningData.Pos(_FriendId);
+                if (!(_FriendPosition.X == 0 ||
+                     _FriendPosition.Y == 0 ||
+                    _FriendPosition.Z == 0))
+                {
+                    _FriendLine.Add(new float[] { (float)(_FriendPosition.X * _PixelSize + _Space), (float)(_FriendPosition.Y * _PixelSize + _Space) });
+                }
+            }
         }
 
         void progress_Tick(object sender, object e)

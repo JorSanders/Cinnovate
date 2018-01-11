@@ -160,7 +160,7 @@ namespace FreeWheels.PozyxLibrary
             await Task.Delay(200);
             ConfigurationRegisters.PosAlg(4, 3, 0); // 3d positioning and tracking
             await Task.Delay(200);
-            ConfigurationRegisters.PosFilter(0, 0, 0); // Dont filter, so we can see the results most clearly. 
+            ConfigurationRegisters.PosFilter(5, 3, 0); // Dont filter, so we can see the results most clearly. 
             await Task.Delay(200);
             ConfigurationRegisters.RangeProtocol(0, 0); // Set to its default value
             await Task.Delay(200);
